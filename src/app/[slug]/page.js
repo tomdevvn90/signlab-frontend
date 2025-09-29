@@ -1,13 +1,13 @@
 import React from 'react';
-import { getPageBySlug } from '../lib/api';
-import FlexibleContent from '../components/FlexibleContent';
+import { getPageBySlug } from '../../lib/api';
+import FlexibleContent from '../../components/FlexibleContent';
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
 
-async function getHomePageData() {
+async function getPageData(slug) {
   try {
-    const { data: pages, error } = await getPageBySlug('home-page');
+    const { data: pages, error } = await getPageBySlug(slug);
     
     if (error || !pages || pages.length === 0) {
       console.error('Error fetching home page:', error);
@@ -29,8 +29,8 @@ async function getHomePageData() {
   }
 }
 
-export default async function HomePage() {
-  const pageData = await getHomePageData();
+export default async function DynamicPage({ params }) {
+  const pageData = await getPageData(params.slug);
 
   // Fallback content if WordPress data is not available
   if (!pageData) {

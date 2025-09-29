@@ -5,12 +5,12 @@ import FlexibleContent from '../../components/FlexibleContent';
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
 
-async function getAboutPageData() {
+async function getContactPageData() {
   try {
-    const { data: pages, error } = await getPageBySlug('about');
+    const { data: pages, error } = await getPageBySlug('contact');
     
     if (error || !pages || pages.length === 0) {
-      console.error('Error fetching about page:', error);
+      console.error('Error fetching contact page:', error);
       return null;
     }
 
@@ -24,13 +24,13 @@ async function getAboutPageData() {
       acf: page.acf || {},
     };
   } catch (error) {
-    console.error('Error in getAboutPageData:', error);
+    console.error('Error in getContactPageData:', error);
     return null;
   }
 }
 
-export default async function AboutPage() {
-  const pageData = await getAboutPageData();
+export default async function ContactPage() {
+  const pageData = await getContactPageData();
 
   // Fallback content if WordPress data is not available
   if (!pageData) {
@@ -67,6 +67,10 @@ export default async function AboutPage() {
           </div>
         </div>
       )}
+
+      <div className="container section-padding">
+        Contact Form Here
+      </div>
     </div>
   );
 }
