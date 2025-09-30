@@ -1,44 +1,76 @@
 import React from 'react';
-import Image from 'next/image';
+import { getImageUrl } from "../../lib/utils";
 
-const HeroSection = ({ data }) => (
-  <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white section-padding">
-    <div className="container">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="fade-in">
-          {data.hero_main_text && (
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-              {data.hero_main_text}
-            </h1>
-          )}
-          {data.hero_sub_text && (
-            <p className="text-xl mb-8 text-blue-100">
-              {data.hero_sub_text}
-            </p>
-          )}
-          {data.hero_button_text && data.hero_button_url && (
-            <a
-              href={data.hero_button_url}
-              className="btn-primary bg-white text-blue-600 hover:bg-gray-100"
-            >
-              {data.hero_button_text}
-            </a>
-          )}
-        </div>
-        {data.hero_background_image?.url && (
-          <div className="slide-in-right">
-            <Image
-              src={data.hero_background_image.url}
-              alt={data.hero_background_image.alt || 'Hero Image'}
-              width={600}
-              height={400}
-              className="rounded-lg shadow-2xl"
-            />
+const HeroSection = ({ data }) => {
+  console.log(data);
+
+  const backgroundColor = data.hero_bg_color ? '[' + data.hero_bg_color + ']' : '';
+
+  const imageData = data.hero_bg_image && typeof data.hero_bg_image === 'object' ? data.hero_bg_image : null;
+  const imageUrl = getImageUrl(imageData, 'full');
+
+  // Compose background style
+  const backgroundImageStyle = imageUrl
+    ? {
+        backgroundImage: `url('${imageUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }
+    : {};
+
+  // Determine alignment classes based on data.hero_content_align
+  let alignClass = '';
+  let textAlignClass = '';
+  switch ((data.hero_content_align || 'center').toLowerCase()) {
+    case 'left':
+      alignClass = 'justify-start';
+      textAlignClass = 'text-left';
+      break;
+    case 'right':
+      alignClass = 'justify-end';
+      textAlignClass = 'text-right';
+      break;
+    case 'center':
+    default:
+      alignClass = 'justify-center';
+      textAlignClass = 'text-center';
+      break;
+  }
+
+  return (
+    <section
+      className={`bg-gradient-to-r flex from-blue-600 to-blue-800 text-white section-padding min-h-[800px] bg-${backgroundColor}`}
+      style={backgroundImageStyle}
+    >
+      <div className="container">
+        <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
+          <div className={`fade-in ${textAlignClass}`}>
+            {data.hero_title && (
+              <h1 className="text-5xl font-black mb-6">
+                <span className="inline-block p-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-md">
+                  {data.hero_title}
+                </span>
+              </h1>
+            )}
+            {data.hero_sub_title && (
+              <p className="text-2xl mb-8 font-bold">
+                {data.hero_sub_title}
+              </p>
+            )}
+            {data.hero_button_text && data.hero_button_url && (
+              <a
+                href={data.hero_button_url}
+                className="btn-primary"
+              >
+                {data.hero_button_text}
+              </a>
+            )}
           </div>
-        )}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default HeroSection;

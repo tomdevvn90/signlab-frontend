@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 const CallToActionSection = ({ data }) =>{
-  const backgroundColor = data.cta_background_color ? '[' + data.cta_background_color + ']' : 'white';
+  const backgroundColor = data.cta_bg_color ? '[' + data.cta_bg_color + ']' : 'white';
   
   return (
     <section className="section-padding bg-[#81d742]">

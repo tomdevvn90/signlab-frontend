@@ -6,7 +6,7 @@
 :root {
   --primary-color: #3b82f6;
   --secondary-color: #1e40af;
-  --accent-color: #f59e0b;
+  --accent-color: #ff6e03;
   --text-color: #1f2937;
   --text-light: #6b7280;
   --bg-color: #ffffff;
@@ -44,7 +44,7 @@ a {
 
 // Custom components
 .container {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply max-w-7xl mx-auto my-auto px-4 lg:px-6;
 }
 
 .section-padding {
@@ -127,13 +127,13 @@ a {
 // Responsive utilities
 @screen sm {
   .container {
-    @apply px-6;
+    @apply px-4;
   }
 }
 
 @screen lg {
   .container {
-    @apply px-8;
+    @apply px-4;
   }
 }
 

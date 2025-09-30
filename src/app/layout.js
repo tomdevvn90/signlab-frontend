@@ -30,18 +30,20 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <div id="root">
-          <header className="bg-white shadow-sm border-b">
+          <header
+            className="bg-transparent absolute left-0 right-0"
+          >
             <div className="container">
               <nav className="flex justify-between items-center py-4">
                 <div className="flex items-center">
-                  <a href="/" className="text-2xl font-bold text-gradient">
+                  <a href="/" className="text-4xl font-black text-white uppercase">
                     SignLab
                   </a>
                 </div>
                 <div className="">
-                  <button className="text-gray-700 hover:text-blue-600">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <button className="text-white hover:text-blue-600">
+                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                   </button>
                 </div>
