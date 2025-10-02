@@ -1,53 +1,83 @@
-/**
- * Get image URL from a WP media object
- * @param {object} media - WP REST API media object
- * @param {string} size - image size (thumbnail, medium, large, full, custom...)
- * @returns {string|null} - URL of the image or null if not found
- */
-export const getImageUrl = (media, size = "full") => {
-    if (!media) return null;
-  
-    if (
-      size !== "full" &&
-      media.media_details &&
-      media.media_details.sizes &&
-      media.media_details.sizes[size] &&
-      media.media_details.sizes[size].source_url
-    ) {
-      return media.media_details.sizes[size].source_url;
-    }
-  
-    // fallback: full image
-    if (media.source_url) {
-      return media.source_url;
-    }
-  
-    return null;
-};
+// Utility functions for image handling and other common operations
 
-// Helper function to get media URL from media ID
-export async function getMediaUrl(mediaId) {
-    if (!mediaId) return null;
-    
-    // If it's already a full URL, return it
-    if (typeof mediaId === 'string' && mediaId.startsWith('http')) {
-      return mediaId;
-    }
-    
-    // If it's a media ID, fetch the media details
-    if (typeof mediaId === 'number' || (typeof mediaId === 'string' && !isNaN(mediaId))) {
-      try {
-        const { data: media, error } = await getMedia(mediaId);
-        if (error || !media) {
-          console.error('Error fetching media:', error);
-          return null;
-        }
-        return media.source_url;
-      } catch (error) {
-        console.error('Error in getMediaUrl:', error);
-        return null;
-      }
-    }
-    
-    return null;
+/**
+ * Get image URL from WordPress media object
+ * @param {Object|number|string} mediaData - Media object, media ID, or URL string
+ * @param {string} size - Image size (thumbnail, medium, large, full)
+ * @returns {string|null} - Image URL or null if not found
+ */
+export function getImageUrl(mediaData, size = 'full') {
+  if (!mediaData) return null;
+  
+  // If it's already a URL string, return it
+  if (typeof mediaData === 'string' && mediaData.startsWith('http')) {
+    return mediaData;
   }
+  
+  // If it's a media object from WordPress
+  if (typeof mediaData === 'object' && mediaData !== null) {
+    // If media_details and sizes are available, try to get the specific size
+    if (mediaData.media_details && mediaData.media_details.sizes && mediaData.media_details.sizes[size]) {
+      return mediaData.media_details.sizes[size].source_url;
+    }
+    
+    // Fallback to source_url if specific size not available
+    if (mediaData.source_url) {
+      return mediaData.source_url;
+    }
+    
+    // If it's an ACF image field format with url property
+    if (mediaData.url) {
+      return mediaData.url;
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Get image alt text from WordPress media object
+ * @param {Object} mediaData - Media object
+ * @param {string} fallback - Fallback alt text
+ * @returns {string} - Alt text
+ */
+export function getImageAlt(mediaData, fallback = 'Image') {
+  if (!mediaData || typeof mediaData !== 'object') return fallback;
+  
+  return mediaData.alt_text || mediaData.alt || fallback;
+}
+
+/**
+ * Format WordPress menu data for frontend use
+ * @param {Array} menuData - Raw menu data from WordPress ACF
+ * @returns {Array} - Formatted menu items
+ */
+export function formatMenuData(menuData) {
+  if (!Array.isArray(menuData)) return [];
+  
+  return menuData.map(item => ({
+    text: item.menu_item?.text || '',
+    link: item.menu_item?.link || '#',
+    submenu: Array.isArray(item.sub_menu) ? 
+      item.sub_menu.map(subItem => ({
+        text: subItem.sub_menu_item?.text || '',
+        link: subItem.sub_menu_item?.link || '#'
+      })) : []
+  }));
+}
+
+/**
+ * Check if a URL is external
+ * @param {string} url - URL to check
+ * @returns {boolean} - True if external
+ */
+export function isExternalUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  
+  try {
+    const urlObj = new URL(url);
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}

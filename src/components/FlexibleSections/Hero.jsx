@@ -2,22 +2,13 @@ import React from 'react';
 import { getImageUrl } from "../../lib/utils";
 
 const HeroSection = ({ data }) => {
-  console.log(data);
-
   const backgroundColor = data.hero_bg_color ? '[' + data.hero_bg_color + ']' : '';
-
   const imageData = data.hero_bg_image && typeof data.hero_bg_image === 'object' ? data.hero_bg_image : null;
   const imageUrl = getImageUrl(imageData, 'full');
 
-  // Compose background style
-  const backgroundImageStyle = imageUrl
-    ? {
-        backgroundImage: `url('${imageUrl}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }
-    : {};
+  // Video background URLs
+  const videoUrl = data.hero_bg_video_url || null;
+  const videoUrlMobile = data.hero_bg_video_url_mobile || null;
 
   // Determine alignment classes based on data.hero_content_align
   let alignClass = '';
@@ -38,30 +29,113 @@ const HeroSection = ({ data }) => {
       break;
   }
 
+  // Helper: Render video background if videoUrl exists
+  // Uses poster from imageUrl if available
+  const renderVideoBackground = () => {
+    if (!videoUrl && !videoUrlMobile) return null;
+    return (
+      <div
+        className="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-hidden"
+        aria-hidden="true"
+      >
+        {/* Desktop video */}
+        {videoUrl && (
+          <video
+            className="hidden sm:block w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={imageUrl || undefined}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          >
+            <source src={videoUrl} type="video/mp4" />
+            {/* Optionally add webm/ogg sources */}
+          </video>
+        )}
+        {/* Mobile video */}
+        {videoUrlMobile && (
+          <video
+            className="block sm:hidden w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={imageUrl || undefined}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          >
+            <source src={videoUrlMobile} type="video/mp4" />
+          </video>
+        )}
+        {/* Fallback: If only one video, show on all screens */}
+        {!videoUrl && videoUrlMobile && (
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={imageUrl || undefined}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          >
+            <source src={videoUrlMobile} type="video/mp4" />
+          </video>
+        )}
+        {!videoUrlMobile && videoUrl && (
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={imageUrl || undefined}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          >
+            <source src={videoUrl} type="video/mp4" />
+          </video>
+        )}
+      </div>
+    );
+  };
+
+  // Compose background style for fallback image if no video
+  const backgroundImageStyle = (!videoUrl && !videoUrlMobile && imageUrl)
+    ? {
+        backgroundImage: `url('${imageUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }
+    : {};
+
   return (
     <section
-      className={`bg-gradient-to-r flex from-blue-600 to-blue-800 text-white section-padding min-h-[800px] bg-${backgroundColor}`}
+      className={`relative bg-gradient-to-r flex from-blue-600 to-blue-800 text-white section-padding h-[100vh] bg-${backgroundColor} overflow-hidden`}
       style={backgroundImageStyle}
     >
-      <div className="container">
+      {/* Video background if present */}
+      {renderVideoBackground()}
+      {/* Overlay for darkening video/image if needed */}
+      <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" aria-hidden="true"></div>
+      <div className="container relative z-20">
         <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
           <div className={`fade-in ${textAlignClass}`}>
             {data.hero_title && (
-              <h1 className="text-5xl font-black mb-6">
-                <span className="inline-block p-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-md">
+              <h1 className="text-6xl font-black mb-12">
+                <span className="inline-block py-12 px-16 bg-[#0051bc] rounded-md">
                   {data.hero_title}
                 </span>
               </h1>
             )}
             {data.hero_sub_title && (
-              <p className="text-2xl mb-8 font-bold">
+              <p className="text-3xl mb-12 font-bold">
                 {data.hero_sub_title}
               </p>
             )}
             {data.hero_button_text && data.hero_button_url && (
               <a
                 href={data.hero_button_url}
-                className="btn-primary"
+                className="py-6 px-9 rounded-md text-2xl bg-accent uppercase font-bold inline-block hov:bg-primary text-center"
               >
                 {data.hero_button_text}
               </a>
