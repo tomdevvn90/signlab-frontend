@@ -2,7 +2,7 @@
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL
 
 // Base fetch function with error handling
-async function fetchWpApi(url, revalidate = 60) {
+async function fetchWpApi(url, revalidate = 0) {
   try {
     const response = await fetch(url, {
       headers: {
@@ -35,7 +35,7 @@ export async function getPages() {
 // Get page by slug
 export async function getPageBySlug(slug) {
   const url = `${WP_API_URL}/pages?slug=${slug}&_embed=1`;
-  console.log(url);
+  // console.log(url);
   return fetchWpApi(url);
 }
 

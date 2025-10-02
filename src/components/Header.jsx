@@ -1,197 +1,161 @@
 'use client';
-
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { getImageUrl, getImageAlt, formatMenuData, isExternalUrl } from '../lib/utils';
+import { getImageUrl, getImageAlt } from '../lib/utils';
 
 const Header = ({ logoData, menuData }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);  
-  
-  const formattedMenu = formatMenuData(menuData);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Track which submenu is open by index
+  const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
+
   const logoUrl = getImageUrl(logoData);
-  const logoAlt = getImageAlt(logoData, 'Logo');
+  const logoAlt = getImageAlt(logoData, 'SignLab Logo');
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    // Close all submenus when closing main menu
+    if (isMenuOpen) setOpenSubMenuIndex(null);
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setOpenSubMenuIndex(null);
   };
 
-  const renderMenuItem = (item, index) => {
-    const hasSubmenu = item.submenu && item.submenu.length > 0;
-    const isExternal = isExternalUrl(item.link);
-
-    return (
-      <li key={index} className="relative group">
-        {isExternal ? (
-          <a
-            href={item.link}
-            className="flex items-center px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {item.text}
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
-        ) : (
-          <Link
-            href={item.link}
-            className="flex items-center px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-            onClick={closeMenu}
-          >
-            {item.text}
-            {hasSubmenu && (
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            )}
-          </Link>
-        )}
-        
-        {/* Dropdown Submenu */}
-        {hasSubmenu && (
-          <ul className="absolute left-0 top-full w-48 bg-white shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            {item.submenu.map((subItem, subIndex) => (
-              <li key={subIndex}>
-                {isExternalUrl(subItem.link) ? (
-                  <a
-                    href={subItem.link}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {subItem.text}
-                  </a>
-                ) : (
-                  <Link
-                    href={subItem.link}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-                    onClick={closeMenu}
-                  >
-                    {subItem.text}
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </li>
-    );
+  // Toggle submenu for a given index
+  const toggleSubMenu = (index) => {
+    setOpenSubMenuIndex((prevIndex) => (prevIndex === index ? null : index));
   };
+
+  // Determine header classes based on menu state
+  const headerClassName = [
+    "absolute left-0 right-0 z-[999]",
+    isMenuOpen ? "bg-[rgb(0_81_188_/_0.9)] h-[100vh]" : "bg-transparent"
+  ].join(' ');
 
   return (
-    <header className="bg-transparent absolute left-0 right-0 z-[999]">
+    <header className={headerClassName}>
       <div className="container">
-        <nav className="flex justify-between items-center py-28">
+        <div className="flex justify-between items-center pt-5 pb-5 md:pb-0 md:pt-8 lg:pt-12 2xl:pt-20">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+            <button className="flex items-center" onClick={toggleMenu}>
               {logoUrl ? (
-                <Image
+                <img
                   src={logoUrl}
-                  alt={logoAlt}
-                  width={363}
-                  height={56}
-                  priority
+                  alt={logoAlt || "SignLab logo"}
+                  className="w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
                 />
               ) : (
-                <span className="text-2xl font-bold text-gradient">
+                <span className="text-4xl font-bold text-white">
                   SignLab
                 </span>
               )}
-            </Link>
-          </div>
-
-          {/* Desktop Menu */}
-          <div className="hidden lg:hidden lg:flex">
-            <ul className="flex items-center space-x-1">
-              {formattedMenu.map((item, index) => renderMenuItem(item, index))}
-            </ul>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="">
-            <button
-              // onClick={toggleMenu}
-              className="text-white duration-200"
-              aria-label="Toggle menu"
-            >
-              <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMenuOpen ? (
-                  <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
             </button>
           </div>
-        </nav>
 
-        {/* Mobile Menu */}
+          {/* Toggle Menu Button */}
+          <button
+            onClick={toggleMenu}
+            className="text-white duration-200"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-10 h-10 lg:w-14 lg:h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMenuOpen ? (
+                <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Main Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200">
-            <ul className="py-2">
-              {formattedMenu.map((item, index) => (
-                <li key={index}>
-                  <div>
-                    {isExternalUrl(item.link) ? (
-                      <a
-                        href={item.link}
-                        className="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={closeMenu}
-                      >
-                        {item.text}
-                      </a>
-                    ) : (
-                      <Link
-                        href={item.link}
-                        className="block px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-                        onClick={closeMenu}
-                      >
-                        {item.text}
-                      </Link>
-                    )}
-                  </div>
-                  
-                  {/* Mobile Submenu */}
-                  {item.submenu && item.submenu.length > 0 && (
-                    <ul className="pl-4 border-l border-gray-200 ml-4">
-                      {item.submenu.map((subItem, subIndex) => (
-                        <li key={subIndex}>
-                          {isExternalUrl(subItem.link) ? (
-                            <a
-                              href={subItem.link}
-                              className="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={closeMenu}
+          <nav className="py-4 md:py-8 lg:py-12 2xl:py-16">
+            <ul className="">
+              {menuData && menuData.map((item, index) => {
+                const hasSubMenu = item.sub_menu && item.sub_menu.length > 0;
+                const isSubMenuOpen = openSubMenuIndex === index;
+                return (
+                  item.text && item.link && (
+                    <li key={index} className="text-right cursor-pointer" onClick={() => toggleSubMenu(index)}>
+                      <div className="flex align-center justify-end my-6">
+                        {hasSubMenu && (
+                          <button
+                            className={`ml-4 inline-flex items-center text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff] ${isSubMenuOpen ? 'rotate-180' : ''}`}
+                            type="button"
+                            aria-label={`${item.text} menu`}
+                            tabIndex={0}
+                            style={{ background: 'none', border: 'none', outline: 'none', cursor: 'pointer' }}
+                            onClick={() => toggleSubMenu(index)}
+                          >
+                            <svg className="w-12 h-12"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={3}
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
                             >
-                              {subItem.text}
-                            </a>
-                          ) : (
-                            <Link
-                              href={subItem.link}
-                              className="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
-                              onClick={closeMenu}
-                            >
-                              {subItem.text}
-                            </Link>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
+                              <path strokeLinecap="square" strokeLinejoin="square" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                        )}
+                        {(item.open_in_new_tab === true) ? (
+                          <a
+                            href={item.link}
+                            className="inline-block px-2 text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={closeMenu}
+                          >
+                            {item.text}
+                          </a>
+                        ) : (
+                          <Link
+                            href={item.link}
+                            className="inline-block px-2 text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                            onClick={closeMenu}
+                          >
+                            {item.text}
+                          </Link>
+                        )}
+                      </div>
+
+                      {/* Submenu */}
+                      {hasSubMenu && isSubMenuOpen && (
+                        <ul className="pr-4 border-r-4 border-gray-200 mr-4">
+                          {item.sub_menu.map((subItem, subIndex) => (
+                            <li key={subIndex}>
+                              {(subItem.open_in_new_tab === true) ? (
+                                <a
+                                  href={subItem.link}
+                                  className="inline-block px-2 py-3 text-white duration-200 text-3xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={closeMenu}
+                                >
+                                  {subItem.text}
+                                </a>
+                              ) : (
+                                <Link
+                                  href={subItem.link}
+                                  className="inline-block px-2 py-3 text-white duration-200 text-3xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                                  onClick={closeMenu}
+                                >
+                                  {subItem.text}
+                                </Link>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  )
+                );
+              })}
             </ul>
-          </div>
+          </nav>
         )}
       </div>
     </header>

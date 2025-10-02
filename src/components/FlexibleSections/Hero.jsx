@@ -121,21 +121,21 @@ const HeroSection = ({ data }) => {
         <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
           <div className={`fade-in ${textAlignClass}`}>
             {data.hero_title && (
-              <h1 className="text-6xl font-black mb-12">
-                <span className="inline-block py-12 px-16 bg-[#0051bc] rounded-md">
+              <h1 className="2xl:text-6xl lg:text-5xl text-4xl font-extrabold mb-12">
+                <span className="inline-block py-10 px-14 bg-[#0051bc] rounded-md">
                   {data.hero_title}
                 </span>
               </h1>
             )}
             {data.hero_sub_title && (
-              <p className="text-3xl mb-12 font-bold">
+              <p className="text-3xl mb-12 font-extrabold">
                 {data.hero_sub_title}
               </p>
             )}
             {data.hero_button_text && data.hero_button_url && (
               <a
                 href={data.hero_button_url}
-                className="py-6 px-9 rounded-md text-2xl bg-accent uppercase font-bold inline-block hov:bg-primary text-center"
+                className="py-6 px-9 rounded-md text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-primary text-center"
               >
                 {data.hero_button_text}
               </a>

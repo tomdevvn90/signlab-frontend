@@ -48,25 +48,6 @@ export function getImageAlt(mediaData, fallback = 'Image') {
 }
 
 /**
- * Format WordPress menu data for frontend use
- * @param {Array} menuData - Raw menu data from WordPress ACF
- * @returns {Array} - Formatted menu items
- */
-export function formatMenuData(menuData) {
-  if (!Array.isArray(menuData)) return [];
-  
-  return menuData.map(item => ({
-    text: item.menu_item?.text || '',
-    link: item.menu_item?.link || '#',
-    submenu: Array.isArray(item.sub_menu) ? 
-      item.sub_menu.map(subItem => ({
-        text: subItem.sub_menu_item?.text || '',
-        link: subItem.sub_menu_item?.link || '#'
-      })) : []
-  }));
-}
-
-/**
  * Check if a URL is external
  * @param {string} url - URL to check
  * @returns {boolean} - True if external

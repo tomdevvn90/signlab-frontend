@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 const CallToActionSection = ({ data }) => {
   const backgroundColor = data.cta_bg_color ? data.cta_bg_color : 'white';
@@ -20,18 +19,18 @@ const CallToActionSection = ({ data }) => {
   }
 
   return (
-    <section className={`section-padding`} style={{ backgroundColor: backgroundColor }}>
+    <section className="py-40" style={{ backgroundColor: backgroundColor }}>
       <div className="container">
         <div className="grid grid-cols-1 gap-12 items-center">
           <div className={`fade-in flex flex-col ${contentAlignClass}`}>
             {data.cta_title && (
-              <h2 className="text-5xl font-bold mb-10">
+              <h2 className="text-6xl font-extrabold mb-10 primary-color">
                 {data.cta_title}
               </h2>
             )}
             {data.cta_description && (
               <div
-                className="wp-content text-gray-700 text-2xl mb-10"
+                className="wp-content text-gray-700 text-lg mb-10"
                 dangerouslySetInnerHTML={{ __html: data.cta_description }}
               />
             )}
