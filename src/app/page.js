@@ -3,7 +3,7 @@ import { getPageBySlug, getMedia } from '../lib/api';
 import FlexibleContent from '../components/FlexibleContent';
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
-export const revalidate = 60;
+export const revalidate = 0;
 
 // Helper function to process flexible content and fetch media details
 async function processFlexibleContent(acfData) {

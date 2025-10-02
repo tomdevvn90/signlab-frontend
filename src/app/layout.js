@@ -1,6 +1,7 @@
 import { Montserrat } from "next/font/google";
 import '../styles/globals.scss'
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 import { getPageBySlug, getPages } from '../lib/api'
 
 const montserrat = Montserrat({
@@ -65,7 +66,22 @@ async function getHeaderData() {
 }
 
 export default async function RootLayout({ children }) {
-  const { logo, menu } = await getHeaderData();  
+  const { logo, menu } = await getHeaderData();
+
+  // Fetch a theme_options object for footer as well
+  let themeOptions = null;
+  try {
+    const { data: homePages } = await getPageBySlug('home-page');
+    if (Array.isArray(homePages) && homePages[0]?.theme_options) {
+      themeOptions = homePages[0].theme_options;
+    }
+  } catch {}
+  if (!themeOptions) {
+    const { data: pages } = await getPages();
+    if (Array.isArray(pages) && pages[0]?.theme_options) {
+      themeOptions = pages[0].theme_options;
+    }
+  }
 
   return (
     <html lang="en" className={montserrat.className}>
@@ -81,15 +97,7 @@ export default async function RootLayout({ children }) {
             {children}
           </main>
           
-          <footer className="bg-gray-900 text-white">
-            <div className="container section-padding">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                  <h3 className="text-xl font-bold mb-4">SignLab</h3>
-                </div>
-              </div>
-            </div>
-          </footer>
+          <Footer themeOptions={themeOptions} />
         </div>
       </body>
     </html>
