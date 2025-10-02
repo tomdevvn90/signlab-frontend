@@ -12,7 +12,7 @@ const nextConfig = {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   },
   images: {
-    domains: ['signlab.local', 'localhost'],
+    domains: ['job.beplusprojects.com', 'localhost'],
   },
   // ISR Configuration
   revalidate: 60, // Revalidate every 60 seconds

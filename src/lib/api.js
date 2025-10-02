@@ -2,13 +2,13 @@
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL
 
 // Base fetch function with error handling
-async function fetchWpApi(url) {
+async function fetchWpApi(url, revalidate = 60) {
   try {
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
+      next: { revalidate: revalidate }, // ISR: revalidate every 60 seconds
     });
 
     if (!response.ok) {
@@ -58,9 +58,26 @@ export async function getPostBySlug(slug) {
 }
 
 // Get media by ID
-export async function getMedia(mediaId) {
-  const url = `${WP_API_URL}/media/${mediaId}`;
-  return fetchWpApi(url);
+// Accepts a single media ID or an array of media IDs
+export async function getMedia(mediaIds) {
+  if (!mediaIds) return { data: null, error: 'No media ID(s) provided' };
+
+  // If a single ID is provided, convert to array for uniformity
+  const idsArray = Array.isArray(mediaIds) ? mediaIds : [mediaIds];
+
+  // If empty array, return empty data
+  if (idsArray.length === 0) return { data: [], error: null };
+
+  // If only one ID, use the single endpoint for efficiency
+  if (idsArray.length === 1) {
+    const url = `${WP_API_URL}/media/${idsArray[0]}`;
+    return fetchWpApi(url, 120);
+  }
+
+  // For multiple IDs, use the filter[id] query
+  const idsParam = idsArray.join(',');
+  const url = `${WP_API_URL}/media?include=${idsParam}&per_page=${idsArray.length}`;
+  return fetchWpApi(url, 120);
 }
 
 // Helper function to get featured image URL
