@@ -135,7 +135,7 @@ const HeroSection = ({ data }) => {
             {data.hero_button_text && data.hero_button_url && (
               <a
                 href={data.hero_button_url}
-                className="py-6 px-9 rounded-md text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-primary text-center"
+                className="py-6 px-9 rounded-md text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-primary text-center transition-colors duration-300"
               >
                 {data.hero_button_text}
               </a>
