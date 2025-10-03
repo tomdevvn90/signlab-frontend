@@ -87,7 +87,7 @@ export default async function RootLayout({ children }) {
     <html lang="en" className={montserrat.className}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </head>
       <body>
         <div id="root">

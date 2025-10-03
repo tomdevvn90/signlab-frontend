@@ -1,44 +1,11 @@
 import React from 'react';
-import { getPageBySlug, getMedia } from '../../lib/api';
+import Script from 'next/script';
+import { getPageBySlug } from '../../lib/api';
+import { processFlexibleContent } from '../../lib/utils';
 import FlexibleContent from '../../components/FlexibleContent';
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
-
-// Helper function to process flexible content and fetch media details
-async function processFlexibleContent(acfData) {
-  if (!acfData?.flexible_content_sections || !Array.isArray(acfData.flexible_content_sections)) {
-    return acfData;
-  }
-
-  const processedSections = await Promise.all(
-    acfData.flexible_content_sections.map(async (section) => {
-      // If this is a hero section with a media ID, fetch the media details
-      if (section.acf_fc_layout === 'hero_section' && section.hero_bg_image && typeof section.hero_bg_image === 'number') {
-        try {
-          const { data: media, error } = await getMedia(section.hero_bg_image);
-          if (!error && media) {
-            return {
-              ...section,
-              hero_bg_image: {
-                url: media.source_url,
-                alt: media.alt_text || 'Hero Image'
-              }
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching media for hero section:', error);
-        }
-      }
-      return section;
-    })
-  );
-
-  return {
-    ...acfData,
-    flexible_content_sections: processedSections
-  };
-}
 
 async function getContactPageData() {
   try {
@@ -60,6 +27,7 @@ async function getContactPageData() {
       content: page.content.rendered,
       slug: page.slug,
       acf: processedAcf,
+      yoast: page.yoast_head_json || null,
     };
   } catch (error) {
     console.error('Error in getContactPageData:', error);
@@ -87,6 +55,11 @@ export default async function ContactPage() {
 
   return (
     <div className="min-h-screen">
+      {pageData.yoast?.schema && (
+        <Script id="yoast-schema-contact" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify(pageData.yoast.schema)}
+        </Script>
+      )}
 
       {pageData.acf?.flexible_content_sections && (
         <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
@@ -111,4 +84,41 @@ export default async function ContactPage() {
       </div>
     </div>
   );
+}
+
+export async function generateMetadata() {
+  const pageData = await getContactPageData();
+  const yoast = pageData?.yoast;
+  if (!yoast) return {};
+
+  const robots = yoast.robots || {};
+  return {
+    title: yoast.title,
+    description: yoast.description,
+    alternates: yoast.canonical ? { canonical: yoast.canonical } : undefined,
+    robots: {
+      index: robots.index !== 'noindex',
+      follow: robots.follow !== 'nofollow',
+      googleBot: {
+        index: robots.index !== 'noindex' ? 'index' : 'noindex',
+        follow: robots.follow !== 'nofollow' ? 'follow' : 'nofollow',
+        'max-snippet': robots['max-snippet'] || undefined,
+        'max-image-preview': robots['max-image-preview'] || undefined,
+        'max-video-preview': robots['max-video-preview'] || undefined,
+      },
+    },
+    openGraph: {
+      title: yoast.og_title || yoast.title,
+      description: yoast.og_description || yoast.description,
+      url: yoast.og_url || yoast.canonical,
+      siteName: yoast.og_site_name,
+      type: yoast.og_type || 'website',
+      locale: yoast.og_locale,
+    },
+    twitter: {
+      card: yoast.twitter_card || 'summary_large_image',
+      title: yoast.og_title || yoast.title,
+      description: yoast.og_description || yoast.description,
+    },
+  };
 }
