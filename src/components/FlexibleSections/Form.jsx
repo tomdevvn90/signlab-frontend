@@ -10,6 +10,7 @@ const Form = ({ data }) => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitStatus, setSubmitStatus] = useState('');
   const [fileUploads, setFileUploads] = useState({});
+  const [loading, setLoading] = useState(true)
 
   const { title, gravity_form_id } = data || {};
 
@@ -21,6 +22,7 @@ const Form = ({ data }) => {
 
   const fetchFormData = async () => {
     try {
+      setLoading(true);
       // Replace with your WordPress REST API endpoint
       const response = await fetch(`/api/gravity-forms/${gravity_form_id}`);
       const data = await response.json();
@@ -38,6 +40,8 @@ const Form = ({ data }) => {
       }
     } catch (error) {
       console.error('Error fetching form data:', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -121,7 +125,7 @@ const Form = ({ data }) => {
       case 'email':
       case 'phone':
         return (
-          <div key={id} className={colSpanClass}>
+          <div key={id} className={`form-field-6`}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -159,7 +163,7 @@ const Form = ({ data }) => {
         
       case 'select':
         return (
-          <div key={id} className={colSpanClass}>
+          <div key={id} className={ `form-field-6`}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -183,7 +187,7 @@ const Form = ({ data }) => {
         
       case 'fileupload':
         return (
-          <div key={id} className={colSpanClass}>
+          <div key={id} className={ `form-field-6`}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -203,7 +207,7 @@ const Form = ({ data }) => {
     }
   };
 
-  if (!formData) {
+  if (loading) {
     return (
       <section className="py-40 bg-white">
         <div className="container">
@@ -234,13 +238,13 @@ const Form = ({ data }) => {
           </div>
           
           <div className="mt-8 text-center">
-            <button
+            {/* <button
               type="submit"
               disabled={isSubmitting}
               className="btn-primary uppercase"
             >
               {isSubmitting ? 'Submitting...' : formData.button?.text || 'Submit'}
-            </button>
+            </button> */}
           </div>
         </form>
       </div>
