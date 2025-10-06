@@ -38,7 +38,7 @@ const PartnerLogos = ({ data }) => {
         )}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-20 gap-y-24 opacity-80 items-center justify-items-center">
           {normalizedLogos.map((logo, index) => (
-            <div key={index} className="grayscale hover:grayscale-0 transition w-full">
+            <div key={index} className="grayscale transition w-full">
               <Image
                 src={logo.url}
                 alt={logo.alt}
