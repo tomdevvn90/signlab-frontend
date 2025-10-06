@@ -1,13 +1,15 @@
 'use client';
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { getImageUrl, getImageAlt } from '../lib/utils';
 
 const Header = ({ logoData, menuData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Track which submenu is open by index
   const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
-
+  const pathname = usePathname();
   const logoUrl = getImageUrl(logoData);
   const logoAlt = getImageAlt(logoData, 'SignLab Logo');
 
@@ -16,12 +18,10 @@ const Header = ({ logoData, menuData }) => {
     // Close all submenus when closing main menu
     if (isMenuOpen) setOpenSubMenuIndex(null);
   };
-
   const closeMenu = () => {
     setIsMenuOpen(false);
     setOpenSubMenuIndex(null);
   };
-
   // Toggle submenu for a given index
   const toggleSubMenu = (index) => {
     setOpenSubMenuIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -29,22 +29,25 @@ const Header = ({ logoData, menuData }) => {
 
   // Determine header classes based on menu state
   const headerClassName = [
-    "absolute left-0 right-0 z-[999]",
-    isMenuOpen ? "bg-[rgb(0_81_188_/_0.9)] h-[100vh]" : "bg-transparent"
+    "absolute left-0 right-0 z-[999] transition-all duration-300 ",
+    isMenuOpen ? "bg-[rgb(0_81_188_/_0.9)] h-[100vh]" : "bg-transparent h-[150px]"
   ].join(' ');
 
   return (
     <header className={headerClassName}>
-      <div className="container">
+      <div className="container 2xl:max-w-[1600px]">
         <div className="flex justify-between items-center pt-5 pb-5 md:pb-0 md:pt-8 lg:pt-12 2xl:pt-20">
           {/* Logo */}
           <div className="flex items-center">
             <button className="flex items-center" onClick={toggleMenu}>
               {logoUrl ? (
-                <img
+                <Image
                   src={logoUrl}
                   alt={logoAlt || "SignLab logo"}
+                  width={360}
+                  height={80}
                   className="w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
+                  priority
                 />
               ) : (
                 <span className="text-4xl font-bold text-white">
@@ -72,14 +75,14 @@ const Header = ({ logoData, menuData }) => {
 
         {/* Main Menu */}
         {isMenuOpen && (
-          <nav className="py-4 md:py-8 lg:py-12 2xl:py-16">
+          <nav className="py-4 md:py-8 lg:py-12 2xl:py-16 slide-in-right">
             <ul className="">
               {menuData && menuData.map((item, index) => {
                 const hasSubMenu = item.sub_menu && item.sub_menu.length > 0;
                 const isSubMenuOpen = openSubMenuIndex === index;
                 return (
                   item.text && item.link && (
-                    <li key={index} className="text-right cursor-pointer" onClick={() => toggleSubMenu(index)}>
+                    <li key={index} className="text-right text-white cursor-pointer" onClick={() => toggleSubMenu(index)}>
                       <div className="flex align-center justify-end my-6">
                         {hasSubMenu && (
                           <button
@@ -104,7 +107,7 @@ const Header = ({ logoData, menuData }) => {
                         {(item.open_in_new_tab === true) ? (
                           <a
                             href={item.link}
-                            className="inline-block px-2 text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                            className="inline-block px-2 duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff]"
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={closeMenu}
@@ -114,7 +117,9 @@ const Header = ({ logoData, menuData }) => {
                         ) : (
                           <Link
                             href={item.link}
-                            className="inline-block px-2 text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                            className={`inline-block px-2 duration-200 text-5xl uppercase font-extrabold ${
+                              pathname === item.link ? 'text-[#7bb6ff]' : 'hover:text-[#7bb6ff]'
+                            }`}
                             onClick={closeMenu}
                           >
                             {item.text}
@@ -140,7 +145,9 @@ const Header = ({ logoData, menuData }) => {
                               ) : (
                                 <Link
                                   href={subItem.link}
-                                  className="inline-block px-2 py-3 text-white duration-200 text-3xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                                  className={`inline-block px-2 py-3 text-white duration-200 text-3xl uppercase font-extrabold ${
+                                    pathname === subItem.link ? 'text-[#7bb6ff]' : 'hover:text-[#7bb6ff]'
+                                  }`}
                                   onClick={closeMenu}
                                 >
                                   {subItem.text}

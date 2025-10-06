@@ -4,6 +4,8 @@ import CallToActionSection from './FlexibleSections/CallToAction';
 import ContentWithImage from './FlexibleSections/ContentWithImage';
 import Parallax from './FlexibleSections/Parallax';
 import PartnerLogos from './FlexibleSections/PartnerLogos';
+import ImagesSlider from './FlexibleSections/ImagesSlider';
+import Form from './FlexibleSections/Form';
 
 const FlexibleContent = ({ blocks }) => {
   if (!blocks || !Array.isArray(blocks)) {
@@ -22,6 +24,10 @@ const FlexibleContent = ({ blocks }) => {
         return <Parallax key={index} data={block} />;
       case 'partner_logos_section':
         return <PartnerLogos key={index} data={block} />;
+      case 'images_slider':
+        return <ImagesSlider key={index} data={block} />;
+      case 'form_section':
+        return <Form key={index} data={block} />;
       default:
         console.warn(`Unknown ACF layout: ${block.acf_fc_layout}`);
         return null;
