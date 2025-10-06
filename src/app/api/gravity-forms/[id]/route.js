@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
-  const { id } = params;
-  
+  const { id } = params;  
+
   try {
     // Replace with your WordPress site URL
     const wpBaseUrl = process.env.WORDPRESS_API_URL || 'https://job.beplusprojects.com/signlab/wp-json';
