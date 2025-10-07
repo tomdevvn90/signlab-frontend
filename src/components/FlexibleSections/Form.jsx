@@ -10,22 +10,37 @@ const Form = ({ data }) => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitStatus, setSubmitStatus] = useState('');
   const [fileUploads, setFileUploads] = useState({});
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const { title, gravity_form_id } = data || {};
 
   useEffect(() => {
     if (gravity_form_id) {
       fetchFormData();
+    } else {
+      setError('No form ID provided');
+      setLoading(false);
     }
   }, [gravity_form_id]);
 
   const fetchFormData = async () => {
     try {
       setLoading(true);
-      // Replace with your WordPress REST API endpoint
+      setError('');
+      
       const response = await fetch(`/api/gravity-forms/${gravity_form_id}`);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
+      
+      if (data && data.error) {
+        throw new Error(data.error);
+      }
       
       if (data) {
         setFormData(data);
@@ -37,11 +52,14 @@ const Form = ({ data }) => {
           initialValues[field.id] = '';
         });
         setFormValues(initialValues);
+      } else {
+        throw new Error('No form data received');
       }
     } catch (error) {
       console.error('Error fetching form data:', error);
+      setError(`Failed to load form: ${error.message}`);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -53,10 +71,19 @@ const Form = ({ data }) => {
   };
 
   const handleFileChange = (fieldId, files) => {
-    setFileUploads(prev => ({
-      ...prev,
-      [fieldId]: files[0]
-    }));
+    if (files && files.length > 0) {
+      setFileUploads(prev => ({
+        ...prev,
+        [fieldId]: files[0]
+      }));
+    } else {
+      // Remove file if no file selected
+      setFileUploads(prev => {
+        const newUploads = { ...prev };
+        delete newUploads[fieldId];
+        return newUploads;
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -71,26 +98,34 @@ const Form = ({ data }) => {
       
       // Add regular form values
       Object.keys(formValues).forEach(key => {
-        formDataToSubmit.append(`input_${key}`, formValues[key]);
+        if (formValues[key] !== '') {
+          formDataToSubmit.append(`input_${key}`, formValues[key]);
+        }
       });
       
       // Add file uploads
       Object.keys(fileUploads).forEach(key => {
-        formDataToSubmit.append(`input_${key}`, fileUploads[key]);
+        if (fileUploads[key]) {
+          formDataToSubmit.append(`input_${key}`, fileUploads[key]);
+        }
       });
       
       // Add form ID
       formDataToSubmit.append('form_id', gravity_form_id);
 
-      // Replace with your WordPress REST API endpoint for form submission
       const response = await fetch('/api/gravity-forms/submit', {
         method: 'POST',
         body: formDataToSubmit,
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
       
-      if (result.is_valid) {
+      if (result.is_valid || result.status === 'success') {
         setSubmitStatus('success');
         setSubmitMessage(formData?.confirmations?.['51794abf1ee7a']?.message || 'Form submitted successfully!');
         
@@ -103,19 +138,19 @@ const Form = ({ data }) => {
         setFileUploads({});
       } else {
         setSubmitStatus('error');
-        setSubmitMessage('There was an error submitting the form. Please check your inputs and try again.');
+        setSubmitMessage(result.message || 'There was an error submitting the form. Please check your inputs and try again.');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitStatus('error');
-      setSubmitMessage('There was an error submitting the form. Please try again later.');
+      setSubmitMessage(`There was an error submitting the form: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const renderField = (field) => {
-    const { type, id, label, isRequired, placeholder, choices, layoutGridColumnSpan } = field;
+    const { type, id, label, isRequired, placeholder, choices, layoutGridColumnSpan, maxLength, allowedExtensions } = field;
     
     // Determine column span class
     const colSpanClass = layoutGridColumnSpan ? `col-span-${layoutGridColumnSpan}` : 'col-span-12';
@@ -137,6 +172,7 @@ const Form = ({ data }) => {
               onChange={(e) => handleInputChange(id, e.target.value)}
               placeholder={placeholder || ''}
               required={isRequired}
+              maxLength={maxLength}
               className="w-full h-12 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -155,6 +191,7 @@ const Form = ({ data }) => {
               onChange={(e) => handleInputChange(id, e.target.value)}
               placeholder={placeholder || ''}
               required={isRequired}
+              maxLength={maxLength}
               rows={5}
               className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -187,7 +224,7 @@ const Form = ({ data }) => {
         
       case 'fileupload':
         return (
-          <div key={id} className={ `form-field-6`}>
+          <div key={id} className={`form-field-6`}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -197,8 +234,14 @@ const Form = ({ data }) => {
               name={`input_${id}`}
               onChange={(e) => handleFileChange(id, e.target.files)}
               required={isRequired}
+              accept={allowedExtensions ? allowedExtensions.map(ext => `.${ext}`).join(',') : undefined}
               className="w-full h-12 px-2 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {allowedExtensions && (
+              <p className="text-sm text-gray-500 mt-1">
+                Allowed formats: {allowedExtensions.join(', ')}
+              </p>
+            )}
           </div>
         );
         
@@ -211,7 +254,30 @@ const Form = ({ data }) => {
     return (
       <section className="py-40 bg-white">
         <div className="container">
-          <div className="text-center">Loading form...</div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            Loading form...
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-40 bg-white">
+        <div className="container">
+          <div className="text-center">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+            <button 
+              onClick={fetchFormData}
+              className="btn-primary"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </section>
     );
@@ -238,13 +304,13 @@ const Form = ({ data }) => {
           </div>
           
           <div className="mt-8 text-center">
-            {/* <button
+            <button
               type="submit"
               disabled={isSubmitting}
               className="btn-primary uppercase"
             >
               {isSubmitting ? 'Submitting...' : formData.button?.text || 'Submit'}
-            </button> */}
+            </button>
           </div>
         </form>
       </div>

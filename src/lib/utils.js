@@ -83,7 +83,7 @@ export async function processFlexibleContent(acfData) {
         Object.entries(value).map(async ([k, v]) => [k, await resolveMedia(v)])
       );
       return Object.fromEntries(entries);
-    } else if (typeof value === "number") {
+    } else if (typeof value === "number" && value > 0) {
       // Treat numbers as media IDs → fetch the media details
       try {
         const { data: media, error } = await getMedia(value);
