@@ -13,7 +13,7 @@ export async function POST(request) {
     }
     
     // Replace with your WordPress site URL
-    const wpBaseUrl = process.env.WORDPRESS_API_URL || 'https://job.beplusprojects.com/signlab/wp-json';
+    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://job.beplusprojects.com/signlab/wp-json';
     
     // Prepare data for submission to WordPress REST API
     const submissionData = new FormData();

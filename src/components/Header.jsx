@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { getImageUrl, getImageAlt } from '../lib/utils';
 
-const Header = ({ logoData, menuData }) => {
+const Header = ({ headerData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Track which submenu is open by index
   const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
   const pathname = usePathname();
-  const logoUrl = getImageUrl(logoData);
-  const logoAlt = getImageAlt(logoData, 'SignLab Logo');
+  const logoUrl = headerData.header_logo || '';
+  const logoMobileUrl = headerData.header_logo_mobile || '';
+  const menuData =  headerData.main_menu || [];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -30,27 +30,41 @@ const Header = ({ logoData, menuData }) => {
   // Determine header classes based on menu state
   const headerClassName = [
     "absolute left-0 right-0 z-[999] transition-all duration-300 ",
-    isMenuOpen ? "bg-[rgb(0_81_188_/_0.9)] h-[100vh]" : "bg-transparent h-[150px]"
+    isMenuOpen ? "bg-[rgb(0_81_188_/_0.94)] h-[100vh]" : "bg-transparent h-[150px]"
   ].join(' ');
 
   return (
     <header className={headerClassName}>
-      <div className="container 2xl:max-w-[1600px]">
-        <div className="flex justify-between items-center pt-5 pb-5 md:pb-0 md:pt-8 lg:pt-12 2xl:pt-20">
+      <div className=" mx-auto">
+        <div className="flex justify-between items-center px-6 py-6 md:py-10 2xl:py-20 2xl:px-20 bg-white md:bg-transparent">
           {/* Logo */}
           <div className="flex items-center">
             <button className="flex items-center" onClick={toggleMenu}>
               {logoUrl ? (
                 <Image
                   src={logoUrl}
-                  alt={logoAlt || "SignLab logo"}
+                  alt="SignLab Logo"
                   width={360}
                   height={80}
-                  className="w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
+                  className="hidden md:block w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
                   priority
                 />
               ) : (
-                <span className="text-4xl font-bold text-white">
+                <span className="text-4xl font-bold text-white uppercase">
+                  SignLab
+                </span>
+              )}
+              {logoMobileUrl ? (
+                <Image
+                  src={logoMobileUrl}
+                  alt="SignLab Logo"
+                  width={360}
+                  height={80}
+                  className="md:hidden w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
+                  priority
+                />
+              ) : (
+                <span className="text-4xl font-bold text-primary uppercase">
                   SignLab
                 </span>
               )}
@@ -60,7 +74,7 @@ const Header = ({ logoData, menuData }) => {
           {/* Toggle Menu Button */}
           <button
             onClick={toggleMenu}
-            className="text-white duration-200"
+            className="text-primary md:text-white duration-200"
             aria-label="Toggle menu"
           >
             <svg className="w-10 h-10 lg:w-14 lg:h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,15 +89,15 @@ const Header = ({ logoData, menuData }) => {
 
         {/* Main Menu */}
         {isMenuOpen && (
-          <nav className="py-4 md:py-8 lg:py-12 2xl:py-16 slide-in-right">
+          <nav className="px-6 2xl:px-20 slide-in-right py-16 md:py-0">
             <ul className="">
               {menuData && menuData.map((item, index) => {
                 const hasSubMenu = item.sub_menu && item.sub_menu.length > 0;
                 const isSubMenuOpen = openSubMenuIndex === index;
                 return (
                   item.text && item.link && (
-                    <li key={index} className="text-right text-white cursor-pointer" onClick={() => toggleSubMenu(index)}>
-                      <div className="flex align-center justify-end my-6">
+                    <li key={index} className="text-center md:text-right text-white text-3xl lg:text-5xl" onClick={() => toggleSubMenu(index)}>
+                      <div className="flex align-center justify-center md:justify-end my-4 lg:my-6">
                         {hasSubMenu && (
                           <button
                             className={`ml-4 inline-flex items-center text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff] ${isSubMenuOpen ? 'rotate-180' : ''}`}
@@ -107,7 +121,7 @@ const Header = ({ logoData, menuData }) => {
                         {(item.open_in_new_tab === true) ? (
                           <a
                             href={item.link}
-                            className="inline-block px-2 duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff]"
+                            className="inline-block px-2 duration-200 uppercase font-extrabold hover:text-[#7bb6ff]"
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={closeMenu}
@@ -117,7 +131,7 @@ const Header = ({ logoData, menuData }) => {
                         ) : (
                           <Link
                             href={item.link}
-                            className={`inline-block px-2 duration-200 text-5xl uppercase font-extrabold ${
+                            className={`inline-block px-2 duration-200 uppercase font-extrabold ${
                               pathname === item.link ? 'text-[#7bb6ff]' : 'hover:text-[#7bb6ff]'
                             }`}
                             onClick={closeMenu}

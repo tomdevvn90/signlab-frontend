@@ -3,6 +3,8 @@ import Script from 'next/script';
 import { getPageBySlug } from '../../lib/api';
 import { processFlexibleContent } from '../../lib/utils';
 import FlexibleContent from '../../components/FlexibleContent';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
@@ -28,6 +30,7 @@ async function getContactPageData() {
       slug: page.slug,
       acf: processedAcf,
       yoast: page.yoast_head_json || null,
+      theme_options: page.theme_options || null,
     };
   } catch (error) {
     console.error('Error in getContactPageData:', error);
@@ -37,51 +40,62 @@ async function getContactPageData() {
 
 export default async function ContactPage() {
   const pageData = await getContactPageData();
+  const themeOptions = pageData?.theme_options;
 
   // Fallback content if WordPress data is not available
   if (!pageData) {
     return (
-      <div className="min-h-screen">
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white section-padding">
-          <div className="container">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl lg:text-6xl font-bold mb-6 fade-in">Page not found</h1>
+      <div className="page">
+        <Header headerData={null} />
+        <main className="site-main min-h-screen">
+          <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white section-padding">
+            <div className="container">
+              <div className="max-w-4xl mx-auto text-center">
+                <h1 className="text-4xl lg:text-6xl font-bold mb-6 fade-in">Page not found</h1>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </main>
+        <Footer footerData={null} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      {pageData.yoast?.schema && (
-        <Script id="yoast-schema-contact" type="application/ld+json" strategy="beforeInteractive">
-          {JSON.stringify(pageData.yoast.schema)}
-        </Script>
-      )}
+    <div className="page">
+      <Header headerData={themeOptions} />
 
-      {pageData.acf?.flexible_content_sections && (
-        <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
-      )}
+      <main className="site-main min-h-screen">
+        {pageData.yoast?.schema && (
+          <Script id="yoast-schema-contact" type="application/ld+json" strategy="beforeInteractive">
+            {JSON.stringify(pageData.yoast.schema)}
+          </Script>
+        )}
 
-      {!pageData.acf?.flexible_content_sections && (
-        <div className="container section-padding">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-8 text-center">
-              {pageData.title}
-            </h1>
-            <div 
-              className="wp-content"
-              dangerouslySetInnerHTML={{ __html: pageData.content }}
-            />
+        {pageData.acf?.flexible_content_sections && (
+          <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
+        )}
+
+        {!pageData.acf?.flexible_content_sections && (
+          <div className="container section-padding">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-8 text-center">
+                {pageData.title}
+              </h1>
+              <div 
+                className="wp-content"
+                dangerouslySetInnerHTML={{ __html: pageData.content }}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="container section-padding">
-        Contact Form Here
-      </div>
+        <div className="container section-padding">
+          Contact Form Here
+        </div>
+      </main>
+
+      <Footer footerData={themeOptions} />
     </div>
   );
 }

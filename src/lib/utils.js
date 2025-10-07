@@ -66,54 +66,73 @@ export function isExternalUrl(url) {
 
 // Helper function to process flexible content and automatically fetch media for numeric fields (image IDs)
 export async function processFlexibleContent(acfData) {
-  if (!acfData?.flexible_content_sections || !Array.isArray(acfData.flexible_content_sections)) {
+  if (
+    !acfData?.flexible_content_sections ||
+    !Array.isArray(acfData.flexible_content_sections)
+  ) {
     return acfData;
   }
-  /**
-   * Recursively walk through arrays/objects to find numeric values.
-   * If a number is found, assume it's a WordPress media ID and fetch its details.
-   */
-  async function resolveMedia(value) {
+
+  // ---- STEP 1: Collect all numeric values (media IDs) recursively ----
+  const mediaIds = new Set();
+
+  function collectMediaIds(value) {
     if (Array.isArray(value)) {
-      // Recursively resolve each element in the array
-      return Promise.all(value.map(resolveMedia));
+      value.forEach(collectMediaIds);
     } else if (typeof value === "object" && value !== null) {
-      // Recursively resolve each key/value pair in the object
-      const entries = await Promise.all(
-        Object.entries(value).map(async ([k, v]) => [k, await resolveMedia(v)])
-      );
-      return Object.fromEntries(entries);
-    } else if (typeof value === "number") {
-      // Treat numbers as media IDs → fetch the media details
-      try {
-        const { data: media, error } = await getMedia(value);
-        if (!error && media) {
-          return {
-            id: media.id,
-            url: media.source_url,
-            alt: media.alt_text || "Image",
-            mime_type: media.mime_type,
-            width: media.media_details?.width,
-            height: media.media_details?.height,
-            sizes: media.media_details?.sizes
-          };
-        }
-      } catch (err) {
-        console.error("Error fetching media:", err);
-      }
+      Object.values(value).forEach(collectMediaIds);
+    } else if (typeof value === "number" && value > 0) {
+      mediaIds.add(value);
     }
-    // Return unchanged if not an array, object, or number (media ID)
+  }
+
+  acfData.flexible_content_sections.forEach(collectMediaIds);
+
+  // ---- STEP 2: Fetch all media in a single request ----
+  let mediaMap = {};
+  if (mediaIds.size > 0) {
+    try {
+      const idsArray = Array.from(mediaIds);
+      // getMedia should support array → return array of media
+      const { data: mediaList, error } = await getMedia(idsArray);
+      if (!error && Array.isArray(mediaList)) {
+        mediaMap = Object.fromEntries(
+          mediaList.map((m) => [
+            m.id,
+            {
+              id: m.id,
+              url: m.source_url,
+              alt: m.alt_text || "Image",
+              // mime_type: m.mime_type,
+              // width: m.media_details?.width,
+              // height: m.media_details?.height,
+              // sizes: m.media_details?.sizes,
+            },
+          ])
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching media batch:", err);
+    }
+  }
+
+  // ---- STEP 3: Replace numeric IDs with media data recursively ----
+  function replaceMedia(value) {
+    if (Array.isArray(value)) {
+      return value.map(replaceMedia);
+    } else if (typeof value === "object" && value !== null) {
+      return Object.fromEntries(
+        Object.entries(value).map(([k, v]) => [k, replaceMedia(v)])
+      );
+    } else if (typeof value === "number" && value > 0 && mediaMap[value]) {
+      return mediaMap[value];
+    }
     return value;
   }
 
-  // Process each section in flexible_content_sections
-  const processedSections = await Promise.all(
-    acfData.flexible_content_sections.map(async (section) => {
-      return await resolveMedia(section);
-    })
-  );
+  const processedSections = acfData.flexible_content_sections.map(replaceMedia);
 
-  // Return the updated ACF data with processed media
+  // ---- STEP 4: Return updated data ----
   return {
     ...acfData,
     flexible_content_sections: processedSections,

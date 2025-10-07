@@ -1,8 +1,5 @@
 import { Montserrat } from "next/font/google";
 import '../styles/globals.scss'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import { getPageBySlug, getPages } from '../lib/api'
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -30,59 +27,7 @@ export const metadata = {
   },
 }
 
-// Function to get header data from theme_options embedded in page responses
-async function getHeaderData() {
-  try {
-    // Prefer a known slug, then fallback to the first available page
-    let themeOptions = null;
-
-    try {
-      const { data: homePages } = await getPageBySlug('home-page');
-      if (Array.isArray(homePages) && homePages[0]?.theme_options) {
-        themeOptions = homePages[0].theme_options;
-      }
-    } catch {}
-
-    if (!themeOptions) {
-      const { data: pages } = await getPages();
-      if (Array.isArray(pages) && pages[0]?.theme_options) {
-        themeOptions = pages[0].theme_options;
-      }
-    }
-
-    if (!themeOptions) {
-      return { logo: null, menu: null };
-    }
-
-    // header_logo is a URL string per new contract
-    const logoData = themeOptions.header_logo || null;
-    const menuData = themeOptions.main_menu || null;
-
-    return { logo: logoData, menu: menuData };
-  } catch (error) {
-    console.error('Error in getHeaderData:', error);
-    return { logo: null, menu: null };
-  }
-}
-
-export default async function RootLayout({ children }) {
-  const { logo, menu } = await getHeaderData();
-
-  // Fetch a theme_options object for footer as well
-  let themeOptions = null;
-  try {
-    const { data: homePages } = await getPageBySlug('home-page');
-    if (Array.isArray(homePages) && homePages[0]?.theme_options) {
-      themeOptions = homePages[0].theme_options;
-    }
-  } catch {}
-  if (!themeOptions) {
-    const { data: pages } = await getPages();
-    if (Array.isArray(pages) && pages[0]?.theme_options) {
-      themeOptions = pages[0].theme_options;
-    }
-  }
-
+export default async function RootLayout({ children }) {  
   return (
     <html lang="en" className={montserrat.className}>
       <head>
@@ -90,15 +35,7 @@ export default async function RootLayout({ children }) {
         <link rel="icon" href="/favicon.png" />
       </head>
       <body>
-        <div id="root">
-          <Header logoData={logo} menuData={menu} />
-          
-          <main className="min-h-screen">
-            {children}
-          </main>
-          
-          <Footer themeOptions={themeOptions} />
-        </div>
+        <div id="root">{children}</div>
       </body>
     </html>
   )

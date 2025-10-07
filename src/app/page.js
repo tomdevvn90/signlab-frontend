@@ -1,11 +1,13 @@
 import React from 'react';
 import Script from 'next/script';
-import { getPageBySlug, getMedia } from '../lib/api';
+import { getPageBySlug } from '../lib/api';
 import { processFlexibleContent } from '../lib/utils';
 import FlexibleContent from '../components/FlexibleContent';
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
-export const revalidate = 0;
+export const revalidate = 60;
 
 async function getHomePageData() {
   try {
@@ -28,6 +30,7 @@ async function getHomePageData() {
       slug: page.slug,
       acf: processedAcf,
       yoast: page.yoast_head_json || null,
+      theme_options: page.theme_options || null,
     };
   } catch (error) {
     console.error('Error in getHomePageData:', error);
@@ -38,10 +41,13 @@ async function getHomePageData() {
 export default async function HomePage() {
   const pageData = await getHomePageData();
 
+  const themeOptions = pageData.theme_options;
+  
   // Fallback content if WordPress data is not available
   if (!pageData) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="page">
+        <Header headerData={null} />
         <div className="container section-padding">
           <div className="text-center">
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-gradient">
@@ -49,35 +55,45 @@ export default async function HomePage() {
             </h1>
           </div>
         </div>
+        <Footer footerData={null} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      {pageData.yoast?.schema && (
-        <Script id="yoast-schema-home" type="application/ld+json" strategy="beforeInteractive">
-          {JSON.stringify(pageData.yoast.schema)}
-        </Script>
-      )}
+    
+    <div className="page">
 
-      {pageData.acf?.flexible_content_sections && (
-        <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
-      )}
+      <Header headerData={themeOptions} />
 
-      {!pageData.acf?.flexible_content_sections && (
-        <div className="container section-padding">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-8 text-center">
-              {pageData.title}
-            </h1>
-            <div 
-              className="wp-content"
-              dangerouslySetInnerHTML={{ __html: pageData.content }}
-            />
+      <main className="site-main min-h-screen">
+        {pageData.yoast?.schema && (
+          <Script id="yoast-schema-home" type="application/ld+json" strategy="beforeInteractive">
+            {JSON.stringify(pageData.yoast.schema)}
+          </Script>
+        )}
+
+        {pageData.acf?.flexible_content_sections && (
+          <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
+        )}
+
+        {!pageData.acf?.flexible_content_sections && (
+          <div className="container section-padding">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-8 text-center">
+                {pageData.title}
+              </h1>
+              <div 
+                className="wp-content"
+                dangerouslySetInnerHTML={{ __html: pageData.content }}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </main>
+
+      <Footer footerData={themeOptions} />
+
     </div>
   );
 }
