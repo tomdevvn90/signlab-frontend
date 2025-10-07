@@ -58,6 +58,8 @@ const Form = ({ data }) => {
     } catch (error) {
       console.error('Error fetching form data:', error);
       setError(`Failed to load form: ${error.message}`);
+      setSubmitStatus('error');
+      setSubmitMessage(`Unable to load form: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -160,7 +162,7 @@ const Form = ({ data }) => {
       case 'email':
       case 'phone':
         return (
-          <div key={id} className={`form-field-6`}>
+          <div key={id} className={`${colSpanClass} form-field-6`}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>

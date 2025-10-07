@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
     }
 
     // Replace with your WordPress site URL
-    const wpBaseUrl = process.env.WORDPRESS_API_URL || 'https://job.beplusprojects.com/signlab/wp-json';
+    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://job.beplusprojects.com/signlab/wp-json';
     
     console.log(`Fetching Gravity Form with ID: ${id}`);
     

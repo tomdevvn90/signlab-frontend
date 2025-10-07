@@ -4,28 +4,28 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { getImageUrl, isExternalUrl } from '../lib/utils';
+import { isExternalUrl } from '../lib/utils';
 import SocialIcon from './common/SocialIcon'
 
-const Footer = ({ themeOptions }) => {
+const Footer = ({ footerData }) => {
   // Always call hooks at the top level, before any return or conditional
   const pathname = usePathname();
 
-  if (!themeOptions) return null;
+  if (!footerData) return null;
   
-  const bannerUrl = getImageUrl(themeOptions.footer_banner, '2048x2048') || themeOptions.footer_banner?.url;
-  const footerLogo = themeOptions.footer_logo;
-  const phone = themeOptions.footer_phone;
-  const email = themeOptions.footer_email;
-  const address = themeOptions.footer_address;
-  const socials = Array.isArray(themeOptions.social_media_links) ? themeOptions.social_media_links : [];
-  const menu = Array.isArray(themeOptions.main_menu) ? themeOptions.main_menu : [];
+  const bannerUrl = footerData.footer_banner;
+  const footerLogo = footerData.footer_logo;
+  const phone = footerData.footer_phone;
+  const email = footerData.footer_email;
+  const address = footerData.footer_address;
+  const socials = Array.isArray(footerData.social_media_links) ? footerData.social_media_links : [];
+  const menu = Array.isArray(footerData.main_menu) ? footerData.main_menu : [];
 
   return (
     <footer className="text-white bg-primary">
       <Image
         src={bannerUrl}
-        alt={themeOptions.footer_banner.alt || "Footer Banner"}
+        alt={footerData.footer_banner.alt || "Footer Banner"}
         className="w-full h-auto"
         width={2048}
         height={400}
