@@ -29,14 +29,14 @@ const Header = ({ headerData }) => {
 
   // Determine header classes based on menu state
   const headerClassName = [
-    "absolute left-0 right-0 z-[999] transition-all duration-300 ",
+    "fixed md:absolute left-0 right-0 z-[999] transition-all duration-300 ",
     isMenuOpen ? "bg-[rgb(0_81_188_/_0.94)] h-[100vh]" : "bg-transparent h-[150px]"
   ].join(' ');
 
   return (
     <header className={headerClassName}>
-      <div className=" mx-auto">
-        <div className="flex justify-between items-center px-6 py-6 md:py-10 2xl:py-20 2xl:px-20 bg-white md:bg-transparent">
+      <div className="mx-auto">
+        <div className="flex justify-between items-center px-6 py-6 md:py-10 2xl:py-20 2xl:px-20 bg-white md:bg-transparent sm:shadow-sm shadow-none">
           {/* Logo */}
           <div className="flex items-center">
             <button className="flex items-center" onClick={toggleMenu}>
@@ -96,8 +96,8 @@ const Header = ({ headerData }) => {
                 const isSubMenuOpen = openSubMenuIndex === index;
                 return (
                   item.text && item.link && (
-                    <li key={index} className="text-center md:text-right text-white text-3xl lg:text-5xl" onClick={() => toggleSubMenu(index)}>
-                      <div className="flex align-center justify-center md:justify-end my-4 lg:my-6">
+                    <li key={index} className="text-center md:text-right text-white text-4xl lg:text-5xl" onClick={() => toggleSubMenu(index)}>
+                      <div className="flex align-center justify-center md:justify-end my-5 lg:my-6">
                         {hasSubMenu && (
                           <button
                             className={`ml-4 inline-flex items-center text-white duration-200 text-5xl uppercase font-extrabold hover:text-[#7bb6ff] ${isSubMenuOpen ? 'rotate-180' : ''}`}

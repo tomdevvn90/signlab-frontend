@@ -39,6 +39,10 @@ a {
   text-decoration: none;
 }
 
+h2 {
+  line-height: 1.2 !important;
+}
+
 // Custom components
 .container {
   @apply xl:max-w-[1280px] 2xl:max-w-[1440px] mx-auto my-auto px-6;
@@ -56,7 +60,7 @@ a {
 }
 
 .btn-primary {
-  @apply inline-flex items-center px-11 py-5 text-base font-bold rounded-md text-white bg-primary transition-colors duration-300;
+  @apply inline-flex items-center px-8 py-4 md:px-11 md:py-5 text-base font-bold rounded-md text-white bg-primary transition-colors duration-300;
   line-height: 1.1;
   border: 1px solid #0051bc;
   &:hover {
@@ -67,25 +71,6 @@ a {
 
 .btn-secondary {
   @apply inline-flex items-center px-11 py-5 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200;
-}
-
-.primary-color {
-  color: var(--primary-color);
-}
-.secondary-color {
-  color: var(--secondary-color);
-}
-.accent-color {
-  color: var(--accent-color);
-}
-.bg-primary {
-  background-color: var(--primary-color);
-}
-.bg-secondary {
-  background-color: var(--secondary-color);
-}
-.bg-accent {
-  background-color: var(--accent-color);
 }
 
 // WordPress content styles
@@ -143,19 +128,6 @@ a {
     code {
       @apply bg-transparent p-0;
     }
-  }
-}
-
-// Responsive utilities
-@screen sm {
-  .container {
-    @apply px-4;
-  }
-}
-
-@screen lg {
-  .container {
-    @apply px-4;
   }
 }
 
@@ -238,6 +210,37 @@ a {
           grid-column: 11 / 15;
           grid-row: 2;
         }
+        @media (max-width: 1280px) {
+          &:nth-child(1) {
+            grid-column: 1 / 5;
+            grid-row: 1;
+          }
+          &:nth-child(2) {
+            grid-column: 5 / 10;
+            grid-row: 1;
+          }
+          &:nth-child(3) {
+            grid-column: 10 / 15;
+            grid-row: 1;
+            height: 100%;
+          }
+          &:nth-child(4) {
+            grid-column: 1 / 4;
+            grid-row: 2;
+          }
+          &:nth-child(5) {
+            grid-column: 4 / 7;
+            grid-row: 2;
+          }
+          &:nth-child(6) {
+            grid-column: 7 / 10;
+            grid-row: 2;
+          }
+          &:nth-child(7) {
+            grid-column: 10 / 15;
+            grid-row: 2;
+          }
+        }
       }
     }
   }
@@ -246,9 +249,43 @@ a {
     svg {
       display: none;
     }
+    @media (max-width: 1024px) {
+      left: -50px !important;
+      display: none;
+    }
   }
   .swiper-button-next {
     right: -70px !important;
+    svg {
+      display: none;
+    }
+    @media (max-width: 1024px) {
+      right: -50px !important;
+      display: none;
+    }
+  }
+  .swiper-button-next-tablet,
+  .swiper-button-next-mobile {
+    position: absolute;
+    right: -50px !important;
+    left: auto;
+    top: 50%;
+    @media (max-width: 768px) {
+      right: -55px !important;
+    }
+    svg {
+      display: none;
+    }
+  }
+  .swiper-button-prev-tablet,
+  .swiper-button-prev-mobile {
+    position: absolute;
+    left: -50px !important;
+    right: auto;
+    top: 50%;
+    @media (max-width: 768px) {
+      left: -55px !important;
+    }
     svg {
       display: none;
     }
@@ -256,9 +293,31 @@ a {
 }
 
 .contact-form {
-  .grid {
+  .form-fields {
     .form-field-6 {
       grid-column: span 6 / span 6;
     }
+  }
+}
+
+// Partner logos infinite scroll
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.animate-scroll-right {
+  animation: scrollRight 50s linear infinite;
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }

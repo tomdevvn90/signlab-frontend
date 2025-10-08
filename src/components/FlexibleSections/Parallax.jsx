@@ -52,7 +52,7 @@ const Parallax = ({ data }) => {
   const contentTranslateY = scrollProgress * 50; // Content moves slower (parallax effect)
 
   return (
-    <section ref={sectionRef} className="relative h-[80vh] min-h-[600px] overflow-hidden">
+    <section ref={sectionRef} className="relative h-[500px] lg:h-[70vh] xl:h-[80vh] lg:min-h-[600px] overflow-hidden">
       {/* Background Image with Parallax Effect */}
       {imageData && isVisible && (
         <div 

@@ -15,9 +15,9 @@ const Footer = ({ footerData }) => {
   
   const bannerUrl = footerData.footer_banner;
   const footerLogo = footerData.footer_logo;
-  const phone = footerData.footer_phone;
-  const email = footerData.footer_email;
-  const address = footerData.footer_address;
+  const phone = footerData.footer_phone || "08 8240 0925";
+  const email = footerData.footer_email || "enquiries@signlab.com.au";
+  const address = footerData.footer_address || "222 Port Road, Alberton, SA 5014";
   const socials = Array.isArray(footerData.social_media_links) ? footerData.social_media_links : [];
   const menu = Array.isArray(footerData.main_menu) ? footerData.main_menu : [];
 
@@ -33,8 +33,8 @@ const Footer = ({ footerData }) => {
         sizes="100vw"
       />
       <div className="bg-primary/90">
-        <div className="container py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="container py-24 lg:py-32">
+          <div className="flex flex-col-reverse lg:flex-row  justify-between gap-12 lg:gap-8 items-start">
             {/* Contact info */}
             <div className="space-y-5">
               {address && (
@@ -82,7 +82,7 @@ const Footer = ({ footerData }) => {
             </div>
 
             {/* Logo + Socials */}
-            <div className="flex flex-col items-start lg:items-end space-y-16">
+            <div className="flex flex-col items-start lg:items-end space-y-12 lg:space-y-16">
               {footerLogo && (
                 <a href="/" className="flex items-center">
                   {footerLogo ? (
@@ -92,7 +92,7 @@ const Footer = ({ footerData }) => {
                       width={400}
                       height={64}
                       priority
-                      className="w-[180px] md:w-[260px] lg:w-[320px] 2xl:w-[400px] h-auto"
+                      className="w-[260px] lg:w-[320px] 2xl:w-[400px] h-auto"
                     />
                   ) : (
                     <span className="text-4xl font-bold text-white">
@@ -125,16 +125,16 @@ const Footer = ({ footerData }) => {
       </div>
 
       {/* Bottom navigation */}
-      <div className="bg-primary">
+      <div className="bg-primary hidden sm:block">
         <div className="container pb-24">
           {menu.length > 0 && (
-            <ul className="flex flex-wrap items-center justify-center gap-y-3 text-xl font-extrabold uppercase tracking-wide">
+            <ul className="flex flex-wrap flex-col sm:flex-row sm:items-center justify-center gap-y-5 text-xl font-extrabold uppercase tracking-wide">
               {menu.map((item, idx) => {
                 const target = item.open_in_new_tab ? '_blank' : undefined;
                 const rel = item.open_in_new_tab ? 'noopener noreferrer' : undefined;
                 const isExt = isExternalUrl(item.link);
                 return (
-                  <li key={idx} className="text-white px-6 border-r-4 last:border-r-0 leading-none">
+                  <li key={idx} className="text-white sm:px-6 sm:border-r-4 last:border-r-0 leading-none">
                     {isExt ? (
                       <a
                         className="hover:text-[#7bb6ff]"
@@ -161,6 +161,18 @@ const Footer = ({ footerData }) => {
           )}
         </div>
       </div>
+
+      <div className="block sm:hidden shadow-lg fixed z-[999] bottom-6 left-[50%] translate-x-[-50%] rounded-full bg-secondary">
+        {phone && (
+          <div className="flex">
+            <div className="flex py-3 px-8 pr-6 whitespace-nowrap align-center text-base font-bold">{phone}</div>
+            <a href={`tel:${phone}`} className="py-3 px-8 text-base font-bold flex items-center rounded-full bg-primary whitespace-nowrap uppercase">
+              <span>Contact Us</span>
+            </a>
+          </div>
+        )}
+      </div>
+
     </footer>
   );
 };
