@@ -54,10 +54,10 @@ const ContentWithImage = ({ data }) => {
       style={sectionStyle}
     >
       <div className="container">
-        <div className={layoutClasses.container}>
+        <div className={`${layoutClasses.container} pt-20 lg:pt-0`}>
           
           {/* Content Column */}
-          <div className={`fade-in ${layoutClasses.content} py-60`}>
+          <div className={`fade-in ${layoutClasses.content} py-0 lg:py-32 xl:py-44 2xl:py-60`}>
             {data.title && (
               <div className="">
                 <h2 
@@ -76,7 +76,7 @@ const ContentWithImage = ({ data }) => {
               {paragraphs.map((paragraph, index) => (
                 <p 
                   key={index} 
-                  className="text-lg leading-relaxed"
+                  className="text-base lg:text-lg leading-relaxed"
                   style={{ color: colorScheme?.text_color || '#727272' }}
                 >
                   {paragraph.trim()}
@@ -104,7 +104,7 @@ const ContentWithImage = ({ data }) => {
 
           {/* Image Column */}
           {imageData && (
-            <div className={`pt-20 slide-in-right ${layoutClasses.image} h-full`}>
+            <div className={`lg:pt-20 slide-in-right ${layoutClasses.image} h-full`}>
               <div className="relative flex align-bottom h-full">
                 <Image
                   src={imageData.url}

@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { getImageUrl, getImageAlt } from '../../lib/utils';
 
 const Form = ({ data }) => {
   const [formData, setFormData] = useState(null);
@@ -13,7 +15,7 @@ const Form = ({ data }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const { title, gravity_form_id } = data || {};
+  const { title, gravity_form_id, banner_image, banner_position } = data || {};
 
   useEffect(() => {
     if (gravity_form_id) {
@@ -285,37 +287,80 @@ const Form = ({ data }) => {
     );
   }
 
-  return (
-    <section className="py-40 bg-white">
-      <div className="container !max-w-6xl mx-auto">
-        {title && (
-          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-center mb-20 text-primary">
-            {title}
-          </h2>
-        )}
-        
-        {submitStatus && (
-          <div className={`mb-6 p-4 rounded-md text-center ${submitStatus === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-            {submitMessage}
-          </div>
-        )}
+  // Handle banner image data
+  const bannerImageUrl = banner_image ? getImageUrl(banner_image, 'large') : null;
+  const bannerImageAlt = banner_image ? getImageAlt(banner_image, 'Form banner') : 'Form banner';
 
-        <form onSubmit={handleSubmit} className="contact-form">
-          <div className="grid grid-cols-12 gap-6">
-            {formFields.map(field => renderField(field))}
-          </div>
+  // Determine layout based on banner position
+  const isBannerLeft = banner_position === 'left';
+  const isBannerRight = banner_position === 'right';
+
+  return (
+    <section className="bg-white flex justify-between">
+      {/* Banner Image - Left */}
+      {banner_image && isBannerLeft && (
+        <div className="w-1/2">
+            <Image
+            src={bannerImageUrl}
+            alt={bannerImageAlt}
+            width={2048}
+            height={400}
+            sizes="100vw"
+            className="object-cover h-full w-full"
+            priority
+          />
+        </div>
+      )}
+      <div className="container lg:max-w-5xl py-24 lg:py-40">
+        <div className={`flex flex-col gap-8 lg:gap-12`}>
           
-          <div className="mt-8 text-center">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn-primary uppercase"
-            >
-              {isSubmitting ? 'Submitting...' : formData.button?.text || 'Submit'}
-            </button>
+          {/* Form Content */}
+          <div className={`${bannerImageUrl ? 'px-10 lg:px-20' : ''}`}>
+            {title && (
+              <h2 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-center mb-12 lg:mb-20 text-primary">
+                {title}
+              </h2>
+            )}
+            
+            {submitStatus && (
+              <div className={`mb-6 p-4 rounded-md text-center ${submitStatus === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {submitMessage}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="contact-form">
+              <div className="form-fields flex flex-col md:grid grid-cols-12 gap-6">
+                {formFields.map(field => renderField(field))}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary uppercase text-center max-sm:w-full justify-center"
+                >
+                  {isSubmitting ? 'Submitting...' : formData.button?.text || 'Submit'}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+
+        </div>
       </div>
+      {/* Banner Image - Right */}
+      {banner_image && isBannerRight && (
+        <div className="w-1/2">
+            <Image
+            src={bannerImageUrl}
+            alt={bannerImageAlt}
+            width={2048}
+            height={400}
+            sizes="100vw"
+            className="object-cover h-full w-full"
+            priority
+          />
+        </div>
+      )}
     </section>
   );
 };

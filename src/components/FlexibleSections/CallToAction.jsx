@@ -33,7 +33,7 @@ const CallToActionSection = ({ data }) => {
 
   return (
     <section
-      className="py-40"
+      className="py-24 lg:py-40"
       style={{
         backgroundColor: backgroundColor,
         color: textColor,
@@ -44,7 +44,7 @@ const CallToActionSection = ({ data }) => {
           <div className={`fade-in flex flex-col ${contentAlignClass}`}>
             {data.cta_title && (
               <h2
-                className="text-6xl font-extrabold mb-10"
+                className="text-4xl xl:text-5xl 2xl:text-6xl font-extrabold mb-10"
                 style={{ color: headingColor }}
               >
                 {data.cta_title}

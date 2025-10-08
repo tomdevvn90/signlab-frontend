@@ -29,14 +29,34 @@ const PartnerLogos = ({ data }) => {
   if (normalizedLogos.length === 0 && !title) return null;
 
   return (
-    <section className="py-44 bg-white">
-      <div className="container">
+    <section className="py-20 xl:py-32 2xl:py-44 bg-white">
+      <div className="lg:max-w-[900px] xl:max-w-[1000px] 2xl:max-w-[1280px] mx-auto">
         {title && (
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-center mb-32 primary-color">
+          <h2 className="px-6 text-3xl md:text-4xl lg:text-5xl font-extrabold text-center mb-16 lg:mb-24 xl:mb-32 text-primary">
             {title}
           </h2>
         )}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-20 gap-y-24 opacity-80 items-center justify-items-center">
+        {/* Mobile & Medium: Horizontal scroll */}
+        <div className="lg:hidden overflow-x-auto scrollbar-hide w-[9999px]">
+          <div className="flex gap-10 animate-scroll-right">
+            {/* Duplicate logos for infinite scroll effect */}
+            {[...normalizedLogos, ...normalizedLogos].map((logo, index) => (
+              <div key={index} className="flex-shrink-0 grayscale transition h-[80px] w-[120px]">
+                <Image
+                  src={logo.url}
+                  alt={logo.alt}
+                  width={120}
+                  height={80}
+                  className="h-full w-full object-contain"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: Grid layout */}
+        <div className="hidden lg:grid md:grid-cols-4 lg:grid-cols-6 gap-x-20 gap-y-24 opacity-80 items-center justify-items-center">
           {normalizedLogos.map((logo, index) => (
             <div key={index} className="grayscale transition w-full h-[120px]">
               <Image
@@ -44,8 +64,7 @@ const PartnerLogos = ({ data }) => {
                 alt={logo.alt}
                 width={150}
                 height={120}
-                // style={{ width: '100%', height: 'auto' }}
-                className="h-[120px] w-full object-contain"
+                className="h-[80px] lg:h-[120px] w-full object-contain"
                 loading="lazy"
               />
             </div>
