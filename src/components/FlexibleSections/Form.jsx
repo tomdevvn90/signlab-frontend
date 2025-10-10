@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { getImageUrl, getImageAlt } from '../../lib/utils';
 
@@ -17,16 +17,7 @@ const Form = ({ data }) => {
 
   const { title, gravity_form_id, banner_image, banner_position } = data || {};
 
-  useEffect(() => {
-    if (gravity_form_id) {
-      fetchFormData();
-    } else {
-      setError('No form ID provided');
-      setLoading(false);
-    }
-  }, [gravity_form_id]);
-
-  const fetchFormData = async () => {
+  const fetchFormData = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -65,7 +56,16 @@ const Form = ({ data }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [gravity_form_id]);
+
+  useEffect(() => {
+    if (gravity_form_id) {
+      fetchFormData();
+    } else {
+      setError('No form ID provided');
+      setLoading(false);
+    }
+  }, [gravity_form_id, fetchFormData]);
 
   const handleInputChange = (fieldId, value) => {
     setFormValues(prev => ({

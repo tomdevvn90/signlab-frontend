@@ -19,18 +19,12 @@ const Gallery = ({ data }) => {
   const sectionRef = useRef(null);
   const imageRefs = useRef([]);
 
-  // Early return if no data
-  if (!data) return null;
-
-  const { images } = data;
-
-  // Early return if no valid images
-  if (!images || !Array.isArray(images) || images.length === 0) {
-    return null;
-  }
+  const images = data?.images;
 
   // Intersection Observer for zoom-in animation
   useEffect(() => {
+    if (!images || !Array.isArray(images) || images.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -51,7 +45,8 @@ const Gallery = ({ data }) => {
       }
     );
 
-    imageRefs.current.forEach((ref, index) => {
+    const currentRefs = imageRefs.current;
+    currentRefs.forEach((ref, index) => {
       if (ref) {
         ref.dataset.index = index;
         observer.observe(ref);
@@ -59,7 +54,7 @@ const Gallery = ({ data }) => {
     });
 
     return () => {
-      imageRefs.current.forEach(ref => {
+      currentRefs.forEach(ref => {
         if (ref) observer.unobserve(ref);
       });
     };
@@ -156,6 +151,11 @@ const Gallery = ({ data }) => {
     
     return grids;
   };
+
+  // Early return if no data or valid images
+  if (!data || !images || !Array.isArray(images) || images.length === 0) {
+    return null;
+  }
 
   return (
     <section className="bg-white gallery-section">

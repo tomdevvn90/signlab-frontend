@@ -7,12 +7,9 @@ const ContentWithImage = ({ data }) => {
   const [isImageVisible, setIsImageVisible] = useState(false);
   const imageRef = useRef(null);
 
-  if (!data) return null;    
-
   // Get color scheme based on data.color_scheme
-  const colorScheme = data.color_scheme === 'dark' ? data.color_scheme_dark : data.color_scheme_light;
-
-  const imageData = data.image;
+  const colorScheme = data?.color_scheme === 'dark' ? data?.color_scheme_dark : data?.color_scheme_light;
+  const imageData = data?.image;
   
   // Parse content to handle line breaks
   const parseContent = (content) => {
@@ -55,6 +52,8 @@ const ContentWithImage = ({ data }) => {
 
   // Intersection Observer for image fade-in animation
   useEffect(() => {
+    if (!imageData) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -69,16 +68,19 @@ const ContentWithImage = ({ data }) => {
       }
     );
 
-    if (imageRef.current) {
-      observer.observe(imageRef.current);
+    const currentRef = imageRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [imageData]);
+
+  if (!data) return null;
 
   return (
     <section 

@@ -8,18 +8,12 @@ const ImageBoxes = ({ data }) => {
   const sectionRef = useRef(null);
   const itemRefs = useRef([]);  
 
-  // Early return if no data
-  if (!data) return null;
-
-  const { boxes_items } = data;
-
-  // Early return if no valid boxes_items
-  if (!boxes_items || !Array.isArray(boxes_items) || boxes_items.length === 0) {
-    return null;
-  }
+  const boxes_items = data?.boxes_items;
 
   // Intersection Observer for fade-in animation
   useEffect(() => {
+    if (!boxes_items || !Array.isArray(boxes_items) || boxes_items.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -40,7 +34,8 @@ const ImageBoxes = ({ data }) => {
       }
     );
 
-    itemRefs.current.forEach((ref, index) => {
+    const currentRefs = itemRefs.current;
+    currentRefs.forEach((ref, index) => {
       if (ref) {
         ref.dataset.index = index;
         observer.observe(ref);
@@ -48,11 +43,16 @@ const ImageBoxes = ({ data }) => {
     });
 
     return () => {
-      itemRefs.current.forEach(ref => {
+      currentRefs.forEach(ref => {
         if (ref) observer.unobserve(ref);
       });
     };
   }, [boxes_items]);
+
+  // Early return if no data or valid boxes_items
+  if (!data || !boxes_items || !Array.isArray(boxes_items) || boxes_items.length === 0) {
+    return null;
+  }
 
   return (
     <section ref={sectionRef} className="py-20 lg:py-32 2xl:py-40 bg-white image-boxes-section">
