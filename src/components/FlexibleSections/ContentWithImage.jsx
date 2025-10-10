@@ -1,7 +1,12 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 const ContentWithImage = ({ data }) => {
+  const [isImageVisible, setIsImageVisible] = useState(false);
+  const imageRef = useRef(null);
+
   if (!data) return null;    
 
   // Get color scheme based on data.color_scheme
@@ -47,6 +52,33 @@ const ContentWithImage = ({ data }) => {
   const headingStyle = {
     color: colorScheme?.heading_color || '#0051bc'
   };
+
+  // Intersection Observer for image fade-in animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsImageVisible(true);
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px 0px -200px 0px'
+      }
+    );
+
+    if (imageRef.current) {
+      observer.observe(imageRef.current);
+    }
+
+    return () => {
+      if (imageRef.current) {
+        observer.unobserve(imageRef.current);
+      }
+    };
+  }, [imageData]);
 
   return (
     <section 
@@ -104,7 +136,14 @@ const ContentWithImage = ({ data }) => {
 
           {/* Image Column */}
           {imageData && (
-            <div className={`lg:pt-20 slide-in-right ${layoutClasses.image} h-full`}>
+            <div 
+              ref={imageRef}
+              className={`lg:pt-20 ${layoutClasses.image} h-full transition-all duration-1000 ease-out ${
+                isImageVisible 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+            >
               <div className="relative flex align-bottom h-full">
                 <Image
                   src={imageData.url}

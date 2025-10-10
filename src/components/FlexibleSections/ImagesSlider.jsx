@@ -337,6 +337,15 @@ const ImagesSlider = ({ data }) => {
           maxZoomPixelRatio: 3,
           zoomInMultiplier: 1.5,
         }}
+        thumbnails={{
+          position: 'bottom',
+          width: 120,
+          height: 80,
+          border: 0,
+          borderColor: '#ffffff',
+          borderRadius: 4,
+          padding: 4,
+        }}
         styles={{
           container: {
             backgroundColor: 'rgba(0,0,0,0.8)',
