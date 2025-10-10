@@ -1,10 +1,8 @@
 import React from 'react';
-import { getImageUrl } from "../../lib/utils";
 
 const HeroSection = ({ data }) => {
   const backgroundColor = data.hero_bg_color ? '[' + data.hero_bg_color + ']' : '';
-  const imageData = data.hero_bg_image && typeof data.hero_bg_image === 'object' ? data.hero_bg_image : null;
-  const imageUrl = getImageUrl(imageData, 'full');
+  const imageUrl = data.hero_bg_image.url ? data.hero_bg_image.url : null;
 
   // Video background URLs
   const videoUrl = data.hero_bg_video_url || null;

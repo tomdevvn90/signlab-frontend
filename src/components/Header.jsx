@@ -36,7 +36,7 @@ const Header = ({ headerData }) => {
   return (
     <header className={headerClassName}>
       <div className="mx-auto">
-        <div className="flex justify-between items-center px-6 py-6 md:py-10 2xl:py-20 2xl:px-20 bg-white md:bg-transparent sm:shadow-sm shadow-none">
+        <div className="flex justify-between items-center px-6 py-6 md:py-10 2xl:py-20 2xl:px-20 bg-white md:bg-transparent shadow-sm sm:shadow-none">
           {/* Logo */}
           <div className="flex items-center">
             <button className="flex items-center" onClick={toggleMenu}>
