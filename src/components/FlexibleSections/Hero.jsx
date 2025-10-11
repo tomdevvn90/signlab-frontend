@@ -120,7 +120,7 @@ const HeroSection = ({ data }) => {
           <div className={`fade-in ${textAlignClass}`}>
             {data.hero_title && (
               <h1 className="2xl:text-6xl lg:text-5xl text-4xl font-extrabold mb-12">
-                <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-[#0051bc] rounded-md">
+                <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-primary rounded-md shimmer">
                   {data.hero_title}
                 </span>
               </h1>
