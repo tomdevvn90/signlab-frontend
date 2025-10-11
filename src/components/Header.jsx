@@ -29,7 +29,7 @@ const Header = ({ headerData }) => {
 
   // Determine header classes based on menu state
   const headerClassName = [
-    "fixed md:absolute left-0 right-0 z-[999] transition-all duration-300 ",
+    "fixed md:absolute left-0 right-0 z-[999] transition-all duration-200",
     isMenuOpen ? "bg-[rgb(0_81_188_/_0.94)] h-[100vh]" : "bg-transparent h-[150px]"
   ].join(' ');
 

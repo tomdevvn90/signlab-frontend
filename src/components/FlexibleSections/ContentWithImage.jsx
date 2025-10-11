@@ -88,7 +88,7 @@ const ContentWithImage = ({ data }) => {
       style={sectionStyle}
     >
       <div className="container">
-        <div className={`${layoutClasses.container} pt-20 lg:pt-0`}>
+        <div className={`${layoutClasses.container} pt-20 lg:pt-0 overflow-hidden`}>
           
           {/* Content Column */}
           <div className={`fade-in ${layoutClasses.content} py-0 lg:py-32 xl:py-44 2xl:py-60`}>

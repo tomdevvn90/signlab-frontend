@@ -30,7 +30,7 @@ const ImageBoxes = ({ data }) => {
       },
       {
         threshold: 0.2,
-        rootMargin: '0px 0px -200px 0px'
+        rootMargin: '0px 0px -100px 0px'
       }
     );
 
@@ -58,7 +58,7 @@ const ImageBoxes = ({ data }) => {
     <section ref={sectionRef} className="py-20 lg:py-32 2xl:py-40 bg-white image-boxes-section">
       <div className="mx-auto px-6 lg:px-8">
         {/* Image Boxes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-14">
           {boxes_items.map((box, index) => {
             const imageUrl = box.image.url ? box.image.url : null;
             const imageAlt = box.image.alt ? box.image.alt : 'Image';
@@ -68,7 +68,7 @@ const ImageBoxes = ({ data }) => {
               <div 
                 key={index}
                 ref={(el) => (itemRefs.current[index] = el)}
-                className={`flex flex-col items-center text-center space-y-6 p-4 transition-all duration-1000 ease-out ${
+                className={`flex flex-col items-center text-center space-y-5 sm:space-y-6 sm:p-4 transition-all duration-1000 ease-out ${
                   isVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-8'
@@ -78,7 +78,7 @@ const ImageBoxes = ({ data }) => {
                 }}
               >
                 {/* Image Container */}
-                <div className="w-28 h-28 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center mb-2">
+                <div className="w-28 h-28 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
