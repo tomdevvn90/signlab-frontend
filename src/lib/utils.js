@@ -66,10 +66,11 @@ export function isExternalUrl(url) {
 
 // Helper function to process flexible content and automatically fetch media for numeric fields (image IDs)
 export async function processFlexibleContent(acfData) {
-  if (
-    !acfData?.flexible_content_sections ||
-    !Array.isArray(acfData.flexible_content_sections)
-  ) {
+  // Handle both flexible content sections and blog post ACF data
+  const hasFlexibleContent = acfData?.flexible_content_sections && Array.isArray(acfData.flexible_content_sections);
+  const hasBlogFields = acfData?.beplus_video || acfData?.beplus_gallery;
+  
+  if (!hasFlexibleContent && !hasBlogFields) {
     return acfData;
   }
 
@@ -86,7 +87,15 @@ export async function processFlexibleContent(acfData) {
     }
   }
 
-  acfData.flexible_content_sections.forEach(collectMediaIds);
+  // Collect media IDs from flexible content sections
+  if (hasFlexibleContent) {
+    acfData.flexible_content_sections.forEach(collectMediaIds);
+  }
+  
+  // Collect media IDs from blog post fields
+  if (hasBlogFields) {
+    collectMediaIds(acfData);
+  }
 
   // ---- STEP 2: Fetch all media in a single request ----
   let mediaMap = {};
@@ -130,11 +139,35 @@ export async function processFlexibleContent(acfData) {
     return value;
   }
 
-  const processedSections = acfData.flexible_content_sections.map(replaceMedia);
+  // ---- STEP 4: Replace media IDs in the data ----
+  let processedData = { ...acfData };
+  
+  if (hasFlexibleContent) {
+    processedData.flexible_content_sections = acfData.flexible_content_sections.map(replaceMedia);
+  }
+  
+  // Process blog post fields
+  if (hasBlogFields) {
+    processedData = replaceMedia(processedData);
+  }
 
-  // ---- STEP 4: Return updated data ----
-  return {
-    ...acfData,
-    flexible_content_sections: processedSections,
-  };
+  return processedData;
 }
+
+// Extract YouTube video ID from URL
+export function getYouTubeVideoId(url) {
+  if (!url) return null;
+  
+  // Handle different YouTube URL formats
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  
+  return (match && match[2].length === 11) ? match[2] : null;
+};
+
+// Get YouTube thumbnail URL from video URL
+export function getYouTubeThumbnailUrl(url) {
+  if (!url) return null;
+  const videoId = getYouTubeVideoId(url);
+  return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
+};
