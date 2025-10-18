@@ -317,7 +317,7 @@ const Form = ({ data }) => {
           {/* Form Content */}
           <div className={`${bannerImageUrl ? 'px-10 lg:px-20' : ''}`}>
             {title && (
-              <h2 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-center mb-12 lg:mb-20 text-primary">
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-center mb-12 lg:mb-20 text-primary">
                 {title}
               </h2>
             )}

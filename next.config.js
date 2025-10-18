@@ -15,7 +15,7 @@ const nextConfig = {
     GRAVITY_FORMS_CONSUMER_SECRET: process.env.GRAVITY_FORMS_CONSUMER_SECRET,
   },
   images: {
-    domains: ['job.beplusprojects.com', 'localhost'],
+    domains: ['job.beplusprojects.com', 'localhost', 'img.youtube.com'],
   },
   // ISR Configuration
   revalidate: 60, // Revalidate every 60 seconds

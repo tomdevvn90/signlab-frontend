@@ -27,8 +27,8 @@ async function fetchWpApi(url, revalidate = 0) {
 }
 
 // Get all pages
-export async function getPages() {
-  const url = `${WP_API_URL}/pages?per_page=100&_embed=1`;
+export async function getPages(perPage = 10, page = 1) {
+  const url = `${WP_API_URL}/pages?per_page=${perPage}&page=${page}`;
   return fetchWpApi(url);
 }
 
@@ -46,8 +46,8 @@ export async function getPageById(id) {
 }
 
 // Get all posts
-export async function getPosts(perPage = 10) {
-  const url = `${WP_API_URL}/posts?per_page=${perPage}&_embed=1`;
+export async function getPosts(perPage = 10, page = 1) {
+  const url = `${WP_API_URL}/posts?per_page=${perPage}&page=${page}`;
   return fetchWpApi(url);
 }
 

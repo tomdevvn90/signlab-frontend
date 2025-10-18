@@ -67,11 +67,6 @@ export default async function HomePage() {
       <Header headerData={themeOptions} />
 
       <main className="site-main min-h-screen">
-        {pageData.yoast?.schema && (
-          <Script id="yoast-schema-home" type="application/ld+json" strategy="beforeInteractive">
-            {JSON.stringify(pageData.yoast.schema)}
-          </Script>
-        )}
 
         {pageData.acf?.flexible_content_sections && (
           <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
@@ -91,6 +86,17 @@ export default async function HomePage() {
           </div>
         )}
       </main>
+
+      {pageData.yoast?.schema && (
+        <Script
+          id={`yoast-schema-home`}
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(pageData.yoast.schema),
+          }}
+        />
+      )}
 
       <Footer footerData={themeOptions} />
 
