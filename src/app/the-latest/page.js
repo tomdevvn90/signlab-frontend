@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import MorePostList from '../../components/MorePostList';
 import PostCard from '../../components/common/PostCard';
 import Script from 'next/script';
 import CallToActionSection from '../../components/FlexibleSections/CallToAction';
@@ -76,10 +77,10 @@ export default async function TheLatestPage() {
         <section className="pt-36 pb-16 lg:pt-48 lg:pb-28 bg-[#0051bc]">
           <div className="container">
             <div className="text-center">
-              <h1 className="text-4xl lg:text-6xl font-extrabold mb-6 text-white">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 md:mb-6 text-white">
                 {pageData.title}
               </h1>
-              <p className="text-3xl font-bold text-white max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold text-white max-w-3xl mx-auto">
                 See what we have been up to lately.
               </p>
             </div>
@@ -87,8 +88,8 @@ export default async function TheLatestPage() {
         </section>
 
         {/* Posts Grid */}
-        <section className="py-16 lg:py-24 bg-white">
-          <div className="max-w-[1540px] mx-auto px-4 lg:px-8 xl:px-16">
+        <section className="py-10 md:py-16 lg:py-24 bg-white">
+          <div className="max-w-[1540px] mx-auto px-2 md:px-4 lg:px-8 xl:px-16">
             {!posts || posts.length === 0 ? (
               <div className="text-center py-16">
                 <h2 className="text-2xl font-semibold text-gray-600 mb-4">
@@ -100,17 +101,12 @@ export default async function TheLatestPage() {
               </div>
             ) : (
               <>
-                <div className="flex flex-wrap mb-16">
+                <div className="flex flex-wrap">
                   {posts && posts.length > 0 && posts.map((post, index) => {
                     return <PostCard key={post.id} post={post} postIndex={index} />;
                   })}
-                </div>
-
-                {/* Load More Button */}
-                <div className="text-center">
-                  <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-12 rounded-lg transition-colors duration-200 text-lg">
-                    Load More
-                  </button>
+                  
+                  { posts && posts.length == 7 && <MorePostList />}
                 </div>
               </>
             )}

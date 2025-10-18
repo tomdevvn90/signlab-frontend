@@ -16,17 +16,18 @@ export default function PostCard({ post, postIndex }) {
   const isSeventhItem = postIndex !== 0 && postIndex % 7 === 6;
 
   return (
-    <article className={`relative group cursor-pointer p-2 
-      ${isFirstItem ? 'md:w-3/5' : ''}
-      ${isSecondItem ? 'md:w-2/5' : ''}
-      ${isThirdItem ? 'md:w-2/5' : ''}
-      ${isFourthItem ? 'md:w-3/5' : ''}
-      ${isFifthItem ? 'md:w-full' : ''}
-      ${isSixthItem ? 'md:w-1/2' : ''}
-      ${isSeventhItem ? 'md:w-1/2' : ''}`}
+    <article className={`relative group cursor-pointer p-2 w-full 
+      ${isFirstItem ? 'md:w-1/2 xl:w-3/5' : ''}
+      ${isSecondItem ? 'md:w-1/2 xl:w-2/5' : ''}
+      ${isThirdItem ? 'md:w-1/2 xl:w-2/5' : ''}
+      ${isFourthItem ? 'md:w-1/2 xl:w-3/5' : ''}
+      ${isFifthItem ? 'md:w-full xl:w-full' : ''}
+      ${isSixthItem ? 'md:w-1/2 xl:w-1/2' : ''}
+      ${isSeventhItem ? 'md:w-1/2 xl:w-1/2' : ''}`}
       >
       <Link href={`/the-latest/${post.slug}`}>
-        <div className={`relative ${isFifthItem ? 'h-[600px]' : 'h-[400px]'} w-full`}>
+        <div className={`relative 
+          ${isFifthItem ? 'h-[320px] md:h-[400px] lg:h-[500px] xl:h-[600px]' : 'h-[320px] lg:h-[400px]'} w-full`}>
           {youtubeUrl ? (
             <YoutubeVideoPlayer
               src={youtubeUrl}
@@ -62,12 +63,12 @@ export default function PostCard({ post, postIndex }) {
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/90 via-black/90 to-transparent"></div>
 
           {/* Text overlays */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 pl-6 pr-3 pb-3 flex flex-col justify-between">            
+          <div className="absolute bottom-0 left-0 right-0 h-24 pl-4 xl:pl-6 pr-3 pb-3 flex flex-col justify-between">            
             <div className="text-white mt-auto">
-              <h3 className="text-lg font-extrabold"
+              <h3 className="text-lg font-bold xl:font-extrabold leading-tight mb-1 md:mb-2 line-clamp-2"
                 dangerouslySetInnerHTML={{ __html: post.title.rendered }}>
               </h3>
-              <div className="text-base font-normal opacity-90">
+              <div className="text-sm md:text-base font-normal opacity-90 leading-tight">
                 {formatDate(post.date)}
               </div>
             </div>
