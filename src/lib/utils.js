@@ -154,6 +154,15 @@ export async function processFlexibleContent(acfData) {
   return processedData;
 }
 
+// Format date helper
+export function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
 // Extract YouTube video ID from URL
 export function getYouTubeVideoId(url) {
   if (!url) return null;

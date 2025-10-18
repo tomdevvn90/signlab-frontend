@@ -5,9 +5,10 @@ import VideoPlayer from './common/YoutubeVideoPlayer';
 import ImageGallery from './common/ImageGallery';
 import CallToActionSection from './FlexibleSections/CallToAction';
 import Form from './FlexibleSections/Form';
-import { getImageUrl, getImageAlt, getYouTubeThumbnailUrl } from '../lib/utils';
+import { getImageUrl, getImageAlt, 
+  getYouTubeThumbnailUrl, formatDate } from '../lib/utils';
 
-const BlogPost = ({ post }) => {
+export default function BlogPost({ post }) {
 
   const {
     title,
@@ -19,15 +20,6 @@ const BlogPost = ({ post }) => {
   } = post;
 
   const globalFlexibleContent = theme_options?.flexible_content_sections;
-
-  // Format date
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   // Get video data from ACF
   const videoData = acf?.beplus_video;
@@ -69,7 +61,7 @@ const BlogPost = ({ post }) => {
           <div className="mb-8 sm:mb-12 text-center max-w-4xl mx-auto">
 
             {/* Title */}
-            <h1 className="text-4xl lg:text-5xl font-[800] mb-6 sm:mb-10 text-[#0051bc]" 
+            <h1 className="text-4xl lg:text-5xl font-extrabold mb-6 sm:mb-10 text-[#0051bc]" 
               dangerouslySetInnerHTML={{ __html: title }}>
             </h1>
 
@@ -148,5 +140,3 @@ const BlogPost = ({ post }) => {
     </div>
   );
 };
-
-export default BlogPost;

@@ -4,6 +4,7 @@ import { processFlexibleContent } from '../../../lib/utils';
 import BlogPost from '../../../components/BlogPost';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
+import Script from 'next/script';
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
@@ -58,7 +59,7 @@ export default async function BlogPostPage({ params }) {
           <div className="min-h-screen bg-gray-50">
             <div className="container section-padding">
               <div className="text-center">
-                <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-gradient">
+                <h1 className="text-4xl lg:text-6xl font-extrabold mb-6 text-gradient">
                   Blog Post Not Found
                 </h1>
                 <p className="text-xl text-gray-600 mb-8">
@@ -79,9 +80,22 @@ export default async function BlogPostPage({ params }) {
   return (
     <div className="post">
       <Header headerData={themeOptions} />
-        <main className="site-main min-h-screen">
-          <BlogPost post={postData} />
-        </main>
+
+      <main className="site-main min-h-screen">
+        <BlogPost post={postData} />
+      </main>
+
+      {postData.yoast?.schema && (
+        <Script
+          id={`yoast-schema-${params.slug}`}
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(postData.yoast.schema),
+          }}
+        />
+      )}
+
       <Footer footerData={themeOptions} />
     </div>
   );
