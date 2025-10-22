@@ -45,6 +45,13 @@ const Parallax = ({ data }) => {
   if (!data) return null;
 
   const imageData = data.background_image;
+  const fontColor = data.font_color ? data.font_color : 'text-white';
+  const overlayOpacity = data.overlay_opacity && data.overlay_opacity > 0 ? data.overlay_opacity / 100 : 0;
+  const overlayBackgroundColor = data.overlay_background_color ? data.overlay_background_color : 'black';
+  const overlayStyle = {
+    backgroundColor: overlayBackgroundColor,
+    opacity: overlayOpacity
+  };
   
   // Calculate transform values based on scroll progress
   const imageScale = 1 + (scrollProgress * 0.4); // Scale from 1 to 1.4
@@ -85,8 +92,9 @@ const Parallax = ({ data }) => {
       
       {/* Dynamic Overlay */}
       <div 
-        className="absolute inset-0 bg-black/10 duration-300"
-      ></div>
+        className="absolute inset-0 duration-300"
+        style={overlayStyle}>
+      </div>
       
       {/* Content with Parallax */}
       <div 
@@ -99,9 +107,8 @@ const Parallax = ({ data }) => {
       >
         <div className="container text-center px-4">
           {data.title && (
-            <h2 
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white uppercase tracking-wide leading-tight"
-            >
+            <h2 style={{ color: fontColor }}
+              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold uppercase tracking-wide leading-tight text-shadow-2xs text-shadow-sky-300">
               {data.title}
             </h2>
           )}

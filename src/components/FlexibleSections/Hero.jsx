@@ -1,8 +1,10 @@
 import React from 'react';
 
 const HeroSection = ({ data }) => {
-  const backgroundColor = data.hero_bg_color ? '[' + data.hero_bg_color + ']' : '';
+
+  const backgroundColor = data.hero_bg_color ? '[' + data.hero_bg_color + ']' : '[#0051bc]';
   const imageUrl = data.hero_bg_image.url ? data.hero_bg_image.url : null;
+  const height = data.hero_section_height && data.hero_section_height > 0 ? data.hero_section_height + 'vh' : 'auto';
 
   // Video background URLs
   const videoUrl = data.hero_bg_video_url || null;
@@ -106,34 +108,44 @@ const HeroSection = ({ data }) => {
       }
     : {};
 
+  const isNoOverlay = !videoUrl && !videoUrlMobile && !imageUrl;
+
   return (
     <section
-      className={`relative bg-gradient-to-r flex from-blue-600 to-blue-800 text-white section-padding h-[100vh] bg-${backgroundColor} overflow-hidden`}
+      className={`relative flex text-white section-padding h-[${height}] bg-${backgroundColor} overflow-hidden`}
       style={backgroundImageStyle}
     >
       {/* Video background if present */}
       {renderVideoBackground()}
+
       {/* Overlay for darkening video/image if needed */}
-      <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" aria-hidden="true"></div>
+      { !isNoOverlay && (
+        <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" aria-hidden="true"></div>
+      ) }
+
       <div className="container relative z-20">
         <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
           <div className={`fade-in ${textAlignClass}`}>
             {data.hero_title && (
-              <h1 className="2xl:text-6xl lg:text-5xl text-4xl font-extrabold mb-12">
-                <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-primary rounded-md shimmer">
-                  {data.hero_title}
-                </span>
+              <h1 className="text-4xl md:text-5xl 2xl:text-6xl font-extrabold">
+                { !isNoOverlay ? (
+                  <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-primary rounded-md shimmer">
+                    {data.hero_title}
+                  </span>
+                ) : (
+                  <span>{data.hero_title}</span>
+                ) }
               </h1>
             )}
             {data.hero_sub_title && (
-              <p className="text-2xl md:text-3xl mb-12 font-extrabold">
+              <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold mt-3 md:mt-6">
                 {data.hero_sub_title}
               </p>
             )}
             {data.hero_button_text && data.hero_button_url && (
               <a
                 href={data.hero_button_url}
-                className="py-4 px-7 md:py-6 md:px-9 rounded-md text-xl md:text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-white hover:text-accent text-center transition-colors duration-300 border-accent border"
+                className="mt-6 md:mt-10 py-4 px-7 md:py-6 md:px-9 rounded-md text-xl md:text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-white hover:text-accent text-center transition-colors duration-300 border-accent border"
               >
                 {data.hero_button_text}
               </a>

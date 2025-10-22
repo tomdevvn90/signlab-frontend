@@ -1,5 +1,6 @@
 import React from 'react';
 import HeroSection from './FlexibleSections/Hero';
+import HeroProductCategories from './FlexibleSections/HeroProductCategories';
 import CallToActionSection from './FlexibleSections/CallToAction';
 import ContentWithImage from './FlexibleSections/ContentWithImage';
 import Parallax from './FlexibleSections/Parallax';
@@ -19,6 +20,8 @@ const FlexibleContent = ({ blocks }) => {
     switch (block.acf_fc_layout) {
       case 'hero_section':
         return <HeroSection key={index} data={block} />;
+      case 'product_categories_section':
+        return <HeroProductCategories key={index} data={block} />;
       case 'cta_section':
         return <CallToActionSection key={index} data={block} />;
       case 'content_img_section':

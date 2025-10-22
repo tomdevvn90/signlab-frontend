@@ -256,7 +256,7 @@ const Form = ({ data }) => {
 
   if (loading) {
     return (
-      <section className="py-40 bg-white">
+      <section className="py-32 bg-white">
         <div className="container">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -269,7 +269,7 @@ const Form = ({ data }) => {
 
   if (error) {
     return (
-      <section className="py-40 bg-white">
+      <section className="py-32 bg-white">
         <div className="container">
           <div className="text-center">
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -296,10 +296,10 @@ const Form = ({ data }) => {
   const isBannerRight = banner_position === 'right';
 
   return (
-    <section className="bg-white flex justify-between">
+    <section className="bg-white flex flex-wrap justify-between">
       {/* Banner Image - Left */}
       {banner_image && isBannerLeft && (
-        <div className="w-1/2">
+        <div className="w-full lg:w-1/2">
             <Image
             src={bannerImageUrl}
             alt={bannerImageAlt}
@@ -311,11 +311,11 @@ const Form = ({ data }) => {
           />
         </div>
       )}
-      <div className="container lg:max-w-5xl py-24 lg:py-40">
+      <div className={`container lg:max-w-5xl py-20 lg:py-28 ${bannerImageUrl ? 'w-full lg:w-1/2' : 'w-full'}`}>
         <div className={`flex flex-col gap-8 lg:gap-12`}>
           
           {/* Form Content */}
-          <div className={`${bannerImageUrl ? 'px-10 lg:px-20' : ''}`}>
+          <div className={`${bannerImageUrl ? 'max-w-2xl mx-auto px-0 sm:px-4 lg:px-8' : ''}`}>
             {title && (
               <h2 className="text-4xl lg:text-5xl font-extrabold text-center mb-12 lg:mb-20 text-primary">
                 {title}
@@ -337,7 +337,7 @@ const Form = ({ data }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary uppercase text-center max-sm:w-full justify-center"
+                  className="btn-primary uppercase text-center max-sm:w-full min-w-64 justify-center"
                 >
                   {isSubmitting ? 'Submitting...' : formData.button?.text || 'Submit'}
                 </button>
@@ -349,7 +349,7 @@ const Form = ({ data }) => {
       </div>
       {/* Banner Image - Right */}
       {banner_image && isBannerRight && (
-        <div className="w-1/2">
+        <div className="w-full lg:w-1/2">
             <Image
             src={bannerImageUrl}
             alt={bannerImageAlt}

@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }) {
         />
       )}
 
-      <Footer footerData={themeOptions} />
+      <Footer footerData={themeOptions} pageData={postData} />
     </div>
   );
 }

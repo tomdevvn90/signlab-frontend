@@ -91,11 +91,11 @@ h1, h2 {
 
 // Custom components
 .container {
-  @apply xl:max-w-[1280px] 2xl:max-w-[1440px] mx-auto my-auto px-6;
+  @apply xl:max-w-[1280px] 2xl:max-w-[1440px] mx-auto my-auto px-5 md:px-6;
 }
 
 .section-padding {
-  @apply py-16 lg:py-24;
+  @apply pt-36 pb-16 lg:pt-48 lg:pb-28 2xl:pt-60 2xl:pb-32;
 }
 
 .text-gradient {

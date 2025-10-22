@@ -139,7 +139,7 @@ const Gallery = ({ data }) => {
                     alt={imageAlt}
                     fill
                     sizes="100vw"
-                    className="object-cover object-center hover:scale-[1.2] transition-transform duration-[1s]"
+                    className="object-cover object-center hover:scale-[1.1] transition-transform duration-[1s]"
                   />
                 </div>
               </>
@@ -178,7 +178,7 @@ const Gallery = ({ data }) => {
         
         {/* Load More Button */}
         {visibleRows < totalRows && (
-          <div className="flex justify-center absolute left-[50%] translate-x-[-50%] translate-y-[-50%]">
+          <div className="flex justify-center absolute z-10 left-[50%] translate-x-[-50%] translate-y-[-50%]">
             <button
               onClick={handleLoadMore}
               className="btn-primary !rounded-full transition-colors duration-200 uppercase tracking-wide"

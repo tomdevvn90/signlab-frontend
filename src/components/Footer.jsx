@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { isExternalUrl } from '../lib/utils';
 import SocialIcon from './common/SocialIcon'
 
-const Footer = ({ footerData }) => {
+const Footer = ({ footerData, pageData }) => {
   // Always call hooks at the top level, before any return or conditional
   const pathname = usePathname();
 
@@ -21,17 +21,31 @@ const Footer = ({ footerData }) => {
   const socials = Array.isArray(footerData.social_media_links) ? footerData.social_media_links : [];
   const menu = Array.isArray(footerData.main_menu) ? footerData.main_menu : [];
 
+  let aboveContent = pageData?.acf?.above_footer_content || 'show_banner';
+
   return (
     <footer className="text-white bg-primary">
-      <Image
-        src={bannerUrl}
-        alt={footerData.footer_banner.alt || "Footer Banner"}
-        className="w-full h-auto"
-        width={2048}
-        height={400}
-        priority={false}
-        sizes="100vw"
-      />
+      {bannerUrl && aboveContent === 'show_banner' && (
+        <Image
+          src={bannerUrl}
+          alt={footerData.footer_banner.alt || "Footer Banner"}
+          className="w-full h-auto"
+          width={2048}
+          height={400}
+          priority={false}
+          sizes="100vw"
+        />
+      )}
+
+      {address && aboveContent === 'show_map' && (
+        <iframe
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=m&z=15&output=embed&iwloc=near`}
+            className="w-full h-[60vh]"
+            title="Google Map"
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+      )}
       <div className="bg-primary/90">
         <div className="container py-24 lg:py-32">
           <div className="flex flex-col-reverse lg:flex-row  justify-between gap-12 lg:gap-8 items-start">
