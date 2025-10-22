@@ -100,7 +100,7 @@ export default async function DynamicPage({ params }) {
         />
       )}
 
-      <Footer footerData={themeOptions} />
+      <Footer footerData={themeOptions} pageData={pageData} />
     </div>
   );
 }

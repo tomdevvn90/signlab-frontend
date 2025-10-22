@@ -98,7 +98,7 @@ export default async function HomePage() {
         />
       )}
 
-      <Footer footerData={themeOptions} />
+      <Footer footerData={themeOptions} pageData={pageData} />
 
     </div>
   );

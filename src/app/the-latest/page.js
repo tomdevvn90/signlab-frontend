@@ -74,10 +74,10 @@ export default async function TheLatestPage() {
       <main className="site-main min-h-screen">
 
         {/* Hero Section - Blue Background */}
-        <section className="pt-36 pb-16 lg:pt-48 lg:pb-28 bg-[#0051bc]">
+        <section className="pt-36 pb-16 lg:pt-48 lg:pb-28 2xl:pt-60 2xl:pb-32 bg-[#0051bc]">
           <div className="container">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 md:mb-6 text-white">
+              <h1 className="text-4xl md:text-5xl 2xl:text-6xl font-extrabold mb-3 md:mb-6 text-white">
                 {pageData.title}
               </h1>
               <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold text-white max-w-3xl mx-auto">
@@ -137,7 +137,7 @@ export default async function TheLatestPage() {
         />
       )}
 
-      <Footer footerData={themeOptions} />
+      <Footer footerData={themeOptions} pageData={pageData} />
     </div>
   );
 }
