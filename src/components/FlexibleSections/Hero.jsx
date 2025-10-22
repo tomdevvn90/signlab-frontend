@@ -99,21 +99,24 @@ const HeroSection = ({ data }) => {
   };
 
   // Compose background style for fallback image if no video
-  const backgroundImageStyle = (!videoUrl && !videoUrlMobile && imageUrl)
+  const sectionStyle = (!videoUrl && !videoUrlMobile && imageUrl)
     ? {
         backgroundImage: `url('${imageUrl}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        height: `${height}`
       }
-    : {};
+    : {
+      height: `${height}`
+    };
 
   const isNoOverlay = !videoUrl && !videoUrlMobile && !imageUrl;
 
   return (
     <section
-      className={`relative flex text-white section-padding h-[${height}] bg-${backgroundColor} overflow-hidden`}
-      style={backgroundImageStyle}
+      className={`relative flex text-white section-padding bg-${backgroundColor} overflow-hidden`}
+      style={sectionStyle}
     >
       {/* Video background if present */}
       {renderVideoBackground()}
