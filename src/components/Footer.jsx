@@ -11,7 +11,7 @@ const Footer = ({ footerData, pageData }) => {
   // Always call hooks at the top level, before any return or conditional
   const pathname = usePathname();
 
-  if (!footerData) return null;
+  if (!footerData || pageData?.acf?.hide_footer) return null;
   
   const bannerUrl = footerData.footer_banner;
   const footerLogo = footerData.footer_logo;
