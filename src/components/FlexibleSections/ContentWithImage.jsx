@@ -10,6 +10,8 @@ const ContentWithImage = ({ data }) => {
   // Get color scheme based on data.color_scheme
   const colorScheme = data?.color_scheme === 'dark' ? data?.color_scheme_dark : data?.color_scheme_light;
   const imageData = data?.image;
+  const videoDesktop = data?.background_video;
+  const videoMobile = data?.background_video_mobile;
   
   // Parse content to handle line breaks
   const parseContent = (content) => {
@@ -84,10 +86,15 @@ const ContentWithImage = ({ data }) => {
 
   return (
     <section 
-      className=""
+      className="relative"
       style={sectionStyle}
     >
-      <div className="container">
+      {videoDesktop && (
+        <div className="absolute inset-0 w-full h-full hidden lg:block">
+          <video src={videoDesktop} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="container relative z-10">
         <div className={`${layoutClasses.container} pt-20 lg:pt-0 overflow-hidden`}>
           
           {/* Content Column */}
@@ -155,6 +162,14 @@ const ContentWithImage = ({ data }) => {
                   className="object-contain object-bottom w-full h-auto"
                   priority={false}
                 />
+              </div>
+            </div>
+          )}
+
+          {videoMobile && (
+            <div className={`lg:pt-20 ${layoutClasses.image} h-full ml-[-1.25rem] mr-[-1.25rem] transition-all duration-1000 ease-out block lg:hidden `}>
+              <div className="relative flex align-bottom h-full">
+                <video src={videoMobile} autoPlay loop muted playsInline className="w-full h-full object-cover" />
               </div>
             </div>
           )}
