@@ -261,7 +261,7 @@ const ImagesSlider = ({ data }) => {
           {/* Mobile Navigation */}
           <div className="swiper-button-prev-mobile md:hidden w-10 rotate-180">
             <Image
-              src="/images/slider-arrow.png"
+              src="/images/right-blu-chevron.svg"
               alt=""
               width={40}
               height={58}
@@ -271,7 +271,7 @@ const ImagesSlider = ({ data }) => {
           </div>
           <div className="swiper-button-next-mobile md:hidden w-10">
             <Image
-              src="/images/slider-arrow.png"
+              src="/images/right-blu-chevron.svg"
               alt=""
               width={40}
               height={58}
@@ -283,7 +283,7 @@ const ImagesSlider = ({ data }) => {
           {/* Tablet Navigation */}
           <div className="swiper-button-prev-tablet hidden md:block lg:hidden w-10 rotate-180">
             <Image
-              src="/images/slider-arrow.png"
+              src="/images/right-blu-chevron.svg"
               alt=""
               width={40}
               height={58}
@@ -293,7 +293,7 @@ const ImagesSlider = ({ data }) => {
           </div>
           <div className="swiper-button-next-tablet hidden md:block lg:hidden w-10">
             <Image
-              src="/images/slider-arrow.png"
+              src="/images/right-blu-chevron.svg"
               alt=""
               width={40}
               height={58}
@@ -305,7 +305,7 @@ const ImagesSlider = ({ data }) => {
           {/* Desktop Navigation */}
           <div className="swiper-button-prev w-10 rotate-180">
             <Image
-              src="/images/slider-arrow.png"
+              src="/images/right-blu-chevron.svg"
               alt=""
               width={40}
               height={58}
@@ -315,7 +315,7 @@ const ImagesSlider = ({ data }) => {
           </div>
           <div className="swiper-button-next w-10">
             <Image
-              src="/images/slider-arrow.png"
+              src="/images/right-blu-chevron.svg"
               alt=""
               width={40}
               height={58}
