@@ -30,13 +30,13 @@ const Header = ({ headerData }) => {
   // Determine header classes based on menu state
   const headerClassName = [
     "fixed md:absolute left-0 right-0 z-[999] transition-all duration-200",
-    isMenuOpen ? "bg-[rgb(0_81_188_/_0.94)] h-[100vh]" : "bg-transparent h-[150px]"
+    isMenuOpen ? "bg-[rgb(0_81_188_/_0.98)] h-[100vh]" : "bg-transparent h-[150px]"
   ].join(' ');
 
   return (
     <header className={headerClassName}>
       <div className="mx-auto">
-        <div className="flex justify-between items-center px-6 py-6 md:px-8 md:py-10 lg:px-16 2xl:py-14 2xl:px-20 bg-white md:bg-transparent shadow-sm sm:shadow-none">
+        <div className="flex justify-between items-center px-6 py-6 md:px-8 md:py-8 lg:px-12 2xl:py-14 2xl:px-20 bg-white md:bg-transparent shadow-sm sm:shadow-none">
           {/* Logo */}
           <div className="flex items-center">
             <button className="flex items-center" onClick={toggleMenu}>
@@ -77,12 +77,14 @@ const Header = ({ headerData }) => {
             className="text-primary md:text-white duration-200"
             aria-label="Toggle menu"
           >
-            <svg className="w-10 h-10 lg:w-12 lg:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
+            <svg 
+              id="toggle-menu-button-icon"
+              className="w-10 h-10 lg:w-12 lg:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMenuOpen ? (
+                  <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
             </svg>
           </button>
         </div>
