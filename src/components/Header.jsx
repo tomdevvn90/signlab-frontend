@@ -44,9 +44,9 @@ const Header = ({ headerData }) => {
                 <Image
                   src={logoUrl}
                   alt="SignLab Logo"
-                  width={360}
-                  height={80}
-                  className="hidden md:block w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
+                  width={280}
+                  height={50}
+                  className="hidden md:block w-[180px] md:w-[240px] lg:w-[280px] h-auto"
                   priority
                 />
               ) : (
@@ -58,9 +58,9 @@ const Header = ({ headerData }) => {
                 <Image
                   src={logoMobileUrl}
                   alt="SignLab Logo"
-                  width={360}
-                  height={80}
-                  className="md:hidden w-[180px] md:w-[260px] lg:w-[300px] 2xl:w-[360px] h-auto"
+                  width={280}
+                  height={50}
+                  className="md:hidden w-[180px] md:w-[240px] lg:w-[280px] h-auto"
                   priority
                 />
               ) : (
@@ -77,7 +77,7 @@ const Header = ({ headerData }) => {
             className="text-primary md:text-white duration-200"
             aria-label="Toggle menu"
           >
-            <svg className="w-10 h-10 lg:w-14 lg:h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-10 h-10 lg:w-12 lg:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMenuOpen ? (
                 <path strokeLinecap="square" strokeLinejoin="square" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
