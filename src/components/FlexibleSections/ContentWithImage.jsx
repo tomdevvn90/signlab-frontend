@@ -95,7 +95,7 @@ const ContentWithImage = ({ data }) => {
         </div>
       )}
       <div className="container relative z-10">
-        <div className={`${layoutClasses.container} pt-20 lg:pt-0 overflow-hidden`}>
+        <div className={`${layoutClasses.container} pt-20 lg:pt-0`}>
           
           {/* Content Column */}
           <div className={`fade-in ${layoutClasses.content} py-0 lg:py-32 xl:py-44 2xl:py-60`}>
@@ -167,7 +167,7 @@ const ContentWithImage = ({ data }) => {
           )}
 
           {videoMobile && (
-            <div className={`lg:pt-20 ${layoutClasses.image} h-full ml-[-1.25rem] mr-[-1.25rem] transition-all duration-1000 ease-out block lg:hidden `}>
+            <div className={`lg:pt-20 w-fit h-full ml-[-1.25rem] mr-[-1.25rem] md:ml-[-1.5rem] md:mr-[-1.5rem] transition-all duration-1000 ease-out block lg:hidden `}>
               <div className="relative flex align-bottom h-full">
                 <video src={videoMobile} autoPlay loop muted playsInline className="w-full h-full object-cover" />
               </div>
