@@ -47,7 +47,7 @@ const Footer = ({ footerData, pageData }) => {
           ></iframe>
       )}
       <div className="bg-primary/90">
-        <div className="container py-24 lg:py-32">
+        <div className="container pt-16 pb-28 lg:pt-32 lg:pb-32">
           <div className="flex flex-col-reverse lg:flex-row  justify-between gap-12 lg:gap-8 items-start">
             {/* Contact info */}
             <div className="space-y-5">
