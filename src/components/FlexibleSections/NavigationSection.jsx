@@ -23,13 +23,13 @@ const NavigationSection = ({ data }) => {
       className={`relative flex flex-col md:flex-row pt-[80px] md:pt-0 text-white min-h-screen bg-${backgroundColor} overflow-hidden`}
     >
       <div 
-        className="w-full h-[250px] sm:h-[300px] md:h-auto md:w-1/2 lg:w-2/3 md:bg-fixed bg-cover bg-center bg-no-repeat transition-all ease-in-out"
+        className="w-full h-[250px] sm:h-[300px] md:h-auto md:w-1/2 lg:w-2/3 md:bg-fixed bg-cover bg-center bg-no-repeat transition-all duration-300 ease-in-out"
         style={{
           backgroundImage: hoveredImage ? `url(${hoveredImage})` : `url(${backgroundImage})`
         }}
       ></div>
 
-      <div className={`w-full md:w-1/2 lg:w-1/3 flex flex-row md:flex-col justify-between md:justify-center pt-6 pb-6 md:pt-28 lg:pt-40 lg:pb-24 px-2 sm:px-4 md:px-8 lg:px-12 2xl:px-16 bg-${heroBgContent}`}>
+      <div className={`w-full md:w-1/2 lg:w-1/3 flex flex-row md:flex-col justify-between md:justify-center pt-6 pb-6 md:pt-28 lg:pt-40 lg:pb-24 px-2 sm:px-4 md:px-8 lg:px-12 2xl:px-20 bg-${heroBgContent}`}>
         {navHeading && (
           <div className="flex items-start px-3 md:hidden">
             <h3 className="text-blue-300 text-5xl font-extrabold [writing-mode:vertical-rl] rotate-180">{navHeading}</h3>

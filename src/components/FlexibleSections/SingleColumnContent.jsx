@@ -28,14 +28,14 @@ const SingleColumnContent = ({ data }) => {
       <>
         {title?.text && (
           <HeadingTag 
-            className={`title text-4xl lg:text-6xl xl:text-7xl font-extrabold mb-6 sm:mb-10 lg:mb-16 text-primary ${alignClass}`}
+            className={`title text-4xl lg:text-6xl xl:text-7xl font-extrabold mb-6 sm:mb-10 lg:mb-16 text-primary uppercase ${alignClass}`}
           >
             {title.text}
           </HeadingTag>
         )}
         {sub_title?.text && (
           <SubHeadingTag 
-            className={`sub-title block relative text-3xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-10 lg:mb-16 text-primary ${alignClass}`}
+            className={`sub-title block relative text-3xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-10 lg:mb-16 text-primary uppercase ${alignClass}`}
           >
             {sub_title.text}
           </SubHeadingTag>
