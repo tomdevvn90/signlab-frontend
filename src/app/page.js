@@ -11,7 +11,7 @@ export const revalidate = 60;
 
 async function getHomePageData() {
   try {
-    const { data: pages, error } = await getPageBySlug('home-page');
+    const { data: pages, error } = await getPageBySlug('home');
     
     if (error || !pages || pages.length === 0) {
       console.error('Error fetching home page:', error);
