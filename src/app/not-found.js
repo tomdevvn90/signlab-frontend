@@ -51,7 +51,7 @@ export default async function NotFound() {
           <div className="container mx-auto px-5 text-center">
             {/* 404 Number */}
             <div className="mb-8">
-              <h1 className="text-[60px] md:text-[80px] lg:text-[100px] font-black leading-none text-white">
+              <h1 className="text-[60px] md:text-[80px] lg:text-[100px] font-bold leading-none text-white">
                 404
               </h1>
             </div>

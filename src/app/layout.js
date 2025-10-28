@@ -1,6 +1,6 @@
 import { Montserrat } from "next/font/google";
 import '../styles/globals.scss'
-import ProgressBarProvider from '../components/ProgressBarProvider';
+import NextTopLoader from 'nextjs-toploader';
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -36,9 +36,14 @@ export default async function RootLayout({ children }) {
         <link rel="icon" href="/favicon.png" />
       </head>
       <body>
-        <ProgressBarProvider>
-          <div id="root">{children}</div>
-        </ProgressBarProvider>
+        <NextTopLoader
+          color="#fff"
+          height={5}
+          crawlSpeed={200}
+          showSpinner={false}
+          zIndex={99999}
+        />
+        <div id="root">{children}</div>
       </body>
     </html>
   )
