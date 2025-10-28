@@ -288,6 +288,21 @@ h1, h2 {
   }
 }
 
+.bounce {
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+	0%, 20%, 50%, 80%, 100% {
+    transform: translate(-50%, 0);
+  }
+	40% {
+    transform: translate(-50%, -30px);
+  }
+	60% {
+    transform: translate(-50%, -15px);
+  }
+}
+
 .images-slider {
   .swiper-wrapper {
     .swiper-slide {
