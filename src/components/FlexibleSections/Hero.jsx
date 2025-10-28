@@ -42,25 +42,18 @@ const HeroSection = ({ data }) => {
         {videoUrl && (
           <video
             className="hidden sm:block w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
+            autoPlay loop muted playsInline
             poster={imageUrl || undefined}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           >
-            <source src={videoUrl} type="video/mp4" />
-            {/* Optionally add webm/ogg sources */}
+            <source src={videoUrl} type="video/mp4" /> {/* Optionally add webm/ogg sources */}
           </video>
         )}
         {/* Mobile video */}
         {videoUrlMobile && (
           <video
             className="block sm:hidden w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
+            autoPlay loop muted playsInline
             poster={imageUrl || undefined}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           >
@@ -71,10 +64,7 @@ const HeroSection = ({ data }) => {
         {!videoUrl && videoUrlMobile && (
           <video
             className="w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
+            autoPlay loop muted playsInline
             poster={imageUrl || undefined}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           >
@@ -84,10 +74,7 @@ const HeroSection = ({ data }) => {
         {!videoUrlMobile && videoUrl && (
           <video
             className="w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
+            autoPlay loop muted playsInline
             poster={imageUrl || undefined}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           >
@@ -113,6 +100,13 @@ const HeroSection = ({ data }) => {
 
   const isNoOverlay = !videoUrl && !videoUrlMobile && !imageUrl;
 
+  const overlayOpacity = data.hero_bg_overlay_opacity && data.hero_bg_overlay_opacity > 0 ? data.hero_bg_overlay_opacity / 100 : 0;
+  const overlayColor = data.hero_bg_overlay_color ? data.hero_bg_overlay_color : '#000000';
+  const overlayStyle = {
+    backgroundColor: overlayColor,
+    opacity: overlayOpacity
+  };
+
   return (
     <section
       className={`relative flex text-white section-padding bg-${backgroundColor} overflow-hidden`}
@@ -123,7 +117,7 @@ const HeroSection = ({ data }) => {
 
       {/* Overlay for darkening video/image if needed */}
       { !isNoOverlay && (
-        <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" aria-hidden="true"></div>
+        <div className="absolute inset-0 z-10 pointer-events-none" aria-hidden="true" style={overlayStyle}></div>
       ) }
 
       <div className="container relative z-20">
