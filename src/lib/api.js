@@ -103,3 +103,15 @@ export function processFlexibleContent(acfData) {
   }
   return acfData;
 }
+
+// Get theme options (header and footer data)
+export async function getThemeOptions() {
+  // Fetch the home page to get theme options
+  const { data: pages, error } = await getPageBySlug('home');
+  
+  if (error || !pages || pages.length === 0) {
+    return null;
+  }
+
+  return pages[0]?.theme_options || null;
+}

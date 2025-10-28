@@ -1,29 +1,30 @@
 import React from 'react';
 import Script from 'next/script';
-import { getPageBySlug, getMedia } from '../../lib/api';
+import { getPageBySlug, getThemeOptions } from '../../lib/api';
 import { processFlexibleContent } from '../../lib/utils';
 import FlexibleContent from '../../components/FlexibleContent';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
+const { notFound } = require('next/navigation');
+
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
-
 
 async function getPageData(slug) {
   try {
     const { data: pages, error } = await getPageBySlug(slug);
-    
+
     if (error || !pages || pages.length === 0) {
       console.error('Error fetching page:', error);
       return null;
     }
 
     const page = pages[0];
-    
+
     // Process the ACF data to handle media IDs
     const processedAcf = await processFlexibleContent(page.acf || {});
-    
+
     return {
       id: page.id,
       title: page.title.rendered,
@@ -45,23 +46,7 @@ export default async function DynamicPage({ params }) {
 
   // Fallback content if WordPress data is not available
   if (!pageData) {
-    return (
-      <div className="page">
-        <Header headerData={null} />
-        <main className="site-main min-h-screen">
-          <div className="min-h-screen bg-gray-50">
-            <div className="container section-padding">
-              <div className="text-center">
-                <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-gradient">
-                  Page not found
-                </h1>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer footerData={null} />
-      </div>
-    );
+    notFound();
   }
 
   return (

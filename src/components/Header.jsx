@@ -9,9 +9,9 @@ const Header = ({ headerData }) => {
   // Track which submenu is open by index
   const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
   const pathname = usePathname();
-  const logoUrl = headerData.header_logo || '';
-  const logoMobileUrl = headerData.header_logo_mobile || '';
-  const menuData =  headerData.main_menu || [];
+  const logoUrl = headerData?.header_logo || '';
+  const logoMobileUrl = headerData?.header_logo_mobile || '';
+  const menuData = headerData?.main_menu || [];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
