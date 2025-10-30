@@ -517,3 +517,27 @@ h1, h2 {
   background-color: var(--secondary-color);
   margin: 2rem auto;
 }
+
+.gallery-section {
+  .react-photo-album--photo {
+    overflow: hidden;
+    img.react-photo-album--image {
+      transition: all 0.3s;
+      animation: zoomIn 0.4s ease;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
