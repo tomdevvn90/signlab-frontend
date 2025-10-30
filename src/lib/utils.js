@@ -113,8 +113,8 @@ export async function processFlexibleContent(acfData) {
               url: m.source_url,
               alt: m.alt_text || "Image",
               // mime_type: m.mime_type,
-              // width: m.media_details?.width,
-              // height: m.media_details?.height,
+              width: m.media_details?.width,
+              height: m.media_details?.height,
               // sizes: m.media_details?.sizes,
             },
           ])
