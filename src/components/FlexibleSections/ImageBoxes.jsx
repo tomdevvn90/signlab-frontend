@@ -1,14 +1,21 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import Image from 'next/image';
 
 const ImageBoxes = ({ data }) => {
   const [visibleItems, setVisibleItems] = useState([]);
   const sectionRef = useRef(null);
   const itemRefs = useRef([]);  
-
   const boxes_items = data?.boxes_items;
+  const paddingTop = (data?.padding_top !== "" && data?.padding_top != null) ? data.padding_top : 160;
+  const paddingBottom = (data?.padding_bottom !== "" && data?.padding_bottom != null) ? data.padding_bottom : 160;
+  const backgroundColor = data?.background_color?.trim() || '#FFFFFF';  
+
+  // Unique section ID per instance (prefer provided id; otherwise generate stable one)
+  const reactId = useId();
+  const rawId = data?.section_id || data?.id || `image-boxes-${reactId}`;
+  const sectionId = String(rawId).replace(/[^a-zA-Z0-9_-]/g, '-');  
 
   // Intersection Observer for fade-in animation
   useEffect(() => {
@@ -55,7 +62,20 @@ const ImageBoxes = ({ data }) => {
   }
 
   return (
-    <section ref={sectionRef} className="py-20 lg:py-32 2xl:py-40 bg-white image-boxes-section">
+    <section
+      id={sectionId}
+      ref={sectionRef}
+      className="image-boxes-section"
+      style={{
+        '--section-pt-desktop': `${paddingTop}px`,
+        '--section-pb-desktop': `${paddingBottom}px`,
+        '--section-pt-tablet': `${Math.round(paddingTop * 0.7)}px`,
+        '--section-pb-tablet': `${Math.round(paddingBottom * 0.7)}px`,
+        '--section-pt-mobile': `${Math.round(paddingTop * 0.5)}px`,
+        '--section-pb-mobile': `${Math.round(paddingBottom * 0.5)}px`,
+        '--section-bg': backgroundColor
+      }}
+    >
       <div className="mx-auto px-6 lg:px-8">
         {/* Image Boxes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-14">
@@ -74,7 +94,7 @@ const ImageBoxes = ({ data }) => {
                     : 'opacity-0 translate-y-8'
                 }`}
                 style={{
-                  transitionDelay: isVisible ? `${index * 300}ms` : '0ms'
+                  transitionDelay: isVisible ? `${index * 250}ms` : '0ms'
                 }}
               >
                 {/* Image Container */}
@@ -114,6 +134,26 @@ const ImageBoxes = ({ data }) => {
           })}
         </div>
       </div>
+      {/* Responsive paddings and background color from ACF options */}
+      <style jsx>{`
+        #${sectionId} {
+          padding-top: var(--section-pt-desktop);
+          padding-bottom: var(--section-pb-desktop);
+          background-color: var(--section-bg);
+        }
+        @media (max-width: 1024px) {
+          #${sectionId} {
+            padding-top: var(--section-pt-tablet);
+            padding-bottom: var(--section-pb-tablet);
+          }
+        }
+        @media (max-width: 768px) {
+          #${sectionId} {
+            padding-top: var(--section-pt-mobile);
+            padding-bottom: var(--section-pb-mobile);
+          }
+        }
+      `}</style>
     </section>
   );
 };

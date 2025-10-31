@@ -28,14 +28,14 @@ const SingleColumnContent = ({ data }) => {
       <>
         {title?.text && (
           <HeadingTag 
-            className={`title text-4xl lg:text-6xl xl:text-7xl font-extrabold mb-6 sm:mb-10 lg:mb-16 text-primary uppercase ${alignClass}`}
+            className={`title text-4xl lg:text-6xl xl:text-7xl font-extrabold mb-6 sm:mb-10 lg:mb-12 text-primary uppercase ${alignClass}`}
           >
             {title.text}
           </HeadingTag>
         )}
         {sub_title?.text && (
           <SubHeadingTag 
-            className={`sub-title block relative text-3xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-10 lg:mb-16 text-primary uppercase ${alignClass}`}
+            className={`sub-title block relative text-3xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-10 lg:mb-12 text-primary uppercase ${alignClass}`}
           >
             {sub_title.text}
           </SubHeadingTag>
@@ -48,6 +48,9 @@ const SingleColumnContent = ({ data }) => {
   const renderContent = () => {
     if (!content) return null;
     
+    // Replace all line breaks with <br />
+    const safeHTML = content.replace(/(?<!>)\r?\n(?!<)/g, '<br />');
+
     // Determine text alignment class
     const alignClass = content_align === 'left' ? 'text-left' : 
                       content_align === 'right' ? 'text-right' : 'text-center';
@@ -55,7 +58,7 @@ const SingleColumnContent = ({ data }) => {
     return (
       <div 
         className={`wp-content max-w-4xl ${alignClass === 'text-center' ? 'mx-auto' : ''} ${alignClass}`}
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: safeHTML }}
       />
     );
   };
@@ -92,7 +95,7 @@ const SingleColumnContent = ({ data }) => {
           {renderTitle()}
           
           {/* Content */}
-          <div className="mt-10 lg:mt-16">
+          <div className="mt-10 lg:mt-12">
             {renderContent()}
           </div>
         </div>
