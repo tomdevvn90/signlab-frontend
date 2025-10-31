@@ -74,22 +74,39 @@ export async function processFlexibleContent(acfData) {
     return acfData;
   }
 
-  // ---- STEP 1: Collect all numeric values (media IDs) recursively ----
+  // Define exclusions per flexible layout (field names to skip from media replacement)
+  const layoutExclusions = {
+    image_boxes: new Set(["padding_top", "padding_bottom"]),
+    // add more layouts here if needed
+  };
+
+  // ---- STEP 1: Collect all numeric values (media IDs) recursively, respecting per-layout exclusions ----
   const mediaIds = new Set();
 
-  function collectMediaIds(value) {
+  function collectMediaIdsWithExclusions(value, excludedKeys = new Set()) {
     if (Array.isArray(value)) {
-      value.forEach(collectMediaIds);
-    } else if (typeof value === "object" && value !== null) {
-      Object.values(value).forEach(collectMediaIds);
-    } else if (typeof value === "number" && value > 0) {
+      value.forEach((v) => collectMediaIdsWithExclusions(v, excludedKeys));
+      return;
+    }
+    if (typeof value === "object" && value !== null) {
+      for (const [key, v] of Object.entries(value)) {
+        if (excludedKeys.has(key)) continue;
+        collectMediaIdsWithExclusions(v, excludedKeys);
+      }
+      return;
+    }
+    if (typeof value === "number" && value > 0) {
       mediaIds.add(value);
     }
   }
 
   // Collect media IDs from flexible content sections
   if (hasFlexibleContent) {
-    acfData.flexible_content_sections.forEach(collectMediaIds);
+    acfData.flexible_content_sections.forEach((section) => {
+      const layout = section?.acf_fc_layout;
+      const excluded = layout && layoutExclusions[layout] ? layoutExclusions[layout] : new Set();
+      collectMediaIdsWithExclusions(section, excluded);
+    });
   }
   
   // Collect media IDs from blog post fields
@@ -139,11 +156,32 @@ export async function processFlexibleContent(acfData) {
     return value;
   }
 
+  function replaceMediaWithExclusions(value, excludedKeys = new Set()) {
+    if (Array.isArray(value)) {
+      return value.map((v) => replaceMediaWithExclusions(v, excludedKeys));
+    }
+    if (typeof value === "object" && value !== null) {
+      const entries = Object.entries(value).map(([k, v]) => {
+        if (excludedKeys.has(k)) return [k, v];
+        return [k, replaceMediaWithExclusions(v, excludedKeys)];
+      });
+      return Object.fromEntries(entries);
+    }
+    if (typeof value === "number" && value > 0 && mediaMap[value]) {
+      return mediaMap[value];
+    }
+    return value;
+  }
+
   // ---- STEP 4: Replace media IDs in the data ----
   let processedData = { ...acfData };
   
   if (hasFlexibleContent) {
-    processedData.flexible_content_sections = acfData.flexible_content_sections.map(replaceMedia);
+    processedData.flexible_content_sections = acfData.flexible_content_sections.map((section) => {
+      const layout = section?.acf_fc_layout;
+      const excluded = layout && layoutExclusions[layout] ? layoutExclusions[layout] : new Set();
+      return replaceMediaWithExclusions(section, excluded);
+    });
   }
   
   // Process blog post fields
