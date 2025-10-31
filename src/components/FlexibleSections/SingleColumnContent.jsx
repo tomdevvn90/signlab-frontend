@@ -75,11 +75,6 @@ const SingleColumnContent = ({ data }) => {
       paddingClasses += 'pb-20 lg:pb-40 ';
     }
     
-    // If neither is true, use default padding
-    if (padding_top !== true && padding_bottom !== true) {
-      paddingClasses = 'py-20 lg:py-40 ';
-    }
-    
     return paddingClasses;
   };
 
