@@ -1,60 +1,32 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 const SingleColumnContent = ({ data }) => {
   // Early return if no data
   if (!data) return null;
 
-  const { title, sub_title, content, content_align, padding_top, padding_bottom } = data;
+  const { image, title, sub_title, content, image_position, content_align, padding_top, padding_bottom } = data;
 
   // Early return if no title or content
-  if (!title?.text && !content) {
+  if (!title?.text && !content && !image) {
     return null;
   }
 
-  // Function to render the title with proper heading tag
-  const renderTitle = () => {
-    if (!title?.text && !sub_title?.text) return null;
-    
-    const HeadingTag = title.heading || 'h1';
-    const SubHeadingTag = sub_title.heading || 'h2';
-    
-    // Determine text alignment class
-    const alignClass = content_align === 'left' ? 'text-left' : 
-                      content_align === 'right' ? 'text-right' : 'text-center';
-    
-    return (
-      <>
-        {title?.text && (
-          <HeadingTag 
-            className={`title text-4xl lg:text-6xl xl:text-7xl font-extrabold mb-6 sm:mb-10 lg:mb-12 text-primary uppercase ${alignClass}`}
-          >
-            {title.text}
-          </HeadingTag>
-        )}
-        {sub_title?.text && (
-          <SubHeadingTag 
-            className={`sub-title block relative text-3xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-10 lg:mb-12 text-primary uppercase ${alignClass}`}
-          >
-            {sub_title.text}
-          </SubHeadingTag>
-        )}
-      </>
-    );
-  };
+  // Determine text alignment class
+  const titleAlignClass = content_align === 'left' ? 'text-left' : content_align === 'right' ? 'text-right' : 'text-center';
+
+  const dividerAlignClass = content_align === 'left' ? 'ml-0' : content_align === 'right' ? 'mr-0' : 'mx-auto';
 
   // Function to render the content with proper HTML parsing
   const renderContent = () => {
     if (!content) return null;
-    
     // Replace all line breaks with <br />
     const safeHTML = content.replace(/(?<!>)\r?\n(?!<)/g, '<br />');
-
     // Determine text alignment class
     const alignClass = content_align === 'left' ? 'text-left' : 
                       content_align === 'right' ? 'text-right' : 'text-center';
-    
     return (
       <div 
         className={`wp-content max-w-4xl ${alignClass === 'text-center' ? 'mx-auto' : ''} ${alignClass}`}
@@ -66,32 +38,100 @@ const SingleColumnContent = ({ data }) => {
   // Determine padding classes based on options
   const getPaddingClasses = () => {
     let paddingClasses = '';
-    
     if (padding_top === true) {
       paddingClasses += 'pt-20 lg:pt-40 ';
     }
-    
     if (padding_bottom === true) {
       paddingClasses += 'pb-20 lg:pb-40 ';
     }
-    
     return paddingClasses;
   };
 
-  // Determine container alignment class
-  const containerAlignClass = content_align === 'left' ? 'text-left' : 
-                              content_align === 'right' ? 'text-right' : 'text-center';
+  // Determine layout classes based on image_position
+  const getLayoutClasses = (position) => {
+    switch (position?.toLowerCase()) {
+      case 'left':
+        return {
+          container: 'flex flex-col lg:flex-row gap-12 lg:gap-20',
+          image: 'w-full order-2 lg:order-1',
+          content: 'w-full order-1 lg:order-2'
+        };
+      case 'right':
+        return {
+          container: 'flex flex-col lg:flex-row gap-12 lg:gap-20',
+          image: 'w-full order-2',
+          content: 'w-full order-1'
+        };
+      case 'top':
+        return {
+          container: 'flex flex-col gap-12 lg:gap-20',
+          image: 'w-full',
+          content: 'w-full'
+        };
+      case 'bottom':
+        return {
+          container: 'flex flex-col gap-12 lg:gap-20',
+          image: 'w-full order-2',
+          content: 'w-full order-1'
+        };
+      default:
+        return {
+          container: 'flex flex-col',
+          image: 'w-full',
+          content: 'w-full'
+        };
+    }
+  };
+
+  const layoutClasses = getLayoutClasses(image_position);
 
   return (
     <section className={`${getPaddingClasses()}bg-white single-column-content-section`}>
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className={`max-w-6xl mx-auto ${containerAlignClass}`}>
-          {/* Title */}
-          {renderTitle()}
-          
-          {/* Content */}
-          <div className="mt-10 lg:mt-12">
-            {renderContent()}
+      <div className="max-w-[1600px] mx-auto px-4 lg:px-8">
+        <div className={` mx-auto`}>
+          {/* Layout Container for Image + Content */}
+          <div className={layoutClasses.container}>
+            {/* Image Section */}
+            {image && (
+              <div className={`${layoutClasses.image}`}>
+                <Image
+                  src={image.url}
+                  alt={image.alt || title?.text || 'Image'}
+                  width={1024}
+                  height={1024}
+                  sizes="100vw"
+                  className="object-cover w-full h-full max-h-[400px] lg:max-h-none"
+                  priority={false}
+                />
+              </div>
+            )}
+
+            {/* Content Section */}
+            <div className={`mx-auto content-center max-w-5xl ${layoutClasses.content}`}>
+              {/* Sub Title */}
+              {sub_title?.text && (
+                <p className={`sub-title block relative text-3xl lg:text-4xl xl:text-5xl font-300 mb-6 lg:mb-10 text-primary uppercase ${titleAlignClass}`}>
+                  {sub_title.text}
+                </p>
+              )}
+
+              {/* Title */}
+              {title?.text && (
+                <h2 className={`title text-4xl lg:text-5xl xl:text-6xl font-bold mb-8 lg:mb-10 text-primary uppercase ${titleAlignClass}`}>
+                  {title.text}
+                </h2>
+              )}
+
+              {/* Divider */}
+              {content && (
+                <div className={`block w-[150px] h-2 bg-secondary my-6 lg:my-12 ${dividerAlignClass}`}></div>
+              )}
+              
+              {/* Content */}
+              <div className="mt-8 lg:mt-12">
+                {renderContent()}
+              </div>
+            </div>
           </div>
         </div>
       </div>
