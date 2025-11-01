@@ -17,7 +17,7 @@ const SingleColumnContent = ({ data }) => {
   // Determine text alignment class
   const titleAlignClass = content_align === 'left' ? 'text-left' : content_align === 'right' ? 'text-right' : 'text-center';
 
-  const dividerAlignClass = content_align === 'left' ? 'ml-0' : content_align === 'right' ? 'mr-0' : 'mx-auto';
+  const dividerAlignClass = content_align === 'left' ? 'ml-0 mr-auto' : content_align === 'right' ? 'mr-0 ml-auto' : 'mx-auto';
 
   // Function to render the content with proper HTML parsing
   const renderContent = () => {
