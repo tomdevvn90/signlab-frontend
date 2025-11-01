@@ -509,15 +509,6 @@ h1, h2 {
   }
 }
 
-.sub-title::after {
-  content: '';
-  display: block;
-  width: 150px;
-  height: 8px;
-  background-color: var(--secondary-color);
-  margin: 3rem auto 0;
-}
-
 .gallery-section {
   .react-photo-album--photo {
     overflow: hidden;
