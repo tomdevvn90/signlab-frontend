@@ -36,18 +36,14 @@ const VideoPlayer = ({ src, alt, className = '', autoplay = false, controls = tr
       : 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     
     return (
-    //   <div className={`relative ${className}`}>
-    //     <div className="relative w-full h-full">
-          <iframe
+        <iframe
             src={youtubeEmbedUrl}
             className="w-full h-[320px] sm:h-[360px] md:h-[500px] lg:h-full"
             frameBorder="0"
             allow={allowAttributes}
             allowFullScreen
             title={alt}
-          />
-    //     </div>
-    //   </div>
+        />
     );
   }
 
@@ -67,39 +63,31 @@ const VideoPlayer = ({ src, alt, className = '', autoplay = false, controls = tr
       : `https://player.vimeo.com/video/${vimeoVideoId}`;
     
     return (
-    //   <div className={`relative ${className}`}>
-    //     <div className="relative w-full h-full">
-          <iframe
+        <iframe
             src={vimeoEmbedUrl}
             className="w-full h-[300px] sm:h-[360px] md:h-[500px] lg:h-full"
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
             title={alt}
-          />
-    //     </div>
-    //   </div>
+        />
     );
   }
 
   // Render MP4 or other video file
   if (isVideoFile) {
     return (
-    //   <div className={`relative ${className}`}>
-    //     <div className="relative w-full h-full">
-          <video
+        <video
             src={src}
             controls={controls}
             autoPlay={autoplay}
             muted={autoplay} // Required for autoplay in most browsers
             loop
             playsInline
-            className="w-full h-full object-cover"
-          >
+            className="w-full h-[300px] sm:h-full object-cover"
+        >
             Your browser does not support the video tag.
-          </video>
-    //     </div>
-    //   </div>
+        </video>
     );
   }
 
