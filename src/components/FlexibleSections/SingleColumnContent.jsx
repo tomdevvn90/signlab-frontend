@@ -2,15 +2,16 @@
 
 import React from 'react';
 import Image from 'next/image';
+import VideoPlayer from '../common/VideoPlayer';
 
 const SingleColumnContent = ({ data }) => {
   // Early return if no data
   if (!data) return null;
 
-  const { image, title, sub_title, content, image_position, content_align, padding_top, padding_bottom } = data;
+  const {media_type, image, video_url, video_autoplay, video_control_bar, title, sub_title, content, image_position, content_align, padding_top, padding_bottom } = data;
 
   // Early return if no title or content
-  if (!title?.text && !content && !image) {
+  if (!title?.text && !content && !image && !video_url) {
     return null;
   }
 
@@ -89,20 +90,32 @@ const SingleColumnContent = ({ data }) => {
     <section className={`${getPaddingClasses()}bg-white single-column-content-section`}>
       <div className="max-w-[1600px] mx-auto px-4 lg:px-8">
         <div className={` mx-auto`}>
-          {/* Layout Container for Image + Content */}
+          {/* Layout Container for Image/Video + Content */}
           <div className={layoutClasses.container}>
-            {/* Image Section */}
-            {image && (
+            {/* Media Section */}
+            {(image || video_url) && (
               <div className={`${layoutClasses.image}`}>
-                <Image
-                  src={image.url}
-                  alt={image.alt || title?.text || 'Image'}
-                  width={1024}
-                  height={1024}
-                  sizes="100vw"
-                  className="object-cover w-full h-full max-h-[400px] lg:max-h-none"
-                  priority={false}
-                />
+                {media_type === 'video' && video_url ? (
+                  <div className="relative w-full h-fit lg:h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
+                    <VideoPlayer 
+                      src={video_url} 
+                      alt={title?.text || 'Video'} 
+                      className="inset-0 w-full h-full"
+                      autoplay={video_autoplay !== false}
+                      controls={video_control_bar !== false}
+                    />
+                  </div>
+                ) : image ? (
+                  <Image
+                    src={image.url}
+                    alt={image.alt || title?.text || 'Image'}
+                    width={1024}
+                    height={1024}
+                    sizes="100vw"
+                    className="object-cover w-full h-full max-h-[400px] lg:max-h-none"
+                    priority={false}
+                  />
+                ) : null}
               </div>
             )}
 
