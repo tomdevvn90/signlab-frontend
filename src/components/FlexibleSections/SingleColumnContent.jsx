@@ -96,7 +96,7 @@ const SingleColumnContent = ({ data }) => {
             {(image || video_url) && (
               <div className={`${layoutClasses.image}`}>
                 {media_type === 'video' && video_url ? (
-                  <div className="relative w-full h-fit lg:h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
+                  <div className="relative w-full h-fit lg:h-full min-h-[auto] sm:min-h-[400px] lg:min-h-[500px]">
                     <VideoPlayer 
                       src={video_url} 
                       alt={title?.text || 'Video'} 
