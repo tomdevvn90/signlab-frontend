@@ -111,7 +111,7 @@ export async function processFlexibleContent(acfData) {
   
   // Collect media IDs from blog post fields
   if (hasBlogFields) {
-    collectMediaIds(acfData);
+    collectMediaIdsWithExclusions(acfData);
   }
 
   // ---- STEP 2: Fetch all media in a single request ----

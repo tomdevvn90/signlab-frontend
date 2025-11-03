@@ -46,11 +46,11 @@ async function getBlogPostData(slug) {
 }
 
 export default async function BlogPostPage({ params }) {
-  const postData = await getBlogPostData(params.slug);
-  const themeOptions = postData.theme_options;
+  const postData = await getBlogPostData(params.slug);    
 
   // Fallback content if WordPress data is not available
   if (!postData) {
+    const themeOptions = [];
     return (
       <div className="post">
         <Header headerData={themeOptions} />
@@ -76,6 +76,8 @@ export default async function BlogPostPage({ params }) {
     </div>
     );
   }
+
+  const themeOptions = postData.theme_options ?? [];
 
   return (
     <div className="post">
