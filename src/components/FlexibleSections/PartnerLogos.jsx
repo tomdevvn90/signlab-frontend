@@ -29,10 +29,10 @@ const PartnerLogos = ({ data }) => {
   if (normalizedLogos.length === 0 && !title) return null;
 
   return (
-    <section className="py-20 xl:py-32 2xl:py-44 bg-white">
+    <section className="py-20 xl:py-32 2xl:py-40 bg-white">
       <div className="lg:max-w-[900px] xl:max-w-[1000px] 2xl:max-w-[1280px] mx-auto">
         {title && (
-          <h2 className="px-6 text-3xl md:text-4xl lg:text-5xl font-extrabold text-center mb-16 lg:mb-24 xl:mb-32 text-primary">
+          <h2 className="px-6 text-3xl md:text-4xl lg:text-5xl font-extrabold text-center mb-16 lg:mb-20 xl:mb-28 text-primary">
             {title}
           </h2>
         )}
@@ -56,7 +56,7 @@ const PartnerLogos = ({ data }) => {
         </div>
 
         {/* Desktop: Grid layout */}
-        <div className="hidden lg:grid md:grid-cols-4 lg:grid-cols-6 gap-x-20 gap-y-24 opacity-80 items-center justify-items-center">
+        <div className="hidden lg:grid md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-16 lg:gap-x-16 lg:gap-y-20 2xl:gap-x-20 2xl:gap-y-24 opacity-80 items-center justify-items-center">
           {normalizedLogos.map((logo, index) => (
             <div key={index} className="grayscale transition w-full h-[120px]">
               <Image
@@ -76,3 +76,4 @@ const PartnerLogos = ({ data }) => {
 };
 
 export default PartnerLogos;
+
