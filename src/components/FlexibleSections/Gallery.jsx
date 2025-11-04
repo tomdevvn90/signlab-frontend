@@ -9,7 +9,7 @@ import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-import { RowsPhotoAlbum} from 'react-photo-album';
+import { RowsPhotoAlbum } from 'react-photo-album';
 import "react-photo-album/rows.css";
 
 const DEFAULT_IMAGES_PER_PAGE = 12;

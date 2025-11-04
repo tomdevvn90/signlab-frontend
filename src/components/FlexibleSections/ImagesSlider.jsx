@@ -28,12 +28,28 @@ const ImagesSlider = ({ data }) => {
   // Early return if no data
   if (!data) return null;
 
-  const { title, auto_play, autoplay_per_second, images } = data;
+  const { title, auto_play, autoplay_per_second, images, padding_top, padding_bottom, background_color } = data;
 
   // Early return if no valid images
   if (!images || !Array.isArray(images) || images.length === 0) {
     return null;
   }
+
+  // Compose class string for section
+  let sectionClasses = 'images-slider';
+  if (padding_top && padding_bottom) {
+    sectionClasses = `py-24 xl:py-40 ${sectionClasses}`;
+  } else if (padding_top) {
+    sectionClasses = `pt-24 xl:pt-40 ${sectionClasses}`;
+  } else if (padding_bottom) {
+    sectionClasses = `pb-24 xl:pb-40 ${sectionClasses}`;
+  }
+  // bg color will be assigned inline-style
+
+  // Compose style for background color
+  const sectionStyle = background_color
+    ? { backgroundColor: background_color }
+    : { backgroundColor: '#fff' };
 
   // Function to open lightbox with specific image
   const openLightbox = (imageIndex) => {
@@ -63,7 +79,10 @@ const ImagesSlider = ({ data }) => {
   };
 
   return (
-    <section className="pb-24 xl:pb-40 bg-white images-slider">
+    <section
+      className={sectionClasses}
+      style={sectionStyle}
+    >
       <div className="px-12 lg:px-16 xl:px-24">
         {title && (
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-center py-20 primary-color">

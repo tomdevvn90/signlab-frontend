@@ -98,7 +98,7 @@ const ContentWithImage = ({ data }) => {
         <div className={`${layoutClasses.container} pt-20 lg:pt-0`}>
           
           {/* Content Column */}
-          <div className={`fade-in ${layoutClasses.content} py-0 lg:py-32 xl:py-44 2xl:py-60`}>
+          <div className={`fade-in ${layoutClasses.content} py-0 lg:py-32 xl:py-44 2xl:py-56`}>
             {data.title && (
               <div className="">
                 <h2 
