@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { getImageUrl, getImageAlt } from '../../lib/utils';
 
@@ -12,6 +12,8 @@ const Form = ({ data }) => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitStatus, setSubmitStatus] = useState('');
   const [fileUploads, setFileUploads] = useState({});
+  const [fileErrors, setFileErrors] = useState({});
+  const fileInputRefs = useRef({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -74,11 +76,78 @@ const Form = ({ data }) => {
     }));
   };
 
-  const handleFileChange = (fieldId, files) => {
+  const handleFileRemove = (fieldId, fileIndex = null) => {
+    setFileUploads(prev => {
+      const newUploads = { ...prev };
+      const currentFiles = newUploads[fieldId];
+      
+      if (Array.isArray(currentFiles)) {
+        // Remove specific file from array
+        if (fileIndex !== null) {
+          const updatedFiles = currentFiles.filter((_, index) => index !== fileIndex);
+          if (updatedFiles.length > 0) {
+            newUploads[fieldId] = updatedFiles;
+          } else {
+            delete newUploads[fieldId];
+          }
+        } else {
+          // Remove all files
+          delete newUploads[fieldId];
+        }
+      } else {
+        // Remove single file
+        delete newUploads[fieldId];
+      }
+      
+      return newUploads;
+    });
+    
+    // Clear any errors for this field
+    setFileErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[fieldId];
+      return newErrors;
+    });
+    
+    // Reset the native input value
+    if (fileInputRefs.current[fieldId]) {
+      fileInputRefs.current[fieldId].value = '';
+    }
+  };
+
+  const handleFileChange = (fieldId, files, field) => {
+    // Clear any previous errors for this field
+    setFileErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[fieldId];
+      return newErrors;
+    });
+
     if (files && files.length > 0) {
+      const filesArray = Array.from(files);
+      const maxSize = field.maxFileSize ? field.maxFileSize * 1024 * 1024 : null; // Convert MB to bytes
+      const multipleFiles = field.multipleFiles;
+      
+      // Validate file sizes
+      const invalidFiles = [];
+      filesArray.forEach(file => {
+        if (maxSize && file.size > maxSize) {
+          invalidFiles.push(`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+        }
+      });
+      
+      if (invalidFiles.length > 0) {
+        setFileErrors(prev => ({
+          ...prev,
+          [fieldId]: `File(s) exceed maximum size of ${field.maxFileSize} MB: ${invalidFiles.join(', ')}`
+        }));
+        return;
+      }
+      
+      // Store files based on multipleFiles setting
       setFileUploads(prev => ({
         ...prev,
-        [fieldId]: files[0]
+        [fieldId]: multipleFiles ? filesArray : filesArray[0]
       }));
     } else {
       // Remove file if no file selected
@@ -109,8 +178,16 @@ const Form = ({ data }) => {
       
       // Add file uploads
       Object.keys(fileUploads).forEach(key => {
-        if (fileUploads[key]) {
-          formDataToSubmit.append(`input_${key}`, fileUploads[key]);
+        const files = fileUploads[key];
+        if (files) {
+          // Handle both single file and array of files
+          if (Array.isArray(files)) {
+            files.forEach((file, index) => {
+              formDataToSubmit.append(`input_${key}[]`, file);
+            });
+          } else {
+            formDataToSubmit.append(`input_${key}`, files);
+          }
         }
       });
       
@@ -154,17 +231,23 @@ const Form = ({ data }) => {
   };
 
   const renderField = (field) => {
-    const { type, id, label, isRequired, placeholder, choices, layoutGridColumnSpan, maxLength, allowedExtensions } = field;
+    const { type, id, label, isRequired, placeholder, choices, layoutGridColumnSpan, maxLength, allowedExtensions, multipleFiles, maxFileSize } = field;
     
-    // Determine column span class
-    const colSpanClass = layoutGridColumnSpan ? `col-span-${layoutGridColumnSpan}` : 'col-span-12';
+    // Helper function to get field class based on layoutGridColumnSpan
+    const getFieldClass = () => {
+      if (layoutGridColumnSpan) {
+        return `form-field-${layoutGridColumnSpan}`;
+      }
+      // Default to full width if not specified
+      return 'form-field-12';
+    };    
     
     switch (type) {
       case 'text':
       case 'email':
       case 'phone':
         return (
-          <div key={id} className={`${colSpanClass} form-field-6`}>
+          <div key={id} className={getFieldClass()}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -184,7 +267,7 @@ const Form = ({ data }) => {
         
       case 'textarea':
         return (
-          <div key={id} className="col-span-12">
+          <div key={id} className={getFieldClass()}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -204,7 +287,7 @@ const Form = ({ data }) => {
         
       case 'select':
         return (
-          <div key={id} className={ `form-field-6`}>
+          <div key={id} className={getFieldClass()}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
@@ -227,24 +310,95 @@ const Form = ({ data }) => {
         );
         
       case 'fileupload':
+        const fileCount = fileUploads[id] ? (Array.isArray(fileUploads[id]) ? fileUploads[id].length : 1) : 0;
+        const fileCountText = fileCount === 0 ? 'Choose file(s)' : fileCount === 1 ? '1 file selected' : `${fileCount} files selected`;
+        
         return (
-          <div key={id} className={`form-field-6`}>
+          <div key={id} className={getFieldClass()}>
             <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
+            
+            {/* Hidden native file input */}
             <input
               type="file"
               id={`input_${id}`}
               name={`input_${id}`}
-              onChange={(e) => handleFileChange(id, e.target.files)}
-              required={isRequired}
+              ref={(el) => (fileInputRefs.current[id] = el)}
+              onChange={(e) => handleFileChange(id, e.target.files, field)}
+              required={isRequired && fileCount === 0}
               accept={allowedExtensions ? allowedExtensions.map(ext => `.${ext}`).join(',') : undefined}
-              className="w-full h-12 px-2 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              multiple={multipleFiles}
+              className="hidden"
             />
+            
+            {/* Custom styled button */}
+            <button
+              type="button"
+              onClick={() => fileInputRefs.current[id]?.click()}
+              className="w-full h-12 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-left text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              {fileCountText}
+            </button>
+            
             {allowedExtensions && (
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-600 mt-1">
                 Allowed formats: {allowedExtensions.join(', ')}
               </p>
+            )}
+            {maxFileSize && (
+              <p className="text-sm text-gray-600 mt-1">
+                Max file size: {maxFileSize} MB
+              </p>
+            )}
+            {fileErrors[id] && (
+              <p className="text-sm text-red-600 mt-1">
+                {fileErrors[id]}
+              </p>
+            )}
+            
+            {/* Display uploaded files */}
+            {fileUploads[id] && (
+              <div className="mt-3 flex gap-3 flex-wrap">
+                {Array.isArray(fileUploads[id]) ? (
+                  // Multiple files
+                  fileUploads[id].map((file, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+                    >
+                      <span className="text-sm text-gray-800 truncate flex-1">{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleFileRemove(id, index)}
+                        className="ml-3 mr-[-2px] text-gray-700 hover:text-red-600 transition-colors flex-shrink-0"
+                        title={`Remove ${file.name}`}
+                        aria-label={`Remove ${file.name}`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  // Single file
+                  <div className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+                    <span className="text-sm text-gray-800 truncate flex-1">{fileUploads[id].name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleFileRemove(id)}
+                      className="ml-3 mr-[-2px] text-gray-700 hover:text-red-600 transition-colors flex-shrink-0"
+                      title={`Remove ${fileUploads[id].name}`}
+                      aria-label={`Remove ${fileUploads[id].name}`}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         );
