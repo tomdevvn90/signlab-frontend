@@ -86,7 +86,7 @@ const ContentWithImage = ({ data }) => {
 
   return (
     <section 
-      className="relative"
+      className="relative overflow-hidden"
       style={sectionStyle}
     >
       {videoDesktop && (
