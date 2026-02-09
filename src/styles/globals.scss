@@ -98,6 +98,19 @@ h1, h2 {
   @apply pt-36 pb-16 lg:pt-48 lg:pb-28 2xl:pt-60 2xl:pb-32;
 }
 
+// Hero section responsive padding using CSS custom properties
+.hero-section {
+  --hero-padding-scale: 0.5; // Mobile: 50%
+  
+  @media (min-width: 1024px) { // lg breakpoint
+    --hero-padding-scale: 0.75; // Tablet/Desktop: 75%
+  }
+  
+  @media (min-width: 1536px) { // 2xl breakpoint
+    --hero-padding-scale: 1; // Large screens: 100%
+  }
+}
+
 .text-gradient {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;

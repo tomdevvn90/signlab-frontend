@@ -469,7 +469,7 @@ const Form = ({ data }) => {
         <div className={`flex flex-col gap-8 lg:gap-12`}>
           
           {/* Form Content */}
-          <div className={`${bannerImageUrl ? 'max-w-2xl mx-auto px-0 sm:px-4 lg:px-8' : ''}`}>
+          <div className={`${bannerImageUrl ? 'w-full mx-auto max-w-2xl px-0 sm:px-4 lg:px-8' : ''}`}>
             {title && (
               <h2 className="text-4xl lg:text-5xl font-extrabold text-center mb-12 lg:mb-20 text-primary">
                 {title}
