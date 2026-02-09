@@ -3,10 +3,21 @@ import BounceArrow from '../common/BounceArrow'
 
 const HeroSection = ({ data }) => {
 
-  const backgroundColor = data.hero_bg_color ? '[' + data.hero_bg_color + ']' : '[#0051bc]';
+  const backgroundColor = data.hero_bg_color ? data.hero_bg_color : '#0051bc';
   const imageUrl = data.hero_bg_image.url ? data.hero_bg_image.url : null;
   const height = data.hero_section_height && data.hero_section_height > 0 ? data.hero_section_height + 'vh' : 'auto';
-  const isShowBounceArrow = data.hero_bounce_arrow ? data.hero_bounce_arrow : false;  
+  const isShowBounceArrow = data.hero_bounce_arrow ? data.hero_bounce_arrow : false;
+  let paddingTopValue = data.hero_padding_top ? data.hero_padding_top : null;
+  let paddingBottomValue = data.hero_padding_bottom ? data.hero_padding_bottom : null;
+  const textColor = data.hero_text_color ? data.hero_text_color : '#ffffff';  
+
+  if (paddingTopValue == null) {
+    paddingTopValue = 200;
+  }
+
+  if (paddingBottomValue == null) {
+    paddingBottomValue = 200;
+  }
 
   // Video background URLs
   const videoUrl = data.hero_bg_video_url || null;
@@ -88,16 +99,23 @@ const HeroSection = ({ data }) => {
   };
 
   // Compose background style for fallback image if no video
+  // Uses CSS calc() with --hero-padding-scale for responsive padding
   const sectionStyle = (!videoUrl && !videoUrlMobile && imageUrl)
     ? {
+        backgroundColor: backgroundColor,
         backgroundImage: `url('${imageUrl}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        height: `${height}`
+        height: `${height}`,
+        paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
+        paddingBottom: `calc(${paddingBottomValue}px * var(--hero-padding-scale, 1))`
       }
     : {
-      height: `${height}`
+      height: `${height}`,
+      paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
+      paddingBottom: `calc(${paddingBottomValue}px * var(--hero-padding-scale, 1))`,
+      backgroundColor: backgroundColor,
     };
 
   const isNoOverlay = !videoUrl && !videoUrlMobile && !imageUrl;
@@ -110,7 +128,7 @@ const HeroSection = ({ data }) => {
 
   return (
     <section
-      className={`relative flex text-white section-padding bg-${backgroundColor} overflow-hidden`}
+      className={`hero-section relative flex text-white overflow-hidden`}
       style={sectionStyle}
     >
       {/* Video background if present */}
@@ -125,7 +143,7 @@ const HeroSection = ({ data }) => {
         <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
           <div className={`fade-in ${textAlignClass}`}>
             {data.hero_title && (
-              <h1 className="text-4xl md:text-5xl 2xl:text-6xl font-extrabold">
+              <h1 className={`text-4xl md:text-5xl 2xl:text-6xl font-extrabold`} style={{ color: textColor }}>
                 { !isNoOverlay ? (
                   <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-primary rounded-md shimmer">
                     {data.hero_title}
@@ -136,7 +154,7 @@ const HeroSection = ({ data }) => {
               </h1>
             )}
             {data.hero_sub_title && (
-              <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold mt-3 md:mt-6">
+              <p className={`text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold mt-3 md:mt-6`} style={{ color: textColor }}>
                 {data.hero_sub_title}
               </p>
             )}

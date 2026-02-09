@@ -9,30 +9,30 @@ import { getMedia } from './api';
  */
 export function getImageUrl(mediaData, size = 'full') {
   if (!mediaData) return null;
-  
+
   // If it's already a URL string, return it
   if (typeof mediaData === 'string' && mediaData.startsWith('http')) {
     return mediaData;
   }
-  
+
   // If it's a media object from WordPress
   if (typeof mediaData === 'object' && mediaData !== null) {
     // If media_details and sizes are available, try to get the specific size
     if (mediaData.media_details && mediaData.media_details.sizes && mediaData.media_details.sizes[size]) {
       return mediaData.media_details.sizes[size].source_url;
     }
-    
+
     // Fallback to source_url if specific size not available
     if (mediaData.source_url) {
       return mediaData.source_url;
     }
-    
+
     // If it's an ACF image field format with url property
     if (mediaData.url) {
       return mediaData.url;
     }
   }
-  
+
   return null;
 }
 
@@ -44,7 +44,7 @@ export function getImageUrl(mediaData, size = 'full') {
  */
 export function getImageAlt(mediaData, fallback = 'Image') {
   if (!mediaData || typeof mediaData !== 'object') return fallback;
-  
+
   return mediaData.alt_text || mediaData.alt || fallback;
 }
 
@@ -55,7 +55,7 @@ export function getImageAlt(mediaData, fallback = 'Image') {
  */
 export function isExternalUrl(url) {
   if (!url || typeof url !== 'string') return false;
-  
+
   try {
     const urlObj = new URL(url);
     return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
@@ -69,7 +69,7 @@ export async function processFlexibleContent(acfData) {
   // Handle both flexible content sections and blog post ACF data
   const hasFlexibleContent = acfData?.flexible_content_sections && Array.isArray(acfData.flexible_content_sections);
   const hasBlogFields = acfData?.beplus_video || acfData?.beplus_gallery;
-  
+
   if (!hasFlexibleContent && !hasBlogFields) {
     return acfData;
   }
@@ -77,6 +77,7 @@ export async function processFlexibleContent(acfData) {
   // Define exclusions per flexible layout (field names to skip from media replacement)
   const layoutExclusions = {
     image_boxes: new Set(["padding_top", "padding_bottom"]),
+    hero_section: new Set(["hero_padding_top", "hero_padding_bottom"]),
     // add more layouts here if needed
   };
 
@@ -108,7 +109,7 @@ export async function processFlexibleContent(acfData) {
       collectMediaIdsWithExclusions(section, excluded);
     });
   }
-  
+
   // Collect media IDs from blog post fields
   if (hasBlogFields) {
     collectMediaIdsWithExclusions(acfData);
@@ -175,7 +176,7 @@ export async function processFlexibleContent(acfData) {
 
   // ---- STEP 4: Replace media IDs in the data ----
   let processedData = { ...acfData };
-  
+
   if (hasFlexibleContent) {
     processedData.flexible_content_sections = acfData.flexible_content_sections.map((section) => {
       const layout = section?.acf_fc_layout;
@@ -183,7 +184,7 @@ export async function processFlexibleContent(acfData) {
       return replaceMediaWithExclusions(section, excluded);
     });
   }
-  
+
   // Process blog post fields
   if (hasBlogFields) {
     processedData = replaceMedia(processedData);
@@ -204,11 +205,11 @@ export function formatDate(dateString) {
 // Extract YouTube video ID from URL
 export function getYouTubeVideoId(url) {
   if (!url) return null;
-  
+
   // Handle different YouTube URL formats
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
-  
+
   return (match && match[2].length === 11) ? match[2] : null;
 };
 
