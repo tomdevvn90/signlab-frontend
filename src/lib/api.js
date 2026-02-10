@@ -75,7 +75,7 @@ export async function getMedia(mediaIds) {
   }
 
   // WordPress REST API has a max per_page of 100, so we batch requests
-  const MAX_PER_PAGE = 100;
+  const MAX_PER_PAGE = 50;
   const allMedia = [];
 
   for (let i = 0; i < idsArray.length; i += MAX_PER_PAGE) {
