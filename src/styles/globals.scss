@@ -548,3 +548,11 @@ h1, h2 {
     transform: scale(1);
   }
 }
+
+.yarl__toolbar {
+  --yarl__icon_size: 26px;
+}
+.yarl__navigation_prev, .yarl__navigation_next {
+  --yarl__icon_size: 34px;
+}
+  

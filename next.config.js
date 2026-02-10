@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   sassOptions: {
     includePaths: ['./src/styles'],
   },
@@ -15,10 +12,13 @@ const nextConfig = {
     GRAVITY_FORMS_CONSUMER_SECRET: process.env.GRAVITY_FORMS_CONSUMER_SECRET,
   },
   images: {
-    domains: ['job.beplusprojects.com', 'signlab.com.au', 'localhost', 'img.youtube.com'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'job.beplusprojects.com' },
+      { protocol: 'https', hostname: 'signlab.com.au' },
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
+    ],
   },
-  // ISR Configuration
-  revalidate: 60, // Revalidate every 60 seconds
 }
 
 module.exports = nextConfig

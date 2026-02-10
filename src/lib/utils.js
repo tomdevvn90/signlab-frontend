@@ -133,7 +133,7 @@ export async function processFlexibleContent(acfData) {
               // mime_type: m.mime_type,
               width: m.media_details?.width,
               height: m.media_details?.height,
-              // sizes: m.media_details?.sizes,
+              sizes: m.media_details?.sizes,
             },
           ])
         );

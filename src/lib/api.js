@@ -19,9 +19,9 @@ async function fetchWpApi(url, revalidate = 0) {
     return { data, error: null };
   } catch (error) {
     console.error('WordPress API Error:', error);
-    return { 
-      data: null, 
-      error: error instanceof Error ? error.message : 'Unknown error occurred' 
+    return {
+      data: null,
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
     };
   }
 }
@@ -74,10 +74,26 @@ export async function getMedia(mediaIds) {
     return fetchWpApi(url, 120);
   }
 
-  // For multiple IDs, use the filter[id] query
-  const idsParam = idsArray.join(',');
-  const url = `${WP_API_URL}/media?include=${idsParam}&per_page=${idsArray.length}`;
-  return fetchWpApi(url, 120);
+  // WordPress REST API has a max per_page of 100, so we batch requests
+  const MAX_PER_PAGE = 100;
+  const allMedia = [];
+
+  for (let i = 0; i < idsArray.length; i += MAX_PER_PAGE) {
+    const batch = idsArray.slice(i, i + MAX_PER_PAGE);
+    const idsParam = batch.join(',');
+    const url = `${WP_API_URL}/media?include=${idsParam}&per_page=${batch.length}`;
+    const { data, error } = await fetchWpApi(url, 120);
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    if (Array.isArray(data)) {
+      allMedia.push(...data);
+    }
+  }
+
+  return { data: allMedia, error: null };
 }
 
 // Helper function to get featured image URL
@@ -108,7 +124,7 @@ export function processFlexibleContent(acfData) {
 export async function getThemeOptions() {
   // Fetch the home page to get theme options
   const { data: pages, error } = await getPageBySlug('home');
-  
+
   if (error || !pages || pages.length === 0) {
     return null;
   }
