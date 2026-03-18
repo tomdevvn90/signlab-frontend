@@ -144,7 +144,7 @@ const ContentWithImage = ({ data }) => {
           </div>
 
           {/* Image Column */}
-          {imageData && (
+          {imageData && imageData.url && (
             <div 
               ref={imageRef}
               className={`lg:pt-20 ${layoutClasses.image} h-full transition-all duration-1000 ease-out ${
@@ -156,7 +156,7 @@ const ContentWithImage = ({ data }) => {
               <div className="relative flex align-bottom h-full">
                 <Image
                   src={imageData.url}
-                  alt={imageData.alt}
+                  alt={imageData.alt || 'Content image'}
                   width={800}
                   height={600}
                   className="object-contain object-bottom w-full h-auto"

@@ -80,8 +80,8 @@ const ImageBoxes = ({ data }) => {
         {/* Image Boxes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-14">
           {boxes_items.map((box, index) => {
-            const imageUrl = box.image.url ? box.image.url : null;
-            const imageAlt = box.image.alt ? box.image.alt : 'Image';
+            const imageUrl = box.image?.url ? box.image.url : null;
+            const imageAlt = box.image?.alt ? box.image.alt : 'Image';
             const isVisible = visibleItems.includes(index);
             
             return (

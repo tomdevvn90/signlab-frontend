@@ -83,21 +83,108 @@ export async function processFlexibleContent(acfData) {
 
   // ---- STEP 1: Collect all numeric values (media IDs) recursively, respecting per-layout exclusions ----
   const mediaIds = new Set();
+  const mediaIdPaths = new Map();
 
-  function collectMediaIdsWithExclusions(value, excludedKeys = new Set()) {
+  function normalizeMediaId(value) {
+    if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+      return value;
+    }
+    if (typeof value === "string" && /^\d+$/.test(value)) {
+      const parsed = Number(value);
+      return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+    }
+    return null;
+  }
+
+  const MEDIA_FIELD_KEYS = new Set([
+    // Generic media keys
+    "image",
+    "images",
+    "img",
+    "gallery",
+    "logos_gallery",
+    "featured_image",
+    "featured_media",
+    "thumbnail",
+    "thumb",
+    "banner",
+    "banner_image",
+    "logo",
+    "icon",
+    "poster",
+    "photo",
+    "avatar",
+    "attachment",
+    "media_id",
+    // Header / Footer
+    "header_logo",
+    "header_logo_mobile",
+    "footer_logo",
+    "footer_banner",
+    // Section-specific image keys
+    "hero_bg_image",
+    "nav_bg_image",
+    "background_image",
+    // Blog ACF keys
+    "beplus_gallery",
+    "beplus_video",
+    // Video/file fields that may be returned as attachment IDs
+    "video",
+    "video_url",
+    "background_video",
+    "background_video_mobile",
+    "hero_bg_video_url",
+    "hero_bg_video_url_mobile",
+  ]);
+
+  function isLikelyMediaFieldKey(key = "") {
+    const normalizedKey = String(key || "").toLowerCase();
+    if (!normalizedKey) return false;
+    if (MEDIA_FIELD_KEYS.has(normalizedKey)) return true;
+
+    // Fallback for unknown but clearly media-related keys in ACF.
+    return /(image|img|logo|icon|banner|gallery|thumbnail|thumb|photo|avatar|poster|featured_media|media_id|attachment|video)/i.test(
+      normalizedKey
+    );
+  }
+
+  function collectMediaIdsWithExclusions(
+    value,
+    excludedKeys = new Set(),
+    currentKey = "",
+    currentPath = ""
+  ) {
     if (Array.isArray(value)) {
-      value.forEach((v) => collectMediaIdsWithExclusions(v, excludedKeys));
+      value.forEach((v, index) =>
+        collectMediaIdsWithExclusions(
+          v,
+          excludedKeys,
+          currentKey,
+          `${currentPath}[${index}]`
+        )
+      );
       return;
     }
     if (typeof value === "object" && value !== null) {
       for (const [key, v] of Object.entries(value)) {
         if (excludedKeys.has(key)) continue;
-        collectMediaIdsWithExclusions(v, excludedKeys);
+        const nextPath = currentPath ? `${currentPath}.${key}` : key;
+        collectMediaIdsWithExclusions(v, excludedKeys, key, nextPath);
       }
       return;
     }
-    if (typeof value === "number" && value > 0) {
-      mediaIds.add(value);
+
+    // Only numeric values under media-like field keys should be treated as attachment IDs.
+    if (!isLikelyMediaFieldKey(currentKey)) {
+      return;
+    }
+
+    const mediaId = normalizeMediaId(value);
+    if (mediaId) {
+      mediaIds.add(mediaId);
+      const paths = mediaIdPaths.get(mediaId) || new Set();
+      paths.add(currentPath || currentKey || "<unknown>");
+      mediaIdPaths.set(mediaId, paths);
     }
   }
 
@@ -151,8 +238,11 @@ export async function processFlexibleContent(acfData) {
       return Object.fromEntries(
         Object.entries(value).map(([k, v]) => [k, replaceMedia(v)])
       );
-    } else if (typeof value === "number" && value > 0 && mediaMap[value]) {
-      return mediaMap[value];
+    }
+
+    const mediaId = normalizeMediaId(value);
+    if (mediaId && mediaMap[mediaId]) {
+      return mediaMap[mediaId];
     }
     return value;
   }
@@ -168,8 +258,10 @@ export async function processFlexibleContent(acfData) {
       });
       return Object.fromEntries(entries);
     }
-    if (typeof value === "number" && value > 0 && mediaMap[value]) {
-      return mediaMap[value];
+
+    const mediaId = normalizeMediaId(value);
+    if (mediaId && mediaMap[mediaId]) {
+      return mediaMap[mediaId];
     }
     return value;
   }
@@ -188,6 +280,19 @@ export async function processFlexibleContent(acfData) {
   // Process blog post fields
   if (hasBlogFields) {
     processedData = replaceMedia(processedData);
+  }
+
+  if (mediaIds.size > 0) {
+    const unresolvedIds = Array.from(mediaIds).filter((id) => !mediaMap[id]);
+    if (unresolvedIds.length > 0) {
+      console.warn(`[media] Unresolved media IDs: ${unresolvedIds.join(", ")}`);
+      unresolvedIds.forEach((id) => {
+        const paths = Array.from(mediaIdPaths.get(id) || []);
+        if (paths.length > 0) {
+          console.warn(`[media] ID ${id} found at: ${paths.join(" | ")}`);
+        }
+      });
+    }
   }
 
   return processedData;

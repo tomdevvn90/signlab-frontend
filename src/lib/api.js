@@ -1,17 +1,41 @@
 // WordPress API configuration
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL
 
+function getWpAuthHeader() {
+  // Preferred: precomputed Basic token (base64 of username:application_password)
+  if (process.env.WP_API_BASIC_AUTH_TOKEN) {
+    return `Basic ${process.env.WP_API_BASIC_AUTH_TOKEN}`;
+  }
+
+  // Alternative: compose from username + application password
+  if (process.env.WP_API_USERNAME && process.env.WP_API_APPLICATION_PASSWORD) {
+    const credentials = `${process.env.WP_API_USERNAME}:${process.env.WP_API_APPLICATION_PASSWORD}`;
+    return `Basic ${Buffer.from(credentials).toString('base64')}`;
+  }
+
+  return null;
+}
+
 // Base fetch function with error handling
 async function fetchWpApi(url, revalidate = 0) {
   try {
+    const authHeader = getWpAuthHeader();
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (authHeader) {
+      headers.Authorization = authHeader;
+    }
+
     const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       next: { revalidate: revalidate }, // ISR: revalidate every 60 seconds
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        console.error(`WordPress API auth error (${response.status}) for URL: ${url}`);
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
