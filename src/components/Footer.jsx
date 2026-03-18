@@ -27,8 +27,8 @@ const Footer = ({ footerData, pageData }) => {
     <footer className="text-white bg-primary">
       {bannerUrl && aboveContent === 'show_banner' && (
         <Image
-          src={bannerUrl}
-          alt={footerData.footer_banner.alt || "Footer Banner"}
+          src={typeof bannerUrl === 'string' ? bannerUrl : bannerUrl.url || ''}
+          alt={(typeof footerData.footer_banner === 'object' && footerData.footer_banner?.alt) || "Footer Banner"}
           className="w-full h-auto"
           width={2048}
           height={400}

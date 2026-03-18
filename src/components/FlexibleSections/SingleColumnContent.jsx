@@ -105,7 +105,7 @@ const SingleColumnContent = ({ data }) => {
                       controls={video_control_bar !== false}
                     />
                   </div>
-                ) : image ? (
+                ) : image && image.url ? (
                   <Image
                     src={image.url}
                     alt={image.alt || title?.text || 'Image'}

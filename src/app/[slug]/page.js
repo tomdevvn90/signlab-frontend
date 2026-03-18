@@ -65,7 +65,7 @@ export default async function DynamicPage({ params }) {
               <h1 className="text-4xl lg:text-5xl font-bold mb-8 text-center">
                 {pageData.title}
               </h1>
-              <div 
+              <div
                 className="wp-content"
                 dangerouslySetInnerHTML={{ __html: pageData.content }}
               />

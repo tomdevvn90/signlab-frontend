@@ -452,7 +452,7 @@ const Form = ({ data }) => {
   return (
     <section className="bg-white flex flex-wrap justify-between">
       {/* Banner Image - Left */}
-      {banner_image && isBannerLeft && (
+      {bannerImageUrl && isBannerLeft && (
         <div className="w-full lg:w-1/2">
             <Image
             src={bannerImageUrl}
@@ -502,7 +502,7 @@ const Form = ({ data }) => {
         </div>
       </div>
       {/* Banner Image - Right */}
-      {banner_image && isBannerRight && (
+      {bannerImageUrl && isBannerRight && (
         <div className="w-full lg:w-1/2">
             <Image
             src={bannerImageUrl}
