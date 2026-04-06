@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
 const NavigationSection = ({ data }) => {
@@ -25,21 +24,12 @@ const NavigationSection = ({ data }) => {
     >
       <div className="relative w-full h-[250px] sm:h-[300px] md:h-auto md:w-1/2 lg:w-2/3 overflow-hidden">
         {/* Default Background */}
-        <div 
-          className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${hoveredImage ? 'opacity-0' : 'opacity-100'}`}
-        >
-          {backgroundImage && (
-            <Image
-              src={backgroundImage}
-              alt="Navigation Background"
-              width={1400}
-              height={933}
-              quality={90}
-              className="w-full h-full object-cover"
-              priority
-            />
-          )}
-        </div>
+        {backgroundImage && (
+          <div 
+            className={`absolute inset-0 md:bg-fixed bg-cover bg-left md:bg-center bg-no-repeat transition-opacity duration-300 ease-in-out ${hoveredImage ? 'opacity-0' : 'opacity-100'}`}
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+        )}
 
         {/* Hover Backgrounds (Pre-loaded) */}
         {navMenuItems.map((item, index) => {
@@ -47,22 +37,14 @@ const NavigationSection = ({ data }) => {
           return (
             <div 
               key={`bg-${index}`}
-              className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${hoveredImage === item.image.url ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-            >
-              <Image
-                src={item.image.url}
-                alt={item.link?.title || "Navigation"}
-                width={1400}
-                height={933}
-                quality={90}
-                className="w-full h-full object-cover"
-              />
-            </div>
+              className={`absolute inset-0 md:bg-fixed bg-cover bg-left md:bg-center bg-no-repeat transition-opacity duration-300 ease-in-out ${hoveredImage === item.image.url ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+              style={{ backgroundImage: `url(${item.image.url})` }}
+            />
           );
         })}
       </div>
 
-      <div className={`w-full md:w-1/2 lg:w-1/3 flex flex-row md:flex-col justify-between md:justify-center pt-6 pb-6 md:pt-28 lg:pt-40 lg:pb-24 px-2 sm:px-4 md:px-8 lg:px-12 2xl:px-20 bg-${heroBgContent}`}>
+      <div className={`w-full md:w-1/2 lg:w-1/3 flex flex-row md:flex-col justify-between md:justify-center pt-6 pb-6 md:pt-28 lg:pt-40 lg:pb-24 px-2 sm:px-4 md:px-8 lg:px-12 2xl:px-16 bg-${heroBgContent}`}>
         {navHeading && (
           <div className="flex items-start px-3 md:hidden">
             <h3 className="text-blue-300 text-5xl font-extrabold [writing-mode:vertical-rl] rotate-180">{navHeading}</h3>
@@ -81,7 +63,7 @@ const NavigationSection = ({ data }) => {
                 className={`flex items-center justify-end text-${fontColor} hover:text-[#7bb6ff]`} 
                 href={itemUrl} 
                 target={target}
-                onMouseEnter={() => setHoveredImage(item.image ? item.image.url : null)}
+                onMouseEnter={() => setHoveredImage(item.image.url)}
                 onMouseLeave={() => setHoveredImage(null)}
               >
                 <h3 className="py-1 md:py-[6px] text-xl sm:text-2xl md:text-2xl xl:text-3xl 2xl:text-4xl font-extrabold text-right">
