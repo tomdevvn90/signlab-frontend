@@ -48,6 +48,7 @@ export default function BlogPost({ post }) {
             src={featuredImageUrl}
             alt={featuredImageAlt}
             fill
+            quality={90}
             className="object-cover"
             priority
           />
