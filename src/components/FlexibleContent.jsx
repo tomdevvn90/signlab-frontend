@@ -1,5 +1,6 @@
 import React from 'react';
 import HeroSection from './FlexibleSections/Hero';
+import HeroSlider from './FlexibleSections/HeroSlider';
 import NavigationSection from './FlexibleSections/NavigationSection';
 import CallToActionSection from './FlexibleSections/CallToAction';
 import ContentWithImage from './FlexibleSections/ContentWithImage';
@@ -20,6 +21,8 @@ const FlexibleContent = ({ blocks }) => {
     switch (block.acf_fc_layout) {
       case 'hero_section':
         return <HeroSection key={index} data={block} />;
+      case 'hero_slider':
+        return <HeroSlider key={index} data={block} />;
       case 'navigation_section':
         return <NavigationSection key={index} data={block} />;
       case 'cta_section':

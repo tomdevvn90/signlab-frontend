@@ -61,11 +61,12 @@ const Parallax = ({ data }) => {
   return (
     <section ref={sectionRef} className="relative h-[500px] lg:h-[70vh] xl:h-[80vh] lg:min-h-[600px] overflow-hidden">
       {/* Background Image with Parallax Effect */}
-      {imageData && imageData.url && isVisible && (
+      {imageData && imageData.url && (
         <div 
           className="fixed inset-0 w-full h-screen z-[-1] duration-300"
           style={{ 
-            willChange: 'transform'
+            willChange: 'transform',
+            opacity: isVisible ? 1 : 0
           }}
         >
           <div
@@ -80,11 +81,9 @@ const Parallax = ({ data }) => {
               src={imageData.url}
               alt={imageData.alt || 'Parallax background'}
               priority={false}
-              width={2048}
-              height={400}
-              className="object-cover object-center w-full h-full"
+              fill
+              className="object-cover object-center"
               sizes="100vw"
-              quality={100}
             />
           </div>
         </div>

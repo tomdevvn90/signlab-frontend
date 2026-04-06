@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,6 +8,22 @@ const Header = ({ headerData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Track which submenu is open by index
   const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   const pathname = usePathname();
   const logoUrl = headerData?.header_logo || '';
   const logoMobileUrl = headerData?.header_logo_mobile || '';
@@ -29,14 +45,15 @@ const Header = ({ headerData }) => {
 
   // Determine header classes based on menu state
   const headerClassName = [
-    "fixed md:absolute left-0 right-0 z-[999] transition-all duration-200",
-    isMenuOpen ? "bg-[rgb(0_81_188_/_0.98)] h-[100vh]" : "bg-transparent h-[150px]"
+    "fixed left-0 right-0 z-[999] transition-all duration-200",
+    isMenuOpen ? "bg-[rgb(0_81_188_/_0.98)] h-[100vh]" : "bg-transparent h-[150px]",
+    isScrolled ? "header-sticky" : ""
   ].join(' ');
 
   return (
     <header className={headerClassName}>
       <div className="mx-auto">
-        <div className="flex justify-between items-center px-6 py-6 md:px-8 md:py-8 lg:px-12 2xl:py-14 2xl:px-20 bg-white md:bg-transparent shadow-sm sm:shadow-none">
+        <div className="header-inner flex justify-between items-center px-6 py-6 md:px-8 md:py-8 lg:px-12 2xl:py-14 2xl:px-20 bg-white md:bg-transparent shadow-sm sm:shadow-none transition-all duration-300">
           {/* Logo */}
           <div className="flex items-center">
             <button className="flex items-center" onClick={toggleMenu}>
