@@ -34,6 +34,7 @@ const NavigationSection = ({ data }) => {
               alt="Navigation Background"
               width={1400}
               height={933}
+              quality={90}
               className="w-full h-full object-cover"
               priority
             />
@@ -53,6 +54,7 @@ const NavigationSection = ({ data }) => {
                 alt={item.link?.title || "Navigation"}
                 width={1400}
                 height={933}
+                quality={90}
                 className="w-full h-full object-cover"
               />
             </div>
