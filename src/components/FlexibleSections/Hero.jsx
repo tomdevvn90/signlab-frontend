@@ -6,7 +6,8 @@ const HeroSection = ({ data }) => {
   const backgroundColor = data.hero_bg_color ? data.hero_bg_color : '#0051bc';
   const imageUrl = data.hero_bg_image?.url || null;
   const imageUrlMobile = data.hero_bg_img_mobile?.url || null;
-  const height = data.hero_section_height && data.hero_section_height > 0 ? data.hero_section_height + 'vh' : 'auto';
+  // Use dvh (dynamic viewport height) to perfectly fit the screen on mobile devices with bottom bars
+  const height = data.hero_section_height && data.hero_section_height > 0 ? data.hero_section_height + 'dvh' : 'auto';
   const isShowBounceArrow = data.hero_bounce_arrow ? data.hero_bounce_arrow : false;
   let paddingTopValue = data.hero_padding_top ? data.hero_padding_top : null;
   let paddingBottomValue = data.hero_padding_bottom ? data.hero_padding_bottom : null;
