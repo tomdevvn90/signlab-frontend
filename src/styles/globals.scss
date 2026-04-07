@@ -569,6 +569,16 @@ header.header-sticky .header-inner {
   --yarl__icon_size: 34px;
 }
 
+.hero-section {
+  background-image: var(--hero-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  @media (max-width: 767px) {
+    background-image: var(--hero-bg-image-mobile);
+  }
+}
+
 .hero-slider {
   // Hero Slider pagination dots
   .hero-slider-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {

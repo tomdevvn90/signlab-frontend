@@ -4,7 +4,8 @@ import BounceArrow from '../common/BounceArrow'
 const HeroSection = ({ data }) => {
 
   const backgroundColor = data.hero_bg_color ? data.hero_bg_color : '#0051bc';
-  const imageUrl = data.hero_bg_image.url ? data.hero_bg_image.url : null;
+  const imageUrl = data.hero_bg_image?.url || null;
+  const imageUrlMobile = data.hero_bg_img_mobile?.url || null;
   const height = data.hero_section_height && data.hero_section_height > 0 ? data.hero_section_height + 'vh' : 'auto';
   const isShowBounceArrow = data.hero_bounce_arrow ? data.hero_bounce_arrow : false;
   let paddingTopValue = data.hero_padding_top ? data.hero_padding_top : null;
@@ -102,11 +103,9 @@ const HeroSection = ({ data }) => {
   // Uses CSS calc() with --hero-padding-scale for responsive padding
   const sectionStyle = (!videoUrl && !videoUrlMobile && imageUrl)
     ? {
+        '--hero-bg-image': `url('${imageUrl}')`,
+        '--hero-bg-image-mobile': imageUrlMobile ? `url('${imageUrlMobile}')` : `url('${imageUrl}')`,
         backgroundColor: backgroundColor,
-        backgroundImage: `url('${imageUrl}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
         height: `${height}`,
         paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
         paddingBottom: `calc(${paddingBottomValue}px * var(--hero-padding-scale, 1))`
