@@ -135,6 +135,7 @@ export async function processFlexibleContent(acfData) {
     "background_video_mobile",
     "hero_bg_video_url",
     "hero_bg_video_url_mobile",
+    "hero_bg_img_mobile",
   ]);
 
   function isLikelyMediaFieldKey(key = "") {
