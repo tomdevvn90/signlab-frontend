@@ -13,7 +13,7 @@ export async function POST(request) {
     }
 
     // Replace with your WordPress site URL
-    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://signlab.com.au/staging/wp-json';
+    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json';
 
     // Prepare data for submission to WordPress REST API
     const submissionData = new FormData();
