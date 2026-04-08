@@ -53,47 +53,26 @@ const HeroSection = ({ data }) => {
         className="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
-        {/* Desktop video */}
+        {/* Desktop video or fallback for mobile */}
         {videoUrl && (
           <video
-            className="hidden sm:block w-full h-full object-cover"
-            autoPlay loop muted playsInline
-            poster={imageUrl || undefined}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          >
-            <source src={videoUrl} type="video/mp4" /> {/* Optionally add webm/ogg sources */}
-          </video>
-        )}
-        {/* Mobile video */}
-        {videoUrlMobile && (
-          <video
-            className="block sm:hidden w-full h-full object-cover"
-            autoPlay loop muted playsInline
-            poster={imageUrl || undefined}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          >
-            <source src={videoUrlMobile} type="video/mp4" />
-          </video>
-        )}
-        {/* Fallback: If only one video, show on all screens */}
-        {!videoUrl && videoUrlMobile && (
-          <video
-            className="w-full h-full object-cover"
-            autoPlay loop muted playsInline
-            poster={imageUrl || undefined}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          >
-            <source src={videoUrlMobile} type="video/mp4" />
-          </video>
-        )}
-        {!videoUrlMobile && videoUrl && (
-          <video
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover ${videoUrlMobile ? 'hidden md:block' : ''}`}
             autoPlay loop muted playsInline
             poster={imageUrl || undefined}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           >
             <source src={videoUrl} type="video/mp4" />
+          </video>
+        )}
+        {/* Mobile-only video */}
+        {videoUrlMobile && (
+          <video
+            className="block md:hidden w-full h-full object-cover"
+            autoPlay loop muted playsInline
+            poster={imageUrlMobile || imageUrl || undefined}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          >
+            <source src={videoUrlMobile} type="video/mp4" />
           </video>
         )}
       </div>
@@ -102,23 +81,18 @@ const HeroSection = ({ data }) => {
 
   // Compose background style for fallback image if no video
   // Uses CSS calc() with --hero-padding-scale for responsive padding
-  const sectionStyle = (!videoUrl && !videoUrlMobile && imageUrl)
-    ? {
-        '--hero-bg-image': `url('${imageUrl}')`,
-        '--hero-bg-image-mobile': imageUrlMobile ? `url('${imageUrlMobile}')` : `url('${imageUrl}')`,
-        backgroundColor: backgroundColor,
-        height: `${height}`,
-        paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
-        paddingBottom: `calc(${paddingBottomValue}px * var(--hero-padding-scale, 1))`
-      }
-    : {
-      height: `${height}`,
-      paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
-      paddingBottom: `calc(${paddingBottomValue}px * var(--hero-padding-scale, 1))`,
-      backgroundColor: backgroundColor,
-    };
+  const sectionStyle = {
+    '--hero-bg-image': imageUrl ? `url('${imageUrl}')` : 'none',
+    '--hero-bg-image-mobile': imageUrlMobile ? `url('${imageUrlMobile}')` : (imageUrl ? `url('${imageUrl}')` : 'none'),
+    backgroundColor: backgroundColor,
+    height: `${height}`,
+    paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
+    paddingBottom: `calc(${paddingBottomValue}px * var(--hero-padding-scale, 1))`
+  };
 
-  const isNoOverlay = !videoUrl && !videoUrlMobile && !imageUrl;
+  const hasBackground = videoUrl || videoUrlMobile || imageUrl || imageUrlMobile;
+  const isNoOverlay = !hasBackground;
+  
   const overlayOpacity = data.hero_bg_overlay_opacity && data.hero_bg_overlay_opacity > 0 ? data.hero_bg_overlay_opacity / 100 : 0;
   const overlayColor = data.hero_bg_overlay_color ? data.hero_bg_overlay_color : '#000000';
   const overlayStyle = {

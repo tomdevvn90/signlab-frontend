@@ -32,9 +32,17 @@ body {
   }
 }
 
+html.no-scroll {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
 body {
   color: var(--text-color);
   background: var(--bg-color);
+  &.no-scroll {
+    overflow: hidden;
+  }
 }
 
 a {

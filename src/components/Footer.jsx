@@ -148,7 +148,7 @@ const Footer = ({ footerData, pageData }) => {
                 const rel = item.open_in_new_tab ? 'noopener noreferrer' : undefined;
                 const isExt = isExternalUrl(item.link);
                 return (
-                  <li key={idx} className="text-white sm:px-6 sm:border-r-4 last:border-r-0 leading-none">
+                  <li key={idx} className="text-white sm:px-[20px] sm:border-r-[3px] last:border-r-0 leading-none">
                     {isExt ? (
                       <a
                         className="hover:text-[#7bb6ff]"
