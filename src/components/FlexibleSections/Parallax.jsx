@@ -45,7 +45,10 @@ const Parallax = ({ data }) => {
   if (!data) return null;
 
   const imageData = data.background_image;
-  const fontColor = data.font_color ? data.font_color : 'text-white';
+  const imageDataMobile = data.bg_img_mobile;
+  const hasDesktopImage = !!imageData?.url;
+  const hasMobileImage = !!imageDataMobile?.url;
+  const fontColor = data.font_color ? data.font_color : '#ffffff';
   const overlayOpacity = data.overlay_opacity && data.overlay_opacity > 0 ? data.overlay_opacity / 100 : 0;
   const overlayBackgroundColor = data.overlay_background_color ? data.overlay_background_color : 'black';
   const overlayStyle = {
@@ -61,7 +64,7 @@ const Parallax = ({ data }) => {
   return (
     <section ref={sectionRef} className="relative h-[500px] lg:h-[70vh] xl:h-[80vh] lg:min-h-[600px] overflow-hidden">
       {/* Background Image with Parallax Effect */}
-      {imageData && imageData.url && (
+      {(hasDesktopImage || hasMobileImage) && (
         <div 
           className="fixed inset-0 w-full h-screen z-[-1] duration-300"
           style={{ 
@@ -77,14 +80,28 @@ const Parallax = ({ data }) => {
               willChange: 'transform'
             }}
           >
-            <Image
-              src={imageData.url}
-              alt={imageData.alt || 'Parallax background'}
-              priority={false}
-              fill
-              className="object-cover object-center"
-              sizes="100vw"
-            />
+            {hasDesktopImage && (
+              <Image
+                src={imageData.url}
+                alt={imageData.alt || 'Parallax background'}
+                priority={false}
+                fill
+                className={`object-cover object-center ${hasMobileImage ? 'hidden md:block' : ''}`}
+                sizes="100vw"
+                quality={100}
+              />
+            )}
+            {hasMobileImage && (
+              <Image
+                src={imageDataMobile.url}
+                alt={imageDataMobile.alt || 'Parallax background mobile'}
+                priority={false}
+                fill
+                className={`object-cover object-center ${hasDesktopImage ? 'md:hidden' : ''}`}
+                sizes="100vw"
+                quality={90}
+              />
+            )}
           </div>
         </div>
       )}

@@ -24,6 +24,22 @@ const Header = ({ headerData }) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Prevent scrolling when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add('no-scroll');
+      document.documentElement.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
+    }
+
+    return () => {
+      document.body.classList.remove('menu-open');
+      document.documentElement.classList.remove('menu-open');
+    };
+  }, [isMenuOpen]);
   const pathname = usePathname();
   const logoUrl = headerData?.header_logo || '';
   const logoMobileUrl = headerData?.header_logo_mobile || '';
@@ -108,8 +124,8 @@ const Header = ({ headerData }) => {
 
         {/* Main Menu */}
         {isMenuOpen && (
-          <nav className="px-6 2xl:px-20 slide-in-right py-16 md:py-0">
-            <ul className="">
+          <nav className="px-8 lg:px-10 2xl:px-20 slide-in-right py-16 md:py-0">
+            <ul className="overflow-y-auto max-h-[80vh] scrollbar-hide">
               {menuData && menuData.map((item, index) => {
                 const hasSubMenu = item.sub_menu && item.sub_menu.length > 0;
                 const isSubMenuOpen = openSubMenuIndex === index;
