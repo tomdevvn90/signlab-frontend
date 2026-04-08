@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
     }
 
     // Replace with your WordPress site URL
-    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://signlab.com.au/staging/wp-json';
+    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json';
 
     console.log(`Fetching Gravity Form with ID: ${id}`);
 
