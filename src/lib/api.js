@@ -3,13 +3,13 @@ const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL
 
 function getWpAuthHeader() {
   // Preferred: precomputed Basic token (base64 of username:application_password)
-  if (process.env.WP_API_BASIC_AUTH_TOKEN) {
-    return `Basic ${process.env.WP_API_BASIC_AUTH_TOKEN}`;
+  if (process.env.NEXT_PUBLIC_WP_API_BASIC_AUTH_TOKEN) {
+    return `Basic ${process.env.NEXT_PUBLIC_WP_API_BASIC_AUTH_TOKEN}`;
   }
 
   // Alternative: compose from username + application password
-  if (process.env.WP_API_USERNAME && process.env.WP_API_APPLICATION_PASSWORD) {
-    const credentials = `${process.env.WP_API_USERNAME}:${process.env.WP_API_APPLICATION_PASSWORD}`;
+  if (process.env.NEXT_PUBLIC_WP_API_USERNAME && process.env.NEXT_PUBLIC_WP_API_APPLICATION_PASSWORD) {
+    const credentials = `${process.env.NEXT_PUBLIC_WP_API_USERNAME}:${process.env.NEXT_PUBLIC_WP_API_APPLICATION_PASSWORD}`;
     return `Basic ${Buffer.from(credentials).toString('base64')}`;
   }
 

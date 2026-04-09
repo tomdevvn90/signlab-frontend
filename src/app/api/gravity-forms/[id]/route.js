@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
 
   try {
     // Check if required environment variables are set
-    if (!process.env.GRAVITY_FORMS_CONSUMER_KEY || !process.env.GRAVITY_FORMS_CONSUMER_SECRET) {
+    if (!process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_KEY || !process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_SECRET) {
       console.error('Missing Gravity Forms API credentials');
       return NextResponse.json(
         { error: 'API credentials not configured' },
@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
     }
 
     // Replace with your WordPress site URL
-    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json';
+    const wpBaseUrl = process.env.NEXT_PUBLIC_GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json';
 
     console.log(`Fetching Gravity Form with ID: ${id}`);
 
@@ -33,7 +33,7 @@ export async function GET(request, { params }) {
     const response = await fetch(`${wpBaseUrl}/gf/v2/forms/${id}`, {
       headers: {
         'Authorization': `Basic ${Buffer.from(
-          `${process.env.GRAVITY_FORMS_CONSUMER_KEY}:${process.env.GRAVITY_FORMS_CONSUMER_SECRET}`
+          `${process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_SECRET}`
         ).toString('base64')}`,
         'Content-Type': 'application/json',
         'User-Agent': 'SignLab-Frontend/1.0',
