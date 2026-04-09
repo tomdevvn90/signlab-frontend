@@ -18,6 +18,7 @@ const nextConfig = {
       { protocol: 'http', hostname: 'localhost' },
       { protocol: 'https', hostname: 'img.youtube.com' },
       { protocol: 'https', hostname: 'dashboard.signlab.com.au' },
+      { protocol: 'http', hostname: '43.250.142.29' },
     ],
   },
 }
