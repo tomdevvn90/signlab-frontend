@@ -27,7 +27,7 @@ const Form = ({ data }) => {
       const response = await fetch(`/api/gravity-forms/${gravity_form_id}`);
       
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       
@@ -198,17 +198,23 @@ const Form = ({ data }) => {
         method: 'POST',
         body: formDataToSubmit,
       });
-
+      
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
       
       if (result.is_valid || result.status === 'success') {
+        // Handle redirect if provided
+        if (result.redirect_url) {
+          window.location.href = result.redirect_url;
+          return;
+        }
+
         setSubmitStatus('success');
-        setSubmitMessage(formData?.confirmations?.['51794abf1ee7a']?.message || 'Form submitted successfully!');
+        setSubmitMessage(result.confirmation_message || 'Form submitted successfully!');
         
         // Reset form
         const initialValues = {};
