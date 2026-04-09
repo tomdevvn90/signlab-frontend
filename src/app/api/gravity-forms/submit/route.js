@@ -13,7 +13,7 @@ export async function POST(request) {
     }
 
     // Replace with your WordPress site URL
-    const wpBaseUrl = process.env.GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json';
+    const wpBaseUrl = process.env.NEXT_PUBLIC_GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json';
 
     // Prepare data for submission to WordPress REST API
     const submissionData = new FormData();
@@ -28,7 +28,7 @@ export async function POST(request) {
       method: 'POST',
       headers: {
         'Authorization': `Basic ${Buffer.from(
-          `${process.env.GRAVITY_FORMS_CONSUMER_KEY}:${process.env.GRAVITY_FORMS_CONSUMER_SECRET}`
+          `${process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_SECRET}`
         ).toString('base64')}`,
       },
       body: submissionData,

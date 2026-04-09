@@ -46,7 +46,7 @@ yarn install
 
 ```env
 NEXT_PUBLIC_WP_API_URL=https://your-wordpress-site.com/wp-json/wp/v2
-WP_API_APPLICATION_PASSWORD=your-application-password
+NEXT_PUBLIC_WP_API_APPLICATION_PASSWORD=your-application-password
 ```
 
 4. **Remote Image Domains Configuration**
