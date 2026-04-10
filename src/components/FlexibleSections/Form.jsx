@@ -41,10 +41,16 @@ const Form = ({ data }) => {
         setFormData(data);
         setFormFields(data.fields || []);
         
-        // Initialize form values
+        // Initialize form values for all fields, including those with sub-inputs (checkboxes, names, etc.)
         const initialValues = {};
         data.fields?.forEach(field => {
-          initialValues[field.id] = '';
+          if (field.inputs) {
+            field.inputs.forEach(input => {
+              initialValues[input.id] = input.defaultValue || '';
+            });
+          } else {
+            initialValues[field.id] = field.defaultValue || '';
+          }
         });
         setFormValues(initialValues);
       } else {
@@ -171,8 +177,16 @@ const Form = ({ data }) => {
       
       // Add regular form values
       Object.keys(formValues).forEach(key => {
-        if (formValues[key] !== '') {
-          formDataToSubmit.append(`input_${key}`, formValues[key]);
+        const value = formValues[key];
+        if (value !== '' && value !== null && value !== undefined) {
+          if (Array.isArray(value)) {
+            // For multi-select fields, append each value with [] notation
+            value.forEach(item => {
+              formDataToSubmit.append(`input_${key}[]`, item);
+            });
+          } else {
+            formDataToSubmit.append(`input_${key}`, value);
+          }
         }
       });
       
@@ -237,7 +251,7 @@ const Form = ({ data }) => {
   };
 
   const renderField = (field) => {
-    const { type, id, label, isRequired, placeholder, choices, layoutGridColumnSpan, maxLength, allowedExtensions, multipleFiles, maxFileSize } = field;
+    const { type, id, label, isRequired, placeholder, choices, layoutGridColumnSpan, maxLength, allowedExtensions, multipleFiles, maxFileSize, description, content, checkboxLabel, inputs } = field;
     
     // Helper function to get field class based on layoutGridColumnSpan
     const getFieldClass = () => {
@@ -246,19 +260,42 @@ const Form = ({ data }) => {
       }
       // Default to full width if not specified
       return 'form-field-12';
-    };    
-    
+    };
+
+    const labelElement = (
+      <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
+        {label} {isRequired && <span className="text-red-500">*</span>}
+      </label>
+    );
+
+    const descriptionElement = description && (
+      <p className="text-sm text-gray-600 mt-1 mb-2 leading-relaxed">{description}</p>
+    );
+
     switch (type) {
+      case 'section':
+        return (
+          <div key={id} className="form-field-12 mt-10 mb-4 border-b border-gray-200 pb-2">
+            <h3 className="text-2xl font-bold text-primary">{label}</h3>
+            {descriptionElement}
+          </div>
+        );
+
+      case 'html':
+        return (
+          <div key={id} className="form-field-12 my-6" dangerouslySetInnerHTML={{ __html: content }} />
+        );
+
       case 'text':
       case 'email':
       case 'phone':
+      case 'number':
+      case 'url':
         return (
           <div key={id} className={getFieldClass()}>
-            <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
-              {label} {isRequired && <span className="text-red-500">*</span>}
-            </label>
+            {labelElement}
             <input
-              type={type === 'phone' ? 'tel' : type}
+              type={type === 'phone' ? 'tel' : (type === 'url' ? 'url' : (type === 'number' ? 'number' : (type === 'email' ? 'email' : 'text')))}
               id={`input_${id}`}
               name={`input_${id}`}
               value={formValues[id] || ''}
@@ -268,15 +305,14 @@ const Form = ({ data }) => {
               maxLength={maxLength}
               className="w-full h-12 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {descriptionElement}
           </div>
         );
         
       case 'textarea':
         return (
           <div key={id} className={getFieldClass()}>
-            <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
-              {label} {isRequired && <span className="text-red-500">*</span>}
-            </label>
+            {labelElement}
             <textarea
               id={`input_${id}`}
               name={`input_${id}`}
@@ -288,31 +324,170 @@ const Form = ({ data }) => {
               rows={5}
               className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {descriptionElement}
           </div>
         );
         
       case 'select':
+      case 'choice':
         return (
           <div key={id} className={getFieldClass()}>
-            <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
-              {label} {isRequired && <span className="text-red-500">*</span>}
-            </label>
+            {labelElement}
             <select
               id={`input_${id}`}
               name={`input_${id}`}
               value={formValues[id] || ''}
               onChange={(e) => handleInputChange(id, e.target.value)}
               required={isRequired}
-              className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-12 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             >
-              <option value="">Select an option</option>
+              <option value="">{placeholder || 'Select an option'}</option>
               {choices?.map((choice, index) => (
                 <option key={index} value={choice.value}>
                   {choice.text}
                 </option>
               ))}
             </select>
+            {descriptionElement}
           </div>
+        );
+
+      case 'multiselect':
+        return (
+          <div key={id} className={getFieldClass()}>
+            {labelElement}
+            <select
+              id={`input_${id}`}
+              name={`input_${id}`}
+              multiple
+              value={Array.isArray(formValues[id]) ? formValues[id] : []}
+              onChange={(e) => {
+                const options = e.target.options;
+                const values = [];
+                for (let i = 0; i < options.length; i++) {
+                  if (options[i].selected) values.push(options[i].value);
+                }
+                handleInputChange(id, values);
+              }}
+              required={isRequired}
+              className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
+            >
+              {choices?.map((choice, index) => (
+                <option key={index} value={choice.value}>
+                  {choice.text}
+                </option>
+              ))}
+            </select>
+            {descriptionElement}
+          </div>
+        );
+
+      case 'radio':
+        return (
+          <div key={id} className={getFieldClass()}>
+            <label className="block text-gray-700 mb-3 uppercase font-medium">
+              {label} {isRequired && <span className="text-red-500">*</span>}
+            </label>
+            <div className="flex flex-col gap-3">
+              {choices?.map((choice, index) => (
+                <label key={index} className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name={`input_${id}`}
+                    value={choice.value}
+                    checked={formValues[id] === choice.value}
+                    onChange={(e) => handleInputChange(id, e.target.value)}
+                    required={isRequired}
+                    className="w-5 h-5 text-blue-600 border-gray-400 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-800 group-hover:text-blue-600 transition-colors">{choice.text}</span>
+                </label>
+              ))}
+            </div>
+            {descriptionElement}
+          </div>
+        );
+
+      case 'checkbox':
+        return (
+          <div key={id} className={getFieldClass()}>
+            <label className="block text-gray-700 mb-3 uppercase font-medium">
+              {label} {isRequired && <span className="text-red-500">*</span>}
+            </label>
+            <div className="flex flex-col gap-3">
+              {inputs ? (
+                inputs.map((input, index) => {
+                  const choice = choices ? choices[index] : null;
+                  if (!choice) return null;
+                  return (
+                    <label key={input.id} className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        id={`input_${input.id}`}
+                        name={`input_${input.id}`}
+                        checked={!!formValues[input.id]}
+                        onChange={(e) => handleInputChange(input.id, e.target.checked ? (choice.value || choice.text) : '')}
+                        className="w-5 h-5 text-blue-600 rounded border-gray-400 focus:ring-blue-500"
+                      />
+                      <span className="text-gray-800 group-hover:text-blue-600 transition-colors">{input.label}</span>
+                    </label>
+                  );
+                })
+              ) : (
+                choices?.map((choice, index) => {
+                  const choiceId = `${id}.${index + 1}`;
+                  return (
+                    <label key={index} className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        id={`input_${choiceId}`}
+                        name={`input_${choiceId}`}
+                        checked={!!formValues[choiceId]}
+                        onChange={(e) => handleInputChange(choiceId, e.target.checked ? choice.value : '')}
+                        className="w-5 h-5 text-blue-600 rounded border-gray-400 focus:ring-blue-500"
+                      />
+                      <span className="text-gray-800 group-hover:text-blue-600 transition-colors">{choice.text}</span>
+                    </label>
+                  );
+                })
+              )}
+            </div>
+            {descriptionElement}
+          </div>
+        );
+
+      case 'consent':
+        return (
+          <div key={id} className="form-field-12 mb-6">
+            <div className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                id={`input_${id}.1`}
+                name={`input_${id}.1`}
+                checked={!!formValues[`${id}.1`]}
+                onChange={(e) => handleInputChange(`${id}.1`, e.target.checked ? '1' : '')}
+                required={isRequired}
+                className="w-5 h-5 mt-1 text-blue-600 rounded border-gray-400 focus:ring-blue-500 flex-shrink-0"
+              />
+              <label 
+                htmlFor={`input_${id}.1`} 
+                className="text-gray-700 cursor-pointer text-sm leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: checkboxLabel || label }}
+              />
+            </div>
+            {descriptionElement}
+          </div>
+        );
+
+      case 'hidden':
+        return (
+          <input
+            key={id}
+            type="hidden"
+            id={`input_${id}`}
+            name={`input_${id}`}
+            value={formValues[id] || field.defaultValue || ''}
+          />
         );
         
       case 'fileupload':
@@ -321,11 +496,8 @@ const Form = ({ data }) => {
         
         return (
           <div key={id} className={getFieldClass()}>
-            <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
-              {label} {isRequired && <span className="text-red-500">*</span>}
-            </label>
+            {labelElement}
             
-            {/* Hidden native file input */}
             <input
               type="file"
               id={`input_${id}`}
@@ -338,7 +510,6 @@ const Form = ({ data }) => {
               className="hidden"
             />
             
-            {/* Custom styled button */}
             <button
               type="button"
               onClick={() => fileInputRefs.current[id]?.click()}
@@ -363,11 +534,9 @@ const Form = ({ data }) => {
               </p>
             )}
             
-            {/* Display uploaded files */}
             {fileUploads[id] && (
               <div className="mt-3 flex gap-3 flex-wrap">
                 {Array.isArray(fileUploads[id]) ? (
-                  // Multiple files
                   fileUploads[id].map((file, index) => (
                     <div 
                       key={index}
@@ -388,7 +557,6 @@ const Form = ({ data }) => {
                     </div>
                   ))
                 ) : (
-                  // Single file
                   <div className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
                     <span className="text-sm text-gray-800 truncate flex-1">{fileUploads[id].name}</span>
                     <button
@@ -406,10 +574,39 @@ const Form = ({ data }) => {
                 )}
               </div>
             )}
+            {descriptionElement}
           </div>
         );
         
       default:
+        // Generic support for composite fields (Name, Address) if they have predefined inputs
+        if (inputs && inputs.length > 0) {
+          return (
+            <div key={id} className="form-field-12 border border-gray-200 p-6 rounded-md bg-gray-50/50 mb-4">
+              <label className="block text-gray-700 mb-4 uppercase font-bold border-b border-gray-200 pb-2">
+                {label} {isRequired && <span className="text-red-500">*</span>}
+              </label>
+              <div className="grid grid-cols-12 gap-4">
+                {inputs.map(input => (
+                  <div key={input.id} className="col-span-12 md:col-span-6">
+                    <label htmlFor={`input_${input.id}`} className="block text-xs text-gray-500 uppercase font-medium mb-1">
+                      {input.label}
+                    </label>
+                    <input
+                      type="text"
+                      id={`input_${input.id}`}
+                      name={`input_${input.id}`}
+                      value={formValues[input.id] || ''}
+                      onChange={(e) => handleInputChange(input.id, e.target.value)}
+                      className="w-full h-10 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                    />
+                  </div>
+                ))}
+              </div>
+              {descriptionElement}
+            </div>
+          );
+        }
         return null;
     }
   };
