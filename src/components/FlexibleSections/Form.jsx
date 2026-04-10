@@ -263,7 +263,7 @@ const Form = ({ data }) => {
     };
 
     const labelElement = (
-      <label htmlFor={`input_${id}`} className="block text-gray-700 mb-1 uppercase font-medium">
+      <label htmlFor={`input_${id}`} className="inline-block text-gray-700 mb-1 uppercase font-medium">
         {label} {isRequired && <span className="text-red-500">*</span>}
       </label>
     );
@@ -385,12 +385,12 @@ const Form = ({ data }) => {
       case 'radio':
         return (
           <div key={id} className={getFieldClass()}>
-            <label className="block text-gray-700 mb-3 uppercase font-medium">
+            <label className="inline-block text-gray-700 mb-3 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
             <div className="flex flex-col gap-3">
               {choices?.map((choice, index) => (
-                <label key={index} className="flex items-center gap-3 cursor-pointer group">
+                <label key={index} className="w-fit inline-flex items-center gap-3 cursor-pointer group">
                   <input
                     type="radio"
                     name={`input_${id}`}
@@ -411,7 +411,7 @@ const Form = ({ data }) => {
       case 'checkbox':
         return (
           <div key={id} className={getFieldClass()}>
-            <label className="block text-gray-700 mb-3 uppercase font-medium">
+            <label className="inline-block text-gray-700 mb-3 uppercase font-medium">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
             <div className="flex flex-col gap-3">
@@ -420,7 +420,7 @@ const Form = ({ data }) => {
                   const choice = choices ? choices[index] : null;
                   if (!choice) return null;
                   return (
-                    <label key={input.id} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={input.id} className="w-fit inline-flex items-center gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
                         id={`input_${input.id}`}
@@ -437,7 +437,7 @@ const Form = ({ data }) => {
                 choices?.map((choice, index) => {
                   const choiceId = `${id}.${index + 1}`;
                   return (
-                    <label key={index} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={index} className="w-fit inline-flex items-center gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
                         id={`input_${choiceId}`}
@@ -459,7 +459,7 @@ const Form = ({ data }) => {
       case 'consent':
         return (
           <div key={id} className="form-field-12 mb-6">
-            <div className="flex items-start gap-3 cursor-pointer group">
+            <div className="inline-flex items-start gap-3 cursor-pointer group">
               <input
                 type="checkbox"
                 id={`input_${id}.1`}
@@ -583,13 +583,13 @@ const Form = ({ data }) => {
         if (inputs && inputs.length > 0) {
           return (
             <div key={id} className="form-field-12 border border-gray-200 p-6 rounded-md bg-gray-50/50 mb-4">
-              <label className="block text-gray-700 mb-4 uppercase font-bold border-b border-gray-200 pb-2">
+              <label className="inline-block text-gray-700 mb-4 uppercase font-bold border-b border-gray-200 pb-2">
                 {label} {isRequired && <span className="text-red-500">*</span>}
               </label>
               <div className="grid grid-cols-12 gap-4">
                 {inputs.map(input => (
                   <div key={input.id} className="col-span-12 md:col-span-6">
-                    <label htmlFor={`input_${input.id}`} className="block text-xs text-gray-500 uppercase font-medium mb-1">
+                    <label htmlFor={`input_${input.id}`} className="inline-block text-xs text-gray-500 uppercase font-medium mb-1">
                       {input.label}
                     </label>
                     <input
