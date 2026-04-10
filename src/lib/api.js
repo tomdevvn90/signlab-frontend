@@ -92,10 +92,14 @@ export async function getMedia(mediaIds) {
   // If empty array, return empty data
   if (idsArray.length === 0) return { data: [], error: null };
 
-  // If only one ID, use the single endpoint for efficiency
+  // If only one ID, use the single endpoint for efficiency, but wrap in array for consistency
   if (idsArray.length === 1) {
     const url = `${WP_API_URL}/media/${idsArray[0]}`;
-    return fetchWpApi(url, 120);
+    const result = await fetchWpApi(url, 120);
+    if (result.data && !result.error) {
+      return { data: [result.data], error: null };
+    }
+    return result;
   }
 
   // WordPress REST API has a max per_page of 100, so we batch requests

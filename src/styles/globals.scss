@@ -582,8 +582,10 @@ header.header-sticky .header-inner {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  aspect-ratio: var(--hero-aspect-ratio, auto);
   @media (max-width: 767px) {
     background-image: var(--hero-bg-image-mobile);
+    aspect-ratio: var(--hero-aspect-ratio-mobile, var(--hero-aspect-ratio, auto));
   }
 }
 
