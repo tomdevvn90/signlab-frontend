@@ -1,11 +1,20 @@
 import React from 'react';
-import BounceArrow from '../common/BounceArrow'
+import BounceArrow from '../common/BounceArrow';
+import { getImageUrl } from '../../lib/utils';
 
 const HeroSection = ({ data }) => {
 
   const backgroundColor = data.hero_bg_color ? data.hero_bg_color : '#0051bc';
-  const imageUrl = data.hero_bg_image?.url || null;
-  const imageUrlMobile = data.hero_bg_img_mobile?.url || null;
+  const imageUrl = getImageUrl(data.hero_bg_image);
+  const imageUrlMobile = getImageUrl(data.hero_bg_img_mobile) || imageUrl;
+
+  const aspectRatio = data.hero_bg_image?.width && data.hero_bg_image?.height 
+    ? `${data.hero_bg_image.width} / ${data.hero_bg_image.height}` 
+    : 'auto';
+  const aspectRatioMobile = data.hero_bg_img_mobile?.width && data.hero_bg_img_mobile?.height 
+    ? `${data.hero_bg_img_mobile.width} / ${data.hero_bg_img_mobile.height}` 
+    : aspectRatio;
+
   // Use dvh (dynamic viewport height) to perfectly fit the screen on mobile devices with bottom bars
   const height = data.hero_section_height && data.hero_section_height > 0 ? data.hero_section_height + 'dvh' : 'auto';
   const isShowBounceArrow = data.hero_bounce_arrow ? data.hero_bounce_arrow : false;
@@ -84,6 +93,8 @@ const HeroSection = ({ data }) => {
   const sectionStyle = {
     '--hero-bg-image': imageUrl ? `url('${imageUrl}')` : 'none',
     '--hero-bg-image-mobile': imageUrlMobile ? `url('${imageUrlMobile}')` : (imageUrl ? `url('${imageUrl}')` : 'none'),
+    '--hero-aspect-ratio': height === 'auto' ? aspectRatio : 'auto',
+    '--hero-aspect-ratio-mobile': height === 'auto' ? aspectRatioMobile : 'auto',
     backgroundColor: backgroundColor,
     height: `${height}`,
     paddingTop: `calc(${paddingTopValue}px * var(--hero-padding-scale, 1))`,
@@ -144,7 +155,7 @@ const HeroSection = ({ data }) => {
         </div>
       </div>
       { isShowBounceArrow && (
-        <BounceArrow/>
+        <BounceArrow className={data.hero_section_height < 100 || !data.hero_section_height ? 'max-md:!bottom-12' : ''} />
       )}
     </section>
   );

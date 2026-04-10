@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-const BounceArrow = () => {
+const BounceArrow = ({ className = '' }) => {
     const handleClick = () => {
         window.scrollBy({
             top: window.innerHeight,
@@ -11,7 +11,7 @@ const BounceArrow = () => {
 
     return (
         <button 
-            className="bounce-arrow w-16 h-16 md:w-20 md:h-20 xl:w-24 xl:h-24 absolute left-1/2 bottom-24 md:bottom-12 -translate-x-1/2 z-50 bounce"
+            className={`bounce-arrow w-16 h-16 md:w-20 md:h-20 xl:w-24 xl:h-24 absolute left-1/2 bottom-24 md:bottom-12 -translate-x-1/2 z-50 bounce ${className}`}
             onClick={handleClick}
             aria-label="Scroll down"
             type="button"

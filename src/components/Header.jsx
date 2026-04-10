@@ -131,7 +131,7 @@ const Header = ({ headerData }) => {
                 const isSubMenuOpen = openSubMenuIndex === index;
                 return (
                   item.text && item.link && (
-                    <li key={index} className="text-center md:text-right text-white text-4xl lg:text-5xl" onClick={() => toggleSubMenu(index)}>
+                    <li key={index} className="text-center md:text-right text-white text-3xl md:text-4xl lg:text-5xl" onClick={() => toggleSubMenu(index)}>
                       <div className="flex align-center justify-center md:justify-end my-5 lg:my-6">
                         {hasSubMenu && (
                           <button
