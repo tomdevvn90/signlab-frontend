@@ -8,16 +8,15 @@ const SingleColumnContent = ({ data }) => {
   // Early return if no data
   if (!data) return null;
 
-  const {media_type, image, video_url, video_autoplay, video_control_bar, title, sub_title, content, image_position, content_align, padding_top, padding_bottom } = data;
+  const {media_type, image, image_mobile, video_url, video_url_mobile, video_autoplay, video_control_bar, title, sub_title, content, image_position, content_align, padding_top, padding_bottom } = data;
 
   // Early return if no title or content
-  if (!title?.text && !content && !image && !video_url) {
+  if (!title?.text && !content && !image && !image_mobile && !video_url && !video_url_mobile) {
     return null;
   }
 
   // Determine text alignment class
   const titleAlignClass = content_align === 'left' ? 'text-left' : content_align === 'right' ? 'text-right' : 'text-center';
-
   const dividerAlignClass = content_align === 'left' ? 'ml-0 mr-auto' : content_align === 'right' ? 'mr-0 ml-auto' : 'mx-auto';
 
   // Function to render the content with proper HTML parsing
@@ -53,13 +52,13 @@ const SingleColumnContent = ({ data }) => {
     switch (position?.toLowerCase()) {
       case 'left':
         return {
-          container: 'flex flex-col lg:flex-row gap-12 lg:gap-20',
+          container: 'flex flex-col lg:flex-row gap-8 md:gap-12 xl:gap-20',
           image: 'w-full order-2 lg:order-1',
           content: 'w-full order-1 lg:order-2'
         };
       case 'right':
         return {
-          container: 'flex flex-col lg:flex-row gap-12 lg:gap-20',
+          container: 'flex flex-col lg:flex-row gap-8 md:gap-12 xl:gap-20',
           image: 'w-full order-2',
           content: 'w-full order-1'
         };
@@ -93,29 +92,59 @@ const SingleColumnContent = ({ data }) => {
           {/* Layout Container for Image/Video + Content */}
           <div className={layoutClasses.container}>
             {/* Media Section */}
-            {(image || video_url) && (
+            {(image || image_mobile || video_url || video_url_mobile) && (
               <div className={`${layoutClasses.image}`}>
-                {media_type === 'video' && video_url ? (
-                  <div className="relative w-full h-fit lg:h-full min-h-[auto] sm:min-h-[400px] lg:min-h-[500px]">
-                    <VideoPlayer 
-                      src={video_url} 
-                      alt={title?.text || 'Video'} 
-                      className="inset-0 w-full h-full"
-                      autoplay={video_autoplay !== false}
-                      controls={video_control_bar !== false}
-                    />
-                  </div>
-                ) : image && image.url ? (
-                  <Image
-                    src={image.url}
-                    alt={image.alt || title?.text || 'Image'}
-                    width={1024}
-                    height={1024}
-                    sizes="100vw"
-                    className="object-cover w-full h-full max-h-[400px] lg:max-h-none"
-                    priority={false}
-                  />
-                ) : null}
+                {media_type === 'video' ? (
+                  <>
+                    {video_url && (
+                      <div className={`relative w-full h-fit lg:h-full min-h-[auto] sm:min-h-[400px] lg:min-h-[500px] ${video_url_mobile ? 'hidden md:block' : ''}`}>
+                        <VideoPlayer 
+                          src={video_url} 
+                          alt={title?.text || 'Video'} 
+                          className="inset-0 w-full h-full"
+                          autoplay={video_autoplay !== false}
+                          controls={video_control_bar !== false}
+                        />
+                      </div>
+                    )}
+                    {video_url_mobile && (
+                      <div className={`relative w-full h-fit lg:h-full min-h-[auto] sm:min-h-[400px] lg:min-h-[500px] md:hidden`}>
+                        <VideoPlayer 
+                          src={video_url_mobile} 
+                          alt={title?.text || 'Video Mobile'} 
+                          className="inset-0 w-full h-full"
+                          autoplay={video_autoplay !== false}
+                          controls={video_control_bar !== false}
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {image?.url && (
+                      <Image
+                        src={image.url}
+                        alt={image.alt || title?.text || 'Image'}
+                        width={image.width || 1024}
+                        height={image.height || 1024}
+                        sizes="100vw"
+                        className={`object-cover w-full h-full max-h-[400px] lg:max-h-none ${image_mobile?.url ? 'hidden md:block' : ''}`}
+                        priority={false}
+                      />
+                    )}
+                    {image_mobile?.url && (
+                      <Image
+                        src={image_mobile.url}
+                        alt={image_mobile.alt || image?.alt || title?.text || 'Image'}
+                        width={image_mobile.width || 1024}
+                        height={image_mobile.height || 1024}
+                        sizes="100vw"
+                        className={`object-cover w-full h-full max-h-[400px] lg:max-h-none md:hidden`}
+                        priority={false}
+                      />
+                    )}
+                  </>
+                )}
               </div>
             )}
 

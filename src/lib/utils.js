@@ -99,6 +99,7 @@ export async function processFlexibleContent(acfData) {
   const MEDIA_FIELD_KEYS = new Set([
     // Generic media keys
     "image",
+    "image_mobile",
     "images",
     "img",
     "gallery",
