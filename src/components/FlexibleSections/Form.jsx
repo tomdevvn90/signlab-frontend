@@ -682,9 +682,10 @@ const Form = ({ data }) => {
             )}
             
             {submitStatus && (
-              <div className={`mb-6 p-4 rounded-md text-center ${submitStatus === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {submitMessage}
-              </div>
+              <div 
+                className={`mb-6 p-4 rounded-md text-center ${submitStatus === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                dangerouslySetInnerHTML={{ __html: submitMessage }}
+              />
             )}
 
             <form onSubmit={handleSubmit} className="contact-form">
