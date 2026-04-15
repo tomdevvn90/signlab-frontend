@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request, { params }) {
   const { id } = params;
 
@@ -38,6 +41,7 @@ export async function GET(request, { params }) {
         'Content-Type': 'application/json',
         'User-Agent': 'SignLab-Frontend/1.0',
       },
+      cache: 'no-store',
       signal: controller.signal,
     });
 
@@ -62,7 +66,9 @@ export async function GET(request, { params }) {
 
     return NextResponse.json(formData, {
       headers: {
-        'Cache-Control': 'public, max-age=300, s-maxage=300', // Cache for 5 minutes
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
     });
 

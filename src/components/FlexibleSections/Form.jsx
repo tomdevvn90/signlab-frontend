@@ -24,7 +24,9 @@ const Form = ({ data }) => {
       setLoading(true);
       setError('');
       
-      const response = await fetch(`/api/gravity-forms/${gravity_form_id}`);
+      const response = await fetch(`/api/gravity-forms/${gravity_form_id}`, {
+        cache: 'no-store'
+      });
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
