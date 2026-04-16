@@ -88,12 +88,12 @@ const GoogleReviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch('/api/google-reviews');
+        const res = await fetch('/api/reviews');
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         setReviews(data.reviews || []);
         setRating(data.rating || 0);
-        setTotalReviews(data.totalReviews || 0);
+        setTotalReviews(data.user_ratings_total || 0);
       } catch {
         setError(true);
       } finally {
