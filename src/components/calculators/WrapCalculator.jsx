@@ -49,18 +49,19 @@ const DESIGN_OPTIONS = [
   { key: 'artwork', label: 'I have artwork',   desc: 'Print-ready files supplied' },
 ]
 
-function getFleetDiscount(qty) {
-  if (qty >= 10) return FLEET_DISCOUNT[10]
-  if (qty >= 5)  return FLEET_DISCOUNT[5]
-  if (qty >= 3)  return FLEET_DISCOUNT[3]
+function getFleetDiscount(qty, fleetDiscount) {
+  if (qty >= 10) return fleetDiscount[10]
+  if (qty >= 5)  return fleetDiscount[5]
+  if (qty >= 3)  return fleetDiscount[3]
   return 0
 }
 
-function calcPrice(vehicle, coverage, fleet, design) {
+function calcPrice(vehicle, coverage, fleet, design, pricing, designFee, fleetDiscount) {
   if (!vehicle || !coverage) return null
-  const base = PRICING[vehicle][coverage]
-  const designAdd = design === 'design' ? DESIGN_FEE : [0, 0]
-  const discount = getFleetDiscount(fleet)
+  const base = pricing[vehicle]?.[coverage]
+  if (!base) return null
+  const designAdd = design === 'design' ? designFee : [0, 0]
+  const discount = getFleetDiscount(fleet, fleetDiscount)
 
   const perLow  = Math.round((base[0] + designAdd[0]) * (1 - discount))
   const perHigh = Math.round((base[1] + designAdd[1]) * (1 - discount))
@@ -176,7 +177,7 @@ export default function WrapCalculator() {
     (step === 3) ||
     (step === 4 && design)
 
-  const result = calcPrice(vehicle, coverage, fleet, design)
+  const result = calcPrice(vehicle, coverage, fleet, design, PRICING, DESIGN_FEE, FLEET_DISCOUNT)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -239,7 +240,7 @@ export default function WrapCalculator() {
   }
 
   function renderStep3() {
-    const discount = getFleetDiscount(fleet)
+    const discount = getFleetDiscount(fleet, FLEET_DISCOUNT)
     return (
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-1">How many vehicles?</h3>
