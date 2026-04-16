@@ -52,6 +52,41 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-BXQ9NJCXHR');
           `}
         </Script>
+        <Script
+          id="local-business-schema"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "Signlab",
+            "description": "Adelaide's trusted signage company. Custom signs, vehicle wraps, digital signage and banners since 1992.",
+            "image": "https://signlab.com.au/signlab-logo.png",
+            "telephone": "08 8240 0925",
+            "email": "corey@signlab.com.au",
+            "url": "https://signlab.com.au",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "222 Port Road",
+              "addressLocality": "Alberton",
+              "addressRegion": "SA",
+              "postalCode": "5014",
+              "addressCountry": "AU"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": -34.8466,
+              "longitude": 138.5537
+            },
+            "areaServed": { "@type": "City", "name": "Adelaide" },
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "51"
+            }
+          }) }}
+        />
         <NextTopLoader
           color="#fff"
           height={5}

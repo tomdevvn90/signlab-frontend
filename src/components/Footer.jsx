@@ -16,7 +16,7 @@ const Footer = ({ footerData, pageData }) => {
   const bannerUrl = footerData.footer_banner;
   const footerLogo = footerData.footer_logo;
   const phone = footerData.footer_phone || "08 8240 0925";
-  const email = footerData.footer_email || "enquiries@signlab.com.au";
+  const email = footerData.footer_email || "corey@signlab.com.au";
   const address = footerData.footer_address || "222 Port Road, Alberton, SA 5014";
   const socials = Array.isArray(footerData.social_media_links) ? footerData.social_media_links : [];
   const menu = Array.isArray(footerData.main_menu) ? footerData.main_menu : [];
@@ -133,6 +133,45 @@ const Footer = ({ footerData, pageData }) => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Site Links */}
+      <div style={{ background: 'rgba(0,0,0,0.15)' }}>
+        <div className="container py-14 lg:py-20">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+            {/* Get an Instant Quote */}
+            <div className="col-span-2 lg:col-span-2">
+              <h4 className="text-lg font-extrabold uppercase tracking-wide mb-4 text-white">Get an Instant Quote</h4>
+              <p className="text-white/60 text-sm mb-5 leading-relaxed">Use our online calculators for a ballpark estimate in under 60 seconds. No sign-up needed.</p>
+              <Link href="/quote-calculators" className="inline-flex items-center justify-center gap-2 bg-white text-primary font-bold py-3 px-6 rounded-lg text-sm hover:bg-white/90 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" /></svg>
+                Quote Calculators
+              </Link>
+            </div>
+
+            {/* Services */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest mb-4 text-white/40">Services</h4>
+              <ul className="space-y-2.5">
+                <li><Link href="/signage" className="text-white/70 hover:text-white text-sm transition-colors">Signage</Link></li>
+                <li><Link href="/vehicle-wraps" className="text-white/70 hover:text-white text-sm transition-colors">Vehicle Wraps</Link></li>
+                <li><Link href="/digital-signage" className="text-white/70 hover:text-white text-sm transition-colors">Digital Signage</Link></li>
+                <li><Link href="/banners" className="text-white/70 hover:text-white text-sm transition-colors">Banners</Link></li>
+              </ul>
+            </div>
+
+            {/* Help */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest mb-4 text-white/40">Help</h4>
+              <ul className="space-y-2.5">
+                <li><Link href="/faq" className="text-white/70 hover:text-white text-sm transition-colors">FAQ</Link></li>
+                <li><Link href="/contact" className="text-white/70 hover:text-white text-sm transition-colors">Contact Us</Link></li>
+                <li><Link href="/about-us" className="text-white/70 hover:text-white text-sm transition-colors">About Signlab</Link></li>
+                <li><Link href="/the-latest" className="text-white/70 hover:text-white text-sm transition-colors">News & Projects</Link></li>
+              </ul>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { processFlexibleContent } from '../lib/utils';
 import FlexibleContent from '../components/FlexibleContent';
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import GoogleReviews from '../components/GoogleReviews'
 
 // ISR: This page will be statically generated and revalidated every 60 seconds
 export const revalidate = 60;
@@ -85,6 +86,8 @@ export default async function HomePage() {
             </div>
           </div>
         )}
+
+        <GoogleReviews />
       </main>
 
       {pageData.yoast?.schema && (

@@ -43,7 +43,11 @@ const Header = ({ headerData }) => {
   const pathname = usePathname();
   const logoUrl = headerData?.header_logo || '';
   const logoMobileUrl = headerData?.header_logo_mobile || '';
-  const menuData = headerData?.main_menu || [];
+  const wpMenu = headerData?.main_menu || [];
+  const menuData = [
+    ...wpMenu,
+    { text: 'Quote Calculators', link: '/quote-calculators' },
+  ];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
