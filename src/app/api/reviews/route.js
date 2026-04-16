@@ -1,5 +1,5 @@
-const PLACE_ID = 'ChIJQ_f1AdDHsGoRVTxqJ_JxmIY';
-const API_KEY = 'AIzaSyB0-q5gRdzoVsUAnUcU78PV6alxR9NSNso';
+const PLACE_ID = process.env.GOOGLE_PLACES_PLACE_ID;
+const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
 export const revalidate = 86400; // Cache for 24 hours
 
