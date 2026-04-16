@@ -1,4 +1,4 @@
-import { getPages, getPosts } from '@/lib/api'
+import { getPages, getPosts } from '../lib/api'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://signlab.com.au'
 
