@@ -10,6 +10,8 @@ const nextConfig = {
     NEXT_PUBLIC_GRAVITY_FORMS_API_URL: process.env.NEXT_PUBLIC_GRAVITY_FORMS_API_URL || 'https://dashboard.signlab.com.au/wp-json',
     NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_KEY: process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_KEY,
     NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_SECRET: process.env.NEXT_PUBLIC_GRAVITY_FORMS_CONSUMER_SECRET,
+    GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY,
+    GOOGLE_PLACE_ID: process.env.GOOGLE_PLACE_ID,
   },
   async redirects() {
     return [

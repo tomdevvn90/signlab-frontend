@@ -3,6 +3,7 @@ import Script from 'next/script';
 import { getPageBySlug } from '../lib/api';
 import { processFlexibleContent } from '../lib/utils';
 import FlexibleContent from '../components/FlexibleContent';
+import GoogleReviews from '../components/GoogleReviews';
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import GoogleReviews from '../components/GoogleReviews'
@@ -72,6 +73,8 @@ export default async function HomePage() {
         {pageData.acf?.flexible_content_sections && (
           <FlexibleContent blocks={pageData.acf.flexible_content_sections} />
         )}
+
+        <GoogleReviews />
 
         {!pageData.acf?.flexible_content_sections && (
           <div className="container section-padding">

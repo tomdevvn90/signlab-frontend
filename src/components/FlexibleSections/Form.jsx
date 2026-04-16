@@ -4,6 +4,35 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { getImageUrl, getImageAlt } from '../../lib/utils';
 
+const HtmlField = ({ id, content }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current || !content) return;
+
+    // Parse the HTML and execute any script tags that dangerouslySetInnerHTML ignores
+    const container = containerRef.current;
+    const scripts = container.querySelectorAll('script');
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement('script');
+      Array.from(oldScript.attributes).forEach((attr) => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      newScript.textContent = oldScript.textContent;
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+  }, [content]);
+
+  return (
+    <div
+      key={id}
+      ref={containerRef}
+      className="form-field-12 my-6"
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  );
+};
+
 const Form = ({ data }) => {
   const [formData, setFormData] = useState(null);
   const [formFields, setFormFields] = useState([]);
@@ -285,7 +314,7 @@ const Form = ({ data }) => {
 
       case 'html':
         return (
-          <div key={id} className="form-field-12 my-6" dangerouslySetInnerHTML={{ __html: content }} />
+          <HtmlField key={id} id={id} content={content || ''} />
         );
 
       case 'text':
@@ -699,7 +728,7 @@ const Form = ({ data }) => {
                   disabled={isSubmitting}
                   className="btn-primary uppercase text-center max-sm:w-full min-w-64 justify-center"
                 >
-                  {isSubmitting ? 'Submitting...' : formData.button?.text || 'Submit'}
+                  {isSubmitting ? 'Submitting...' : formData?.button?.text || 'Submit'}
                 </button>
               </div>
             </form>
