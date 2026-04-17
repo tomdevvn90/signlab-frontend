@@ -1,8 +1,10 @@
 import { getThemeOptions } from '../../lib/api'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import SignageCalculator from '../../components/calculators/SignageCalculator'
+import CalculatorComingSoon from '../../components/calculators/CalculatorComingSoon'
 import GoogleReviews from '../../components/GoogleReviews'
+// Temporarily disabled — pricing being updated. Restore by swapping CalculatorComingSoon back to SignageCalculator.
+// import SignageCalculator from '../../components/calculators/SignageCalculator'
 
 export const metadata = {
   title: 'Signage Cost Estimator Adelaide | Signlab',
@@ -34,14 +36,14 @@ export default async function SignageCalculatorPage() {
               Signage Cost Estimator
             </h1>
             <p className="text-lg lg:text-xl max-w-2xl mx-auto opacity-90">
-              Get an instant ballpark price for your business signage. Choose your options below and we&apos;ll show you estimates based on Adelaide market rates.
+              Our estimator is getting a refresh. In the meantime, our Adelaide team is ready to give you a tailored signage quote — no obligation.
             </p>
           </div>
         </section>
 
         <section className="section-padding" style={{ background: '#f8fafc' }}>
           <div className="container">
-            <SignageCalculator />
+            <CalculatorComingSoon label="Our signage cost estimator" />
           </div>
         </section>
 

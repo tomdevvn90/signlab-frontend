@@ -1,8 +1,10 @@
 import { getThemeOptions } from '../../lib/api'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import WrapCalculator from '../../components/calculators/WrapCalculator'
+import CalculatorComingSoon from '../../components/calculators/CalculatorComingSoon'
 import GoogleReviews from '../../components/GoogleReviews'
+// Temporarily disabled — pricing being updated. Restore by swapping CalculatorComingSoon back to WrapCalculator.
+// import WrapCalculator from '../../components/calculators/WrapCalculator'
 
 export const metadata = {
   title: 'Vehicle Wrap Cost Calculator Adelaide | Signlab',
@@ -34,14 +36,14 @@ export default async function WrapCalculatorPage() {
               Vehicle Wrap Cost Calculator
             </h1>
             <p className="text-lg lg:text-xl max-w-2xl mx-auto opacity-90">
-              Get an instant ballpark estimate for your vehicle wrap. Choose your options below and we&apos;ll show you pricing based on Adelaide market rates.
+              Our calculator is getting a refresh. In the meantime, our Adelaide team is ready to give you a tailored wrap quote — no obligation.
             </p>
           </div>
         </section>
 
         <section className="section-padding" style={{ background: '#f8fafc' }}>
           <div className="container">
-            <WrapCalculator />
+            <CalculatorComingSoon label="Our vehicle wrap calculator" />
           </div>
         </section>
 

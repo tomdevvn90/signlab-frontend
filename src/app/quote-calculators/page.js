@@ -1,8 +1,10 @@
 import { getThemeOptions } from '../../lib/api'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import CalculatorToggle from '../../components/calculators/CalculatorToggle'
+import CalculatorComingSoon from '../../components/calculators/CalculatorComingSoon'
 import GoogleReviews from '../../components/GoogleReviews'
+// Temporarily disabled — pricing being updated. Restore by swapping CalculatorComingSoon back to CalculatorToggle.
+// import CalculatorToggle from '../../components/calculators/CalculatorToggle'
 
 export const metadata = {
   title: 'Free Quote Calculators — Vehicle Wraps & Signage | Signlab Adelaide',
@@ -31,17 +33,17 @@ export default async function QuoteCalculatorsPage() {
         >
           <div className="container">
             <h1 className="text-3xl lg:text-5xl font-bold mb-4">
-              Get an Instant Quote
+              Quote Calculators
             </h1>
             <p className="text-lg lg:text-xl max-w-2xl mx-auto opacity-90">
-              Choose your options below and get a ballpark estimate in under 60 seconds. No sign-up, no obligation — just honest Adelaide pricing.
+              Our calculators are getting a refresh. In the meantime, our Adelaide team is ready to give you a tailored quote — no obligation.
             </p>
           </div>
         </section>
 
         <section className="section-padding" style={{ background: '#f8fafc' }}>
           <div className="container">
-            <CalculatorToggle />
+            <CalculatorComingSoon label="Our quote calculators" />
           </div>
         </section>
 
