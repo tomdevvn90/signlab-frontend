@@ -1,6 +1,12 @@
+"use client";
+
 import React from 'react';
 import BounceArrow from '../common/BounceArrow';
 import { getImageUrl } from '../../lib/utils';
+
+// Swiper imports
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
 const HeroSection = ({ data }) => {
 
@@ -111,50 +117,142 @@ const HeroSection = ({ data }) => {
     opacity: overlayOpacity
   };
 
+  const isSlider = data.layout_type === 'slider';
+
   return (
     <section
-      className={`hero-section relative flex text-white overflow-hidden`}
+      className={`hero-section relative flex text-white overflow-hidden ${isSlider ? 'hero-slider-active' : ''}`}
       style={sectionStyle}
     >
-      {/* Video background if present */}
+      {/* Global Background (Video/Image) */}
       {renderVideoBackground()}
 
-      {/* Overlay for darkening video/image if needed */}
-      { !isNoOverlay && (
+      {/* Static Layout Overlay - Only if not a slider */}
+      {!isSlider && !isNoOverlay && (
         <div className="absolute inset-0 z-10 pointer-events-none" aria-hidden="true" style={overlayStyle}></div>
-      ) }
+      )}
 
-      <div className="container relative z-20">
-        <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
-          <div className={`fade-in ${textAlignClass}`}>
-            {data.hero_title && (
-              <h1 className={`text-4xl md:text-5xl 2xl:text-6xl font-extrabold`} style={{ color: textColor }}>
-                { !isNoOverlay ? (
-                  <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-primary rounded-md shimmer">
-                    {data.hero_title}
-                  </span>
-                ) : (
-                  <span>{data.hero_title}</span>
-                ) }
-              </h1>
-            )}
-            {data.hero_sub_title && (
-              <p className={`text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold mt-3 md:mt-6`} style={{ color: textColor }}>
-                {data.hero_sub_title}
-              </p>
-            )}
-            {data.hero_button_text && data.hero_button_url && (
-              <a
-                href={data.hero_button_url}
-                className="mt-6 md:mt-10 py-4 px-7 md:py-6 md:px-9 rounded-md text-xl md:text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-white hover:text-accent text-center transition-colors duration-300 border-accent border"
-              >
-                {data.hero_button_text}
-              </a>
-            )}
+      <div className="relative z-20 flex flex-col justify-center w-full h-full">
+        {isSlider && data.hero_slider && data.hero_slider.length > 0 ? (
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay, EffectFade]}
+            navigation={data.nav_arrow}
+            pagination={data.dots ? { clickable: true } : false}
+            autoplay={data.auto_play ? {
+              delay: (data.auto_play_per_second || 3) * 1000,
+              disableOnInteraction: false,
+            } : false}
+            effect="fade"
+            loop={true}
+            className="w-full h-full hero-swiper"
+          >
+            {data.hero_slider.map((slide, index) => {
+              const slideBg = getImageUrl(slide.slide_bg_img);
+              const slideBgMobile = getImageUrl(slide.slide_bg_img_mobile) || slideBg;
+              const hasSlideBg = slideBg || slideBgMobile;
+
+              return (
+                <SwiperSlide key={index} className="h-full relative overflow-hidden flex flex-col justify-center">
+                  {/* Individual Slide Backgrounds */}
+                  {slideBg && (
+                    <div 
+                      className="absolute inset-0 pointer-events-none z-0 hidden md:block"
+                      style={{
+                        backgroundImage: `url(${slideBg})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    />
+                  )}
+                  {slideBgMobile && (
+                    <div 
+                      className="absolute inset-0 pointer-events-none z-0 block md:hidden"
+                      style={{
+                        backgroundImage: `url(${slideBgMobile})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    />
+                  )}
+                  
+                  {/* Slide Overlay - Applies to both slideBg and global section background */}
+                  {(hasSlideBg || !isNoOverlay) && (
+                    <div className="absolute inset-0 z-[1] pointer-events-none" aria-hidden="true" style={overlayStyle}></div>
+                  )}
+                  
+                  <div className="container relative z-10">
+                    <div className={`grid grid-cols-1 gap-12 items-center ${alignClass} py-12 px-6 md:px-10 md:py-20`}>
+                      <div className={`fade-in ${textAlignClass}`}>
+                        {slide.slide_title && (
+                          <h2 className={`text-4xl md:text-5xl 2xl:text-6xl font-extrabold mb-4 slide-title`} style={{ color: textColor }}>
+                            {!isNoOverlay || hasSlideBg ? (
+                              <span className="inline-block py-4 px-6 md:py-6 md:px-10 bg-primary rounded-md shimmer leading-tight">
+                                {slide.slide_title}
+                              </span>
+                            ) : (
+                              <span>{slide.slide_title}</span>
+                            )}
+                          </h2>
+                        )}
+                        {slide.slide_desc && (
+                          <div 
+                            className={`text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold mt-3 md:mt-6 slide-desc`} 
+                            style={{ color: textColor }}
+                            dangerouslySetInnerHTML={{ __html: slide.slide_desc }}
+                          />
+                        )}
+                        {slide.slide_button && slide.slide_button.url && (
+                          <a
+                            href={slide.slide_button.url}
+                            target={slide.slide_button.target}
+                            className="mt-6 md:mt-10 py-4 px-7 md:py-6 md:px-9 rounded-md text-xl md:text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-white hover:text-accent text-center transition-colors duration-300 border-accent border slide-button"
+                          >
+                            {slide.slide_button.title || 'Learn More'}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        ) : (
+          /* Static Layout */
+          <div className="container">
+            <div className={`grid grid-cols-1 gap-12 items-center ${alignClass}`}>
+              <div className={`fade-in ${textAlignClass}`}>
+                {data.hero_title && (
+                  <h1 className={`text-4xl md:text-5xl 2xl:text-6xl font-extrabold`} style={{ color: textColor }}>
+                    {!isNoOverlay ? (
+                      <span className="inline-block py-6 px-6 md:py-10 md:px-14 bg-primary rounded-md shimmer">
+                        {data.hero_title}
+                      </span>
+                    ) : (
+                      <span>{data.hero_title}</span>
+                    )}
+                  </h1>
+                )}
+                {data.hero_sub_title && (
+                  <p className={`text-base sm:text-lg md:text-2xl lg:text-3xl font-medium md:font-bold mt-3 md:mt-6`} style={{ color: textColor }}>
+                    {data.hero_sub_title}
+                  </p>
+                )}
+                {data.hero_button_text && data.hero_button_url && (
+                  <a
+                    href={data.hero_button_url}
+                    className="mt-6 md:mt-10 py-4 px-7 md:py-6 md:px-9 rounded-md text-xl md:text-2xl bg-accent uppercase font-extrabold inline-block hover:bg-white hover:text-accent text-center transition-colors duration-300 border-accent border"
+                  >
+                    {data.hero_button_text}
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      { isShowBounceArrow && (
+
+      {isShowBounceArrow && (
         <BounceArrow className={data.hero_section_height < 100 || !data.hero_section_height ? 'max-md:!bottom-12' : ''} />
       )}
     </section>

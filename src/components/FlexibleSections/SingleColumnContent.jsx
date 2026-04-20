@@ -128,7 +128,7 @@ const SingleColumnContent = ({ data }) => {
                         width={image.width || 1024}
                         height={image.height || 1024}
                         sizes="100vw"
-                        className={`object-cover w-full h-full max-h-[400px] lg:max-h-none ${image_mobile?.url ? 'hidden md:block' : ''}`}
+                        className={`object-cover w-full h-full ${image_mobile?.url ? 'hidden md:block' : ''}`}
                         priority={false}
                       />
                     )}
@@ -139,7 +139,7 @@ const SingleColumnContent = ({ data }) => {
                         width={image_mobile.width || 1024}
                         height={image_mobile.height || 1024}
                         sizes="100vw"
-                        className={`object-cover w-full h-full max-h-[400px] lg:max-h-none md:hidden`}
+                        className={`object-cover w-full h-full md:hidden`}
                         priority={false}
                       />
                     )}

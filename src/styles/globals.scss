@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+@import "swiper/css/effect-fade";
+
 // Custom variables
 :root {
   --primary-color: #0051bc;
@@ -587,32 +592,92 @@ header.header-sticky .header-inner {
     background-image: var(--hero-bg-image-mobile);
     aspect-ratio: var(--hero-aspect-ratio-mobile, var(--hero-aspect-ratio, auto));
   }
+
+  &.hero-slider-active {
+    padding: 0 !important; // Let slides handle padding if needed or keep it clean
+  }
 }
 
-.hero-slider {
-  // Hero Slider pagination dots
-  .hero-slider-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
-    bottom: 40px;
-    @media (max-width: 639px) {
-      bottom: 100px;
-    }
+.hero-swiper {
+  width: 100%;
+  height: 100%;
+  
+  .swiper-slide {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
-  .hero-slider-bullet {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
+
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #fff;
+    background: transparent;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
     transition: all 0.3s ease;
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.8);
+    @media (max-width: 767px) {
+      width: 32px;
+      height: 32px;
+    }
+    &:after {
+      font-size: 20px;
+      font-weight: bold;
+      @media (max-width: 767px) {
+        font-size: 16px;
+      }
+    }
+    --swiper-navigation-sides-offset: 16px;
+    @media (max-width: 767px) {
+      --swiper-navigation-sides-offset: 8px;
+    }
+
+  }
+
+  .swiper-pagination.swiper-pagination-bullets {
+    --swiper-pagination-bottom: 10px;
+    @media (max-width: 767px) {
+       --swiper-pagination-bottom: 0;
     }
   }
-  .hero-slider-bullet-active {
-    background-color: #fff;
-    width: 36px;
+
+  .swiper-pagination-bullet {
+    background: #fff;
+    opacity: 0.5;
+    width: 12px;
+    height: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: #fff;
+    width: 30px;
     border-radius: 6px;
+  }
+
+  .swiper-slide-active {
+    .slide-title {
+      animation: fadeInUp 0.8s ease backwards;
+    }
+    .slide-desc {
+      animation: fadeInUp 0.8s ease 0.2s backwards;
+    }
+    .slide-button {
+      animation: fadeInUp 0.8s ease 0.4s backwards;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
