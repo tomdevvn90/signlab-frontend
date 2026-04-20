@@ -38,7 +38,7 @@ const VideoPlayer = ({ src, alt, className = '', autoplay = false, controls = tr
     return (
         <iframe
             src={youtubeEmbedUrl}
-            className="w-full h-[320px] sm:h-[360px] md:h-[500px] lg:h-full"
+            className="w-full h-auto md:h-full"
             frameBorder="0"
             allow={allowAttributes}
             allowFullScreen
@@ -65,7 +65,7 @@ const VideoPlayer = ({ src, alt, className = '', autoplay = false, controls = tr
     return (
         <iframe
             src={vimeoEmbedUrl}
-            className="w-full h-[300px] sm:h-[360px] md:h-[500px] lg:h-full"
+            className="w-full h-auto md:h-full"
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
@@ -84,7 +84,7 @@ const VideoPlayer = ({ src, alt, className = '', autoplay = false, controls = tr
             muted={autoplay} // Required for autoplay in most browsers
             loop
             playsInline
-            className="w-full h-[300px] sm:h-full object-cover"
+            className="w-full h-auto md:h-full object-cover"
         >
             Your browser does not support the video tag.
         </video>
